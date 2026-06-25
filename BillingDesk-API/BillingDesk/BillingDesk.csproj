@@ -8,6 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi"/>
+    <PackageReference Include="MMonrad.OpenApi.NodaTime"/>
+    <PackageReference Include="NodaTime"/>
+    <PackageReference Include="NodaTime.Serialization.SystemTextJson"/>
     <PackageReference Include="Scalar.AspNetCore"/>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI"/>
   </ItemGroup>
