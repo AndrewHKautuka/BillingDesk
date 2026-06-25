@@ -1,10 +1,12 @@
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi("v1");
 
 var app = builder.Build();
 
@@ -12,6 +14,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
 	app.MapOpenApi();
+	app.MapScalarApiReference(options =>
+	{
+		options.Title = "Billing Desk API - Scalar";
+	});
+	app.UseSwaggerUI(options =>
+	{
+		options.SwaggerEndpoint("/openapi/v1.json", "v1");
+		options.DocumentTitle = "Billing Desk API - Swagger UI";
+	});
 }
 
 app.UseHttpsRedirection();
