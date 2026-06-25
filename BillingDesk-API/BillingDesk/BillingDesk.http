@@ -1,6 +1,1 @@
 @BillingDesk_HostAddress = http://localhost:5169
-
-GET {{BillingDesk_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
