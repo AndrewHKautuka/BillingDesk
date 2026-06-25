@@ -1,6 +1,21 @@
 @BillingDesk_HostAddress = http://localhost:5169
 
-GET {{BillingDesk_HostAddress}}/weatherforecast/
-Accept: application/json
+### Health - liveness (process up)
+GET {{BillingDesk_HostAddress}}/health
+
+###
+
+### Health - PostgreSQL
+GET {{BillingDesk_HostAddress}}/health/postgres
+
+###
+
+### Health - EF DbContext
+GET {{BillingDesk_HostAddress}}/health/ef
+
+###
+
+### Health - Readiness
+GET {{BillingDesk_HostAddress}}/health/ready
 
 ###
