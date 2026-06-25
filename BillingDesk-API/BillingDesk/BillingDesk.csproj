@@ -20,6 +20,8 @@
     <PackageReference Include="MMonrad.OpenApi.NodaTime"/>
     <PackageReference Include="NodaTime"/>
     <PackageReference Include="NodaTime.Serialization.SystemTextJson"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NodaTime"/>
     <PackageReference Include="Scalar.AspNetCore"/>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI"/>
   </ItemGroup>
