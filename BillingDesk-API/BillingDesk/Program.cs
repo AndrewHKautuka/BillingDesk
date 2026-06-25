@@ -1,5 +1,6 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
@@ -16,6 +17,8 @@ builder.Services.AddControllers()
 	   {
 		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 	   });
+
+builder.Services.AddHealthChecks();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi("v1",
@@ -51,5 +54,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health",
+					new HealthCheckOptions
+					{
+						Predicate = _ => false // no dependency checks, just "is the process up"
+					});
 
 await app.RunAsync();
