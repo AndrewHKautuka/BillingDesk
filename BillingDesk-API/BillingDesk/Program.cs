@@ -1,5 +1,6 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
@@ -7,6 +8,8 @@ using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var primaryConnectionString = builder.Configuration.GetConnectionString("Primary")!;
 
 // Add services to the container.
 // Singletons
@@ -18,7 +21,12 @@ builder.Services.AddControllers()
 		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 	   });
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+	   .AddNpgSql(primaryConnectionString,
+				  name: "postgresql",
+				  tags: ["db", "postgres", "ready"])
+	   .AddDbContextCheck<BillingDeskDbContext>("dbcontext",
+												tags: ["db", "ef", "ready"]);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi("v1",
@@ -29,7 +37,7 @@ builder.Services.AddOpenApi("v1",
 
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>
 {
-	options.UseConfiguredDbContext(builder.Configuration.GetConnectionString("Primary"));
+	options.UseConfiguredDbContext(primaryConnectionString);
 });
 
 var app = builder.Build();
@@ -59,6 +67,27 @@ app.MapHealthChecks("/health",
 					new HealthCheckOptions
 					{
 						Predicate = _ => false // no dependency checks, just "is the process up"
+					});
+
+app.MapHealthChecks("/health/postgres",
+					new HealthCheckOptions
+					{
+						Predicate = check => check.Tags.Contains("postgres"),
+						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+					});
+
+app.MapHealthChecks("/health/ef",
+					new HealthCheckOptions
+					{
+						Predicate = check => check.Tags.Contains("ef"),
+						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+					});
+
+app.MapHealthChecks("/health/ready",
+					new HealthCheckOptions
+					{
+						Predicate = check => check.Tags.Contains("ready"),
+						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 					});
 
 await app.RunAsync();
