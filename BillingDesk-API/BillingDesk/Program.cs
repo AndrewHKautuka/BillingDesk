@@ -1,3 +1,5 @@
+using BillingDesk.Common;
+using BillingDesk.Common.Configs;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
@@ -21,6 +23,11 @@ builder.Services.AddOpenApi("v1",
 							{
 								options.ConfigureNodaTime();
 							});
+
+builder.Services.AddDbContext<BillingDeskDbContext>(options =>
+{
+	options.UseConfiguredDbContext(builder.Configuration.GetConnectionString("Primary"));
+});
 
 var app = builder.Build();
 
