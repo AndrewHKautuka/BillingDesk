@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using NodaTime;
 
 namespace BillingDesk.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public sealed class WeatherForecastController(IClock clock) : ControllerBase
 {
 	private static readonly string[] Summaries =
 	[
@@ -12,12 +13,13 @@ public class WeatherForecastController : ControllerBase
 	];
 
 	[HttpGet(Name = "GetWeatherForecast")]
-	public IEnumerable<WeatherForecast> Get()
+	public ActionResult<IEnumerable<WeatherForecast>> Get()
 	{
+		var now = clock.GetCurrentInstant();
 		return Enumerable.Range(1, 5)
 						 .Select(index => new WeatherForecast
 										  {
-											  Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+											  Date = (now + Duration.FromDays(index)).InUtc().Date,
 											  TemperatureC = Random.Shared.Next(-20, 55),
 											  Summary = Summaries[Random.Shared.Next(Summaries.Length)]
 										  })
