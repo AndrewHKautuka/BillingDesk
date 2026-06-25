@@ -1,7 +1,5 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
-using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
@@ -63,31 +61,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHealthChecks("/health",
-					new HealthCheckOptions
-					{
-						Predicate = _ => false // no dependency checks, just "is the process up"
-					});
-
-app.MapHealthChecks("/health/postgres",
-					new HealthCheckOptions
-					{
-						Predicate = check => check.Tags.Contains("postgres"),
-						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-					});
-
-app.MapHealthChecks("/health/ef",
-					new HealthCheckOptions
-					{
-						Predicate = check => check.Tags.Contains("ef"),
-						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-					});
-
-app.MapHealthChecks("/health/ready",
-					new HealthCheckOptions
-					{
-						Predicate = check => check.Tags.Contains("ready"),
-						ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-					});
+app.MapHealthChecksConfig("/health");
 
 await app.RunAsync();
