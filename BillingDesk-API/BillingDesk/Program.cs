@@ -1,12 +1,26 @@
+using NodaTime;
+using NodaTime.Serialization.SystemTextJson;
+using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+// Singletons
+builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+	   .AddJsonOptions(options =>
+	   {
+		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+	   });
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v1",
+							options =>
+							{
+								options.ConfigureNodaTime();
+							});
 
 var app = builder.Build();
 
