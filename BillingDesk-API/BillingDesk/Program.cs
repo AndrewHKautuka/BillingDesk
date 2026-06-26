@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var primaryConnectionString = builder.Configuration.GetConnectionString("Primary")!;
 
+// Static configurations
+MapsterConfig.ApplyMapsterConfig();
+
 // Add services to the container.
 // Singletons
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
