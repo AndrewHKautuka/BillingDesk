@@ -10,7 +10,8 @@ public static class DbContextConfig
 		string? connectionString) where TContext : DbContext
 	{
 		return builder.UseNpgsql(connectionString,
-								 o => o.UseNpgsqlConfig());
+								 o => o.UseNpgsqlConfig())
+					  .UseSnakeCaseNamingConvention();
 	}
 
 	public static DbContextOptionsBuilder UseConfiguredDbContext(
@@ -18,7 +19,8 @@ public static class DbContextConfig
 		string? connectionString)
 	{
 		return builder.UseNpgsql(connectionString,
-								 o => o.UseNpgsqlConfig());
+								 o => o.UseNpgsqlConfig())
+					  .UseSnakeCaseNamingConvention();
 	}
 
 	private static void UseNpgsqlConfig(this NpgsqlDbContextOptionsBuilder builder)
