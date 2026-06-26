@@ -3,7 +3,7 @@ using NodaTime;
 
 namespace BillingDesk.Subscription.Types.Requests;
 
-public record UpdateSubscriptionRequest(
+public sealed record UpdateSubscriptionRequest(
 	string? Name,
 	decimal? Cost,
 	Currency? Currency,
