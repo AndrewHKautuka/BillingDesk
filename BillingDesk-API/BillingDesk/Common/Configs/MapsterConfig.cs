@@ -1,5 +1,6 @@
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
+using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Common.Configs;
 
@@ -16,7 +17,7 @@ public static class MapsterConfig
 
 		TypeAdapterConfig.GlobalSettings.RequireExplicitMapping = true;
 
-		TypeAdapterConfig<Subscription.Types.Models.Subscription, SubscriptionResponse>.NewConfig();
+		TypeAdapterConfig<SubscriptionModel, SubscriptionResponse>.NewConfig();
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}
