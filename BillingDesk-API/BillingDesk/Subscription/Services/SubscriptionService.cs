@@ -12,6 +12,19 @@ namespace BillingDesk.Subscription.Services;
 public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 	: ISubscriptionService
 {
+	public async Task<CreateSubscriptionResult> CreateSubscriptionAsync(
+		CreateSubscriptionCommand command,
+		CancellationToken ct = default)
+	{
+		var newSubscription = command.Adapt<SubscriptionModel>();
+
+		dbContext.Subscription
+				 .Add(newSubscription);
+		await dbContext.SaveChangesAsync(ct);
+
+		return new CreateSubscriptionResult.Success(newSubscription.Adapt<SubscriptionResponse>());
+	}
+
 	public async Task<ListSubscriptionsResult> ListSubscriptionsAsync(
 		ListSubscriptionsCommand command,
 		CancellationToken ct = default)
@@ -49,20 +62,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		return new GetSubscriptionResult.Success(subscription);
 	}
 
-	public async Task<CreateSubscriptionResult> CreateAsync(
-		CreateSubscriptionCommand command,
-		CancellationToken ct = default)
-	{
-		var newSubscription = command.Adapt<SubscriptionModel>();
-
-		dbContext.Subscription
-				 .Add(newSubscription);
-		await dbContext.SaveChangesAsync(ct);
-
-		return new CreateSubscriptionResult.Success(newSubscription.Adapt<SubscriptionResponse>());
-	}
-
-	public async Task<UpdateSubscriptionResult> UpdateAsync(
+	public async Task<UpdateSubscriptionResult> UpdateSubscriptionAsync(
 		UpdateSubscriptionCommand command,
 		CancellationToken ct = default)
 	{
@@ -85,7 +85,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		return new UpdateSubscriptionResult.Success(updatedSubscription.Adapt<SubscriptionResponse>());
 	}
 
-	public async Task<ToggleSubscriptionStatusResult> ToggleStatusAsync(
+	public async Task<ToggleSubscriptionStatusResult> ToggleSubscriptionStatusAsync(
 		ToggleSubscriptionStatusCommand command,
 		CancellationToken ct = default)
 	{
@@ -101,7 +101,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 
 		subscription.Status = subscription.Status switch
 		{
-			SubscriptionStatus.Active   => SubscriptionStatus.Inactive,
+			SubscriptionStatus.Active => SubscriptionStatus.Inactive,
 			SubscriptionStatus.Inactive => SubscriptionStatus.Active,
 			_ => throw new ArgumentException(
 					 $"Illegal subscription status: {subscription.Status}") // Should not be possible to reach
@@ -112,7 +112,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		return new ToggleSubscriptionStatusResult.Success(response);
 	}
 
-	public async Task<DeleteSubscriptionResult> DeleteAsync(
+	public async Task<DeleteSubscriptionResult> DeleteSubscriptionAsync(
 		DeleteSubscriptionCommand command,
 		CancellationToken ct = default)
 	{

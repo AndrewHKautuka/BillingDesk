@@ -5,7 +5,7 @@ namespace BillingDesk.Subscription.Services;
 
 public interface ISubscriptionService
 {
-	Task<CreateSubscriptionResult> CreateAsync(
+	Task<CreateSubscriptionResult> CreateSubscriptionAsync(
 		CreateSubscriptionCommand command,
 		CancellationToken ct = default);
 
@@ -17,15 +17,15 @@ public interface ISubscriptionService
 		GetSubscriptionCommand command,
 		CancellationToken ct = default);
 
-	Task<UpdateSubscriptionResult> UpdateAsync(
+	Task<UpdateSubscriptionResult> UpdateSubscriptionAsync(
 		UpdateSubscriptionCommand command,
 		CancellationToken ct = default);
 
-	Task<DeleteSubscriptionResult> DeleteAsync(
+	Task<DeleteSubscriptionResult> DeleteSubscriptionAsync(
 		DeleteSubscriptionCommand command,
 		CancellationToken ct = default);
 
-	Task<ToggleSubscriptionStatusResult> ToggleStatusAsync(
+	Task<ToggleSubscriptionStatusResult> ToggleSubscriptionStatusAsync(
 		ToggleSubscriptionStatusCommand command,
 		CancellationToken ct = default);
 }
