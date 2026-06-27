@@ -1,6 +1,10 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using BillingDesk.Common.OpenAPITransformers;
 using BillingDesk.Subscription.Services;
+using Microsoft.AspNetCore.Http.Json;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
@@ -26,6 +30,14 @@ builder.Services.AddControllers()
 		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 	   });
 
+builder.Services.Configure<JsonOptions>(options =>
+{
+	options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+	options.SerializerOptions
+		   .Converters
+		   .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+});
+
 builder.Services.AddHealthChecks()
 	   .AddNpgSql(primaryConnectionString,
 				  name: "postgresql",
@@ -38,6 +50,7 @@ builder.Services.AddOpenApi("v1",
 							options =>
 							{
 								options.ConfigureNodaTime();
+								options.AddOperationTransformer<QueryParameterOperationTransformer>();
 							});
 
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>
