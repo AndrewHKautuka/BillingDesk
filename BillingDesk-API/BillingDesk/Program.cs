@@ -1,5 +1,6 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using BillingDesk.Subscription.Services;
 using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
@@ -15,6 +16,9 @@ MapsterConfig.ApplyMapsterConfig();
 // Add services to the container.
 // Singletons
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
+
+// Services
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 
 builder.Services.AddControllers()
 	   .AddJsonOptions(options =>
