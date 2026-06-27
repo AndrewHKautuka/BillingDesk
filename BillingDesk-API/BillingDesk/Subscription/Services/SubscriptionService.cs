@@ -106,6 +106,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 			_ => throw new ArgumentException(
 					 $"Illegal subscription status: {subscription.Status}") // Should not be possible to reach
 		};
+		await dbContext.SaveChangesAsync(ct);
 
 		var response = subscription.Adapt<SubscriptionResponse>();
 
