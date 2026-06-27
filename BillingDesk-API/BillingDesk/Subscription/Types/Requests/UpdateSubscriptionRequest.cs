@@ -3,10 +3,12 @@ using NodaTime;
 
 namespace BillingDesk.Subscription.Types.Requests;
 
-public sealed record UpdateSubscriptionRequest(
-	string Name,
-	decimal Cost,
-	Currency Currency,
-	BillingCycle BillingCycle,
-	LocalDate StartDate,
-	string Category);
+public sealed record UpdateSubscriptionRequest
+{
+	public required string Name { get; init; }
+	public required decimal Cost { get; init; }
+	public required Currency Currency { get; init; }
+	public required BillingCycle BillingCycle { get; init; }
+	public required LocalDate StartDate { get; init; }
+	public required string Category { get; init; }
+}
