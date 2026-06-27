@@ -36,6 +36,7 @@ builder.Services.Configure<JsonOptions>(options =>
 	options.SerializerOptions
 		   .Converters
 		   .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+	options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 });
 
 builder.Services.AddHealthChecks()
