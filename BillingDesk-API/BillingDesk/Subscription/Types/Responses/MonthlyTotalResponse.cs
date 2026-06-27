@@ -1,3 +1,3 @@
 namespace BillingDesk.Subscription.Types.Responses;
 
-public record MonthlyTotalResponse(decimal Total);
+public sealed record MonthlyTotalResponse(decimal Total);
