@@ -1,3 +1,6 @@
+using BillingDesk.Subscription.Types.Commands;
+using BillingDesk.Subscription.Types.Queries;
+using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
@@ -17,6 +20,15 @@ public static class MapsterConfig
 
 		TypeAdapterConfig.GlobalSettings.RequireExplicitMapping = true;
 
+		// Requests and Queries to Commands
+		TypeAdapterConfig<CreateSubscriptionRequest, CreateSubscriptionCommand>.NewConfig();
+		TypeAdapterConfig<SubscriptionQuery, ListSubscriptionsCommand>.NewConfig();
+
+		// Commands to Models
+		TypeAdapterConfig<CreateSubscriptionCommand, SubscriptionModel>.NewConfig();
+		TypeAdapterConfig<UpdateSubscriptionCommand, SubscriptionModel>.NewConfig();
+
+		// Models to Responses
 		TypeAdapterConfig<SubscriptionModel, SubscriptionResponse>.NewConfig();
 
 		TypeAdapterConfig.GlobalSettings.Compile();
