@@ -58,7 +58,7 @@ resharper_indent_raw_literal_string = align
 resharper_int_align_nested_ternary = true
 resharper_int_align_comments = true
 resharper_int_align_switch_sections = true
-resharper_int_align_switch_expressions = true
+resharper_int_align_switch_expressions = false
 
 resharper_autodetect_indent_settings = true
 resharper_blank_lines_around_block_case_section = 1
