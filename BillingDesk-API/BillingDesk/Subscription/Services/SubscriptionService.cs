@@ -111,7 +111,6 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		CancellationToken ct = default)
 	{
 		var subscription = await dbContext.Subscription
-										  .AsNoTracking()
 										  .Where(e => e.Id == command.Id)
 										  .FirstOrDefaultAsync(ct);
 
