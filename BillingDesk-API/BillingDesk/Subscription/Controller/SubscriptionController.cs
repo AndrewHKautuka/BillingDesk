@@ -19,10 +19,12 @@ public sealed class SubscriptionController(ISubscriptionService subscriptionServ
 			Ok<SubscriptionResponse>,
 			InternalServerError>>
 		CreateSubscriptionAsync(
-			[FromBody] CreateSubscriptionRequest request)
+			[FromBody] CreateSubscriptionRequest request,
+			CancellationToken ct = default)
 	{
 		var result = await subscriptionService.CreateSubscriptionAsync(
-						 request.Adapt<CreateSubscriptionCommand>());
+						 request.Adapt<CreateSubscriptionCommand>(),
+						 ct);
 
 		return result switch
 		{
@@ -36,10 +38,12 @@ public sealed class SubscriptionController(ISubscriptionService subscriptionServ
 			Ok<IReadOnlyList<SubscriptionResponse>>,
 			InternalServerError>>
 		ListSubscriptionsAsync(
-			[FromQuery] SubscriptionQuery query)
+			[FromQuery] SubscriptionQuery query,
+			CancellationToken ct = default)
 	{
 		var result = await subscriptionService.ListSubscriptionsAsync(
-						 query.Adapt<ListSubscriptionsCommand>());
+						 query.Adapt<ListSubscriptionsCommand>(),
+						 ct);
 
 		return result switch
 		{
