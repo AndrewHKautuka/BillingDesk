@@ -1,12 +1,9 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
 using BillingDesk.Common.OpenAPITransformers;
 using BillingDesk.Subscription.Services;
 using Microsoft.AspNetCore.Http.Json;
 using NodaTime;
-using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
 
@@ -27,16 +24,12 @@ builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddControllers()
 	   .AddJsonOptions(options =>
 	   {
-		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+		   options.JsonSerializerOptions.ConfigureJsonSerializerOptions();
 	   });
 
 builder.Services.Configure<JsonOptions>(options =>
 {
-	options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-	options.SerializerOptions
-		   .Converters
-		   .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-	options.SerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+	options.SerializerOptions.ConfigureJsonSerializerOptions();
 });
 
 builder.Services.AddHealthChecks()
