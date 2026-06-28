@@ -51,4 +51,89 @@ public sealed class SubscriptionController(ISubscriptionService subscriptionServ
 			_ => TypedResults.InternalServerError()
 		};
 	}
+
+	[HttpGet("{id:guid}")]
+	public async Task<Results<
+			Ok<SubscriptionResponse>,
+			NotFound,
+			InternalServerError>>
+		GetSubscriptionAsync(
+			[FromRoute] Guid id,
+			CancellationToken ct = default)
+	{
+		var result = await subscriptionService.GetSubscriptionAsync(
+						 id.Adapt<GetSubscriptionCommand>(),
+						 ct);
+
+		return result switch
+		{
+			GetSubscriptionResult.Success r => TypedResults.Ok(r.Subscription),
+			GetSubscriptionResult.NotFound => TypedResults.NotFound(),
+			_ => TypedResults.InternalServerError()
+		};
+	}
+
+	[HttpPut("{id:guid}")]
+	public async Task<Results<
+			Ok<SubscriptionResponse>,
+			NotFound,
+			InternalServerError>>
+		UpdateSubscriptionAsync(
+			[FromRoute] Guid id,
+			[FromBody] UpdateSubscriptionRequest request,
+			CancellationToken ct = default)
+	{
+		var result = await subscriptionService.UpdateSubscriptionAsync(
+						 (id, request).Adapt<UpdateSubscriptionCommand>(),
+						 ct);
+
+		return result switch
+		{
+			UpdateSubscriptionResult.Success r => TypedResults.Ok(r.Subscription),
+			UpdateSubscriptionResult.NotFound => TypedResults.NotFound(),
+			_ => TypedResults.InternalServerError()
+		};
+	}
+
+	[HttpDelete("{id:guid}")]
+	public async Task<Results<
+			NoContent,
+			NotFound,
+			InternalServerError>>
+		DeleteSubscriptionAsync(
+			[FromRoute] Guid id,
+			CancellationToken ct = default)
+	{
+		var result = await subscriptionService.DeleteSubscriptionAsync(
+						 id.Adapt<DeleteSubscriptionCommand>(),
+						 ct);
+
+		return result switch
+		{
+			DeleteSubscriptionResult.Success => TypedResults.NoContent(),
+			DeleteSubscriptionResult.NotFound => TypedResults.NotFound(),
+			_ => TypedResults.InternalServerError()
+		};
+	}
+
+	[HttpPatch("{id:guid}/toggle-status")]
+	public async Task<Results<
+			Ok<SubscriptionResponse>,
+			NotFound,
+			InternalServerError>>
+		ToggleSubscriptionStatusAsync(
+			[FromRoute] Guid id,
+			CancellationToken ct = default)
+	{
+		var result = await subscriptionService.ToggleSubscriptionStatusAsync(
+						 id.Adapt<ToggleSubscriptionStatusCommand>(),
+						 ct);
+
+		return result switch
+		{
+			ToggleSubscriptionStatusResult.Success r => TypedResults.Ok(r.Subscription),
+			ToggleSubscriptionStatusResult.NotFound => TypedResults.NotFound(),
+			_ => TypedResults.InternalServerError()
+		};
+	}
 }
