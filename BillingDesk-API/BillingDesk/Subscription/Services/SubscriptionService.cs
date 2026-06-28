@@ -85,6 +85,27 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		return new UpdateSubscriptionResult.Success(updatedSubscription.Adapt<SubscriptionResponse>());
 	}
 
+	public async Task<DeleteSubscriptionResult> DeleteSubscriptionAsync(
+		DeleteSubscriptionCommand command,
+		CancellationToken ct = default)
+	{
+		var subscription = await dbContext.Subscription
+										  .AsNoTracking()
+										  .Where(e => e.Id == command.Id)
+										  .FirstOrDefaultAsync(ct);
+
+		if (subscription is null)
+		{
+			return new DeleteSubscriptionResult.NotFound(command.Id);
+		}
+
+		dbContext.Subscription
+				 .Remove(subscription);
+		await dbContext.SaveChangesAsync(ct);
+
+		return new DeleteSubscriptionResult.Success();
+	}
+
 	public async Task<ToggleSubscriptionStatusResult> ToggleSubscriptionStatusAsync(
 		ToggleSubscriptionStatusCommand command,
 		CancellationToken ct = default)
@@ -111,26 +132,5 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		var response = subscription.Adapt<SubscriptionResponse>();
 
 		return new ToggleSubscriptionStatusResult.Success(response);
-	}
-
-	public async Task<DeleteSubscriptionResult> DeleteSubscriptionAsync(
-		DeleteSubscriptionCommand command,
-		CancellationToken ct = default)
-	{
-		var subscription = await dbContext.Subscription
-										  .AsNoTracking()
-										  .Where(e => e.Id == command.Id)
-										  .FirstOrDefaultAsync(ct);
-
-		if (subscription is null)
-		{
-			return new DeleteSubscriptionResult.NotFound(command.Id);
-		}
-
-		dbContext.Subscription
-				 .Remove(subscription);
-		await dbContext.SaveChangesAsync(ct);
-
-		return new DeleteSubscriptionResult.Success();
 	}
 }
