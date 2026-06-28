@@ -25,6 +25,24 @@ public static class MapsterConfig
 			.NewConfig();
 		TypeAdapterConfig<SubscriptionQuery, ListSubscriptionsCommand>
 			.NewConfig();
+		TypeAdapterConfig<Guid, GetSubscriptionCommand>
+			.NewConfig()
+			.Map(dest => dest.Id,
+				 src => src);
+		TypeAdapterConfig<(Guid Id, UpdateSubscriptionRequest Request), UpdateSubscriptionCommand>
+			.NewConfig()
+			.Map(dest => dest,
+				 src => src.Request)
+			.Map(dest => dest.Id,
+				 src => src.Id);
+		TypeAdapterConfig<Guid, DeleteSubscriptionCommand>
+			.NewConfig()
+			.Map(dest => dest.Id,
+				 src => src);
+		TypeAdapterConfig<Guid, ToggleSubscriptionStatusCommand>
+			.NewConfig()
+			.Map(dest => dest.Id,
+				 src => src);
 
 		// Commands to Models
 		TypeAdapterConfig<CreateSubscriptionCommand, SubscriptionModel>
