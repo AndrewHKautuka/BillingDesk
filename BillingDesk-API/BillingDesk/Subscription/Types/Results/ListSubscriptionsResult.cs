@@ -1,9 +1,9 @@
-using BillingDesk.Subscription.Types.Responses;
+using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Subscription.Types.Results;
 
 public abstract record ListSubscriptionsResult
 {
-	public sealed record Success(IReadOnlyList<SubscriptionResponse> Response)
+	public sealed record Success(IReadOnlyList<SubscriptionModel> Subscriptions)
 		: ListSubscriptionsResult;
 }

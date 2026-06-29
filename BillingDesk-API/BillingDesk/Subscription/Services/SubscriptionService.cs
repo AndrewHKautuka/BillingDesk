@@ -2,7 +2,6 @@ using BillingDesk.Common;
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Enums;
-using BillingDesk.Subscription.Types.Responses;
 using BillingDesk.Subscription.Types.Results;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +27,7 @@ public sealed class SubscriptionService(
 		SubscriptionServiceLog.SubscriptionCreated(logger,
 												   newSubscription.Id);
 
-		return new CreateSubscriptionResult.Success(newSubscription.Adapt<SubscriptionResponse>());
+		return new CreateSubscriptionResult.Success(newSubscription);
 	}
 
 	public async Task<ListSubscriptionsResult> ListSubscriptionsAsync(
@@ -44,8 +43,7 @@ public sealed class SubscriptionService(
 		}
 
 		var subscriptions = await query
-								  .ProjectToType<SubscriptionResponse>()
-								  .ToListAsync(ct);
+								.ToListAsync(ct);
 
 		return new ListSubscriptionsResult.Success(subscriptions);
 	}
@@ -57,7 +55,6 @@ public sealed class SubscriptionService(
 		var subscription = await dbContext.Subscription
 										  .AsNoTracking()
 										  .Where(e => e.Id == command.Id)
-										  .ProjectToType<SubscriptionResponse>()
 										  .FirstOrDefaultAsync(ct);
 
 		if (subscription is not null)
@@ -96,7 +93,7 @@ public sealed class SubscriptionService(
 		SubscriptionServiceLog.SubscriptionUpdated(logger,
 												   updatedSubscription.Id);
 
-		return new UpdateSubscriptionResult.Success(updatedSubscription.Adapt<SubscriptionResponse>());
+		return new UpdateSubscriptionResult.Success(updatedSubscription);
 	}
 
 	public async Task<DeleteSubscriptionResult> DeleteSubscriptionAsync(
@@ -154,8 +151,6 @@ public sealed class SubscriptionService(
 		SubscriptionServiceLog.SubscriptionStatusToggled(logger,
 														 subscription.Id);
 
-		var response = subscription.Adapt<SubscriptionResponse>();
-
-		return new ToggleSubscriptionStatusResult.Success(response);
+		return new ToggleSubscriptionStatusResult.Success(subscription);
 	}
 }

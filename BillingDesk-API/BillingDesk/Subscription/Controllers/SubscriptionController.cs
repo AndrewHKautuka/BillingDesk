@@ -42,7 +42,8 @@ public sealed class SubscriptionController(
 
 		return result switch
 		{
-			CreateSubscriptionResult.Success r => TypedResults.Ok(r.Response),
+			CreateSubscriptionResult.Success r => TypedResults.Ok(r.Subscription
+																   .Adapt<SubscriptionResponse>()),
 			_ => TypedResults.InternalServerError()
 		};
 	}
@@ -61,7 +62,8 @@ public sealed class SubscriptionController(
 
 		return result switch
 		{
-			ListSubscriptionsResult.Success r => TypedResults.Ok(r.Response),
+			ListSubscriptionsResult.Success r => TypedResults.Ok(r.Subscriptions
+																  .Adapt<IReadOnlyList<SubscriptionResponse>>()),
 			_ => TypedResults.InternalServerError()
 		};
 	}
@@ -81,7 +83,8 @@ public sealed class SubscriptionController(
 
 		return result switch
 		{
-			GetSubscriptionResult.Success r => TypedResults.Ok(r.Response),
+			GetSubscriptionResult.Success r => TypedResults.Ok(r.Subscription
+																.Adapt<SubscriptionResponse>()),
 			GetSubscriptionResult.NotFound => TypedResults.NotFound(),
 			_ => TypedResults.InternalServerError()
 		};
@@ -112,7 +115,8 @@ public sealed class SubscriptionController(
 
 		return result switch
 		{
-			UpdateSubscriptionResult.Success r => TypedResults.Ok(r.Response),
+			UpdateSubscriptionResult.Success r => TypedResults.Ok(r.Subscription
+																   .Adapt<SubscriptionResponse>()),
 			UpdateSubscriptionResult.NotFound => TypedResults.NotFound(),
 			_ => TypedResults.InternalServerError()
 		};
@@ -154,7 +158,8 @@ public sealed class SubscriptionController(
 
 		return result switch
 		{
-			ToggleSubscriptionStatusResult.Success r => TypedResults.Ok(r.Response),
+			ToggleSubscriptionStatusResult.Success r => TypedResults.Ok(r.Subscription
+																		 .Adapt<SubscriptionResponse>()),
 			ToggleSubscriptionStatusResult.NotFound => TypedResults.NotFound(),
 			_ => TypedResults.InternalServerError()
 		};
