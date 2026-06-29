@@ -6,7 +6,7 @@ namespace BillingDesk.Subscription.Types.Models;
 
 public class Subscription
 {
-	public Guid Id { get; set; }
+	public Guid Id { get; init; }
 
 	[StringLength(64)]
 	public required string Name { get; set; }
