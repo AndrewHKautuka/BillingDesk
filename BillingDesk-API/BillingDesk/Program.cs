@@ -24,6 +24,7 @@ builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
 
 // Services
 builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscriptionRequestValidator>();
