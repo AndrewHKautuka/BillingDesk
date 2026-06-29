@@ -1,4 +1,5 @@
 using BillingDesk.Common;
+using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Enums;
 using BillingDesk.Subscription.Types.Responses;
@@ -9,7 +10,9 @@ using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Subscription.Services;
 
-public sealed class SubscriptionService(BillingDeskDbContext dbContext)
+public sealed class SubscriptionService(
+	BillingDeskDbContext dbContext,
+	ILogger<SubscriptionService> logger)
 	: ISubscriptionService
 {
 	public async Task<CreateSubscriptionResult> CreateSubscriptionAsync(
@@ -21,6 +24,9 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		dbContext.Subscription
 				 .Add(newSubscription);
 		await dbContext.SaveChangesAsync(ct);
+
+		SubscriptionServiceLog.SubscriptionCreated(logger,
+												   newSubscription.Id);
 
 		return new CreateSubscriptionResult.Success(newSubscription.Adapt<SubscriptionResponse>());
 	}
@@ -54,12 +60,13 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 										  .ProjectToType<SubscriptionResponse>()
 										  .FirstOrDefaultAsync(ct);
 
-		if (subscription is null)
-		{
-			return new GetSubscriptionResult.NotFound(command.Id);
-		}
+		if (subscription is not null)
+			return new GetSubscriptionResult.Success(subscription);
 
-		return new GetSubscriptionResult.Success(subscription);
+		SubscriptionServiceLog.SubscriptionNotFound(logger,
+													command.Id);
+
+		return new GetSubscriptionResult.NotFound(command.Id);
 	}
 
 	public async Task<UpdateSubscriptionResult> UpdateSubscriptionAsync(
@@ -73,6 +80,9 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 
 		if (existingSubscription is null)
 		{
+			SubscriptionServiceLog.SubscriptionNotFound(logger,
+														command.Id);
+
 			return new UpdateSubscriptionResult.NotFound(command.Id);
 		}
 
@@ -82,6 +92,9 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		dbContext.Subscription
 				 .Update(updatedSubscription);
 		await dbContext.SaveChangesAsync(ct);
+
+		SubscriptionServiceLog.SubscriptionUpdated(logger,
+												   updatedSubscription.Id);
 
 		return new UpdateSubscriptionResult.Success(updatedSubscription.Adapt<SubscriptionResponse>());
 	}
@@ -96,12 +109,18 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 
 		if (subscription is null)
 		{
+			SubscriptionServiceLog.SubscriptionNotFound(logger,
+														command.Id);
+
 			return new DeleteSubscriptionResult.NotFound(command.Id);
 		}
 
 		dbContext.Subscription
 				 .Remove(subscription);
 		await dbContext.SaveChangesAsync(ct);
+
+		SubscriptionServiceLog.SubscriptionDeleted(logger,
+												   command.Id);
 
 		return new DeleteSubscriptionResult.Success();
 	}
@@ -116,6 +135,9 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 
 		if (subscription is null)
 		{
+			SubscriptionServiceLog.SubscriptionNotFound(logger,
+														command.Id);
+
 			return new ToggleSubscriptionStatusResult.NotFound(command.Id);
 		}
 
@@ -128,6 +150,9 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		};
 
 		await dbContext.SaveChangesAsync(ct);
+
+		SubscriptionServiceLog.SubscriptionStatusToggled(logger,
+														 subscription.Id);
 
 		var response = subscription.Adapt<SubscriptionResponse>();
 
