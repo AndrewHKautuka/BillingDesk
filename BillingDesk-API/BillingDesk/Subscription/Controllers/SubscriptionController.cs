@@ -9,7 +9,7 @@ using Mapster;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BillingDesk.Subscription.Controller;
+namespace BillingDesk.Subscription.Controllers;
 
 [ApiController]
 [Route("/api/subscriptions")]
