@@ -1,3 +1,4 @@
+using BillingDesk.Subscription.Constants;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Utils;
 using FluentValidation;
@@ -22,14 +23,14 @@ public sealed class UpdateSubscriptionRequestValidator
 
 		RuleFor(request => request.Currency)
 			.IsInEnum()
-			.WithMessage("Currency must be one of the following values: USD, MWK, EUR.");
+			.WithMessage(SubscriptionConstants.InvalidCurrencyMessage);
 
 		RuleFor(request => request.BillingCycle)
 			.IsInEnum()
-			.WithMessage("BillingCycle must be one of the following values: Monthly, Yearly.");
+			.WithMessage(SubscriptionConstants.InvalidBillingCycleMessage);
 
 		RuleFor(request => request.StartDate)
 			.Must(startDate => startDate <= SubscriptionUtils.CalculateCutOffDate(today))
-			.WithMessage("StartDate cannot be more than 1 year in the future.");
+			.WithMessage(SubscriptionConstants.InvalidStartDateMessage);
 	}
 }
