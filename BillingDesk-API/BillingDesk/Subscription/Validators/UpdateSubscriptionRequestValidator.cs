@@ -11,10 +11,6 @@ public sealed class UpdateSubscriptionRequestValidator
 {
 	public UpdateSubscriptionRequestValidator(IClock clock)
 	{
-		var today = clock.GetCurrentInstant()
-						 .InUtc()
-						 .Date;
-
 		RuleFor(request => request.Name)
 			.NotEmpty();
 
@@ -30,7 +26,7 @@ public sealed class UpdateSubscriptionRequestValidator
 			.WithMessage(SubscriptionConstants.InvalidBillingCycleMessage);
 
 		RuleFor(request => request.StartDate)
-			.Must(startDate => startDate <= SubscriptionUtils.CalculateCutOffDate(today))
+			.Must(startDate => startDate <= DateUtils.CalculateCutOffDate(DateUtils.GetToday(clock)))
 			.WithMessage(SubscriptionConstants.InvalidStartDateMessage);
 	}
 }
