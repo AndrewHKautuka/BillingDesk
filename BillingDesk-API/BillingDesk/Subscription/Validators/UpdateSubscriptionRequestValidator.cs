@@ -1,0 +1,23 @@
+using BillingDesk.Subscription.Types.Requests;
+using BillingDesk.Subscription.Utils;
+using FluentValidation;
+
+namespace BillingDesk.Subscription.Validators;
+
+public sealed class UpdateSubscriptionRequestValidator
+	: AbstractValidator<UpdateSubscriptionRequest>
+{
+	public UpdateSubscriptionRequestValidator()
+	{
+		RuleFor(request => request.Name)
+			.NotEmpty();
+		RuleFor(request => request.Cost)
+			.GreaterThan(0);
+		RuleFor(request => request.Currency)
+			.IsInEnum();
+		RuleFor(request => request.BillingCycle)
+			.IsInEnum();
+		RuleFor(request => request.StartDate)
+			.Must(startDate => startDate <= SubscriptionUtils.CalculateCutOffDate(startDate));
+	}
+}

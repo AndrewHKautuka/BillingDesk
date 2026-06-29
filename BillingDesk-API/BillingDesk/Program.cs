@@ -2,6 +2,10 @@ using BillingDesk.Common;
 using BillingDesk.Common.Configs;
 using BillingDesk.Common.OpenAPITransformers;
 using BillingDesk.Subscription.Services;
+using BillingDesk.Subscription.Types.Queries;
+using BillingDesk.Subscription.Types.Requests;
+using BillingDesk.Subscription.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
 using NodaTime;
 using OpenApi.NodaTime.Extensions;
@@ -20,6 +24,11 @@ builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+
+// Services
+builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscriptionRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateSubscriptionRequest>, UpdateSubscriptionRequestValidator>();
+builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQueryValidator>();
 
 builder.Services.AddControllers()
 	   .AddJsonOptions(options =>
