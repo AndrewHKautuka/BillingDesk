@@ -8,7 +8,4 @@ public abstract record UpdateSubscriptionResult
 		: UpdateSubscriptionResult;
 
 	public sealed record NotFound(Guid Id) : UpdateSubscriptionResult;
-
-	public sealed record ValidationError(IReadOnlyDictionary<string, string[]> Errors)
-		: UpdateSubscriptionResult;
 }

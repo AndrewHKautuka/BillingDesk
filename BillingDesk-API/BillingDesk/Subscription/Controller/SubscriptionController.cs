@@ -4,6 +4,7 @@ using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using BillingDesk.Subscription.Types.Results;
+using FluentValidation;
 using Mapster;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -12,16 +13,29 @@ namespace BillingDesk.Subscription.Controller;
 
 [ApiController]
 [Route("/api/subscriptions")]
-public sealed class SubscriptionController(ISubscriptionService subscriptionService) : ControllerBase
+public sealed class SubscriptionController(
+	ISubscriptionService subscriptionService,
+	IValidator<CreateSubscriptionRequest> createRequestValidator,
+	IValidator<UpdateSubscriptionRequest> updateRequestValidator)
+	: ControllerBase
 {
 	[HttpPost]
 	public async Task<Results<
 			Ok<SubscriptionResponse>,
+			ValidationProblem,
 			InternalServerError>>
 		CreateSubscriptionAsync(
 			[FromBody] CreateSubscriptionRequest request,
 			CancellationToken ct = default)
 	{
+		var validationResult = await createRequestValidator.ValidateAsync(request,
+																		  ct);
+
+		if (!validationResult.IsValid)
+		{
+			return TypedResults.ValidationProblem(validationResult.ToDictionary());
+		}
+
 		var result = await subscriptionService.CreateSubscriptionAsync(
 						 request.Adapt<CreateSubscriptionCommand>(),
 						 ct);
@@ -76,6 +90,7 @@ public sealed class SubscriptionController(ISubscriptionService subscriptionServ
 	[HttpPut("{id:guid}")]
 	public async Task<Results<
 			Ok<SubscriptionResponse>,
+			ValidationProblem,
 			NotFound,
 			InternalServerError>>
 		UpdateSubscriptionAsync(
@@ -83,6 +98,14 @@ public sealed class SubscriptionController(ISubscriptionService subscriptionServ
 			[FromBody] UpdateSubscriptionRequest request,
 			CancellationToken ct = default)
 	{
+		var validationResult = await updateRequestValidator.ValidateAsync(request,
+																		  ct);
+
+		if (!validationResult.IsValid)
+		{
+			return TypedResults.ValidationProblem(validationResult.ToDictionary());
+		}
+
 		var result = await subscriptionService.UpdateSubscriptionAsync(
 						 (id, request).Adapt<UpdateSubscriptionCommand>(),
 						 ct);
