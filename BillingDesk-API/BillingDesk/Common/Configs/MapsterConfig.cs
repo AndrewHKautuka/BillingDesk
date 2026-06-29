@@ -3,6 +3,7 @@ using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
+using NodaTime;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Common.Configs;
@@ -53,6 +54,18 @@ public static class MapsterConfig
 		// Models to Responses
 		TypeAdapterConfig<SubscriptionModel, SubscriptionResponse>
 			.NewConfig();
+		TypeAdapterConfig<(SubscriptionModel Subscription, LocalDate NextBillingDate), RenewalResponse>
+			.NewConfig()
+			.Map(dest => dest.Subscription,
+				 src => src.Subscription)
+			.Map(dest => dest.NextBillingDate,
+				 src => src.NextBillingDate);
+
+		// Others to Responses
+		TypeAdapterConfig<LocalDate, BillingDateResponse>
+			.NewConfig()
+			.Map(dest => dest.NextBillingDate,
+				 src => src);
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}
