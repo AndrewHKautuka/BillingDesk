@@ -66,6 +66,10 @@ public static class MapsterConfig
 			.NewConfig()
 			.Map(dest => dest.NextBillingDate,
 				 src => src);
+		TypeAdapterConfig<decimal, MonthlyTotalResponse>
+			.NewConfig()
+			.Map(dest => dest.Total,
+				 src => src);
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}

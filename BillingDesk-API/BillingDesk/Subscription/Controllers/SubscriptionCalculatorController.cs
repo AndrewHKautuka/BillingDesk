@@ -61,4 +61,30 @@ public sealed class SubscriptionCalculatorController(
 			_ => TypedResults.InternalServerError()
 		};
 	}
+
+	[HttpGet("monthly-total")]
+	public async Task<Results<
+			Ok<MonthlyTotalResponse>,
+			InternalServerError>>
+		GetMonthlyTotal(
+			CancellationToken ct = default)
+	{
+		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
+									  new ListSubscriptionsCommand(SubscriptionStatus.Active),
+									  ct);
+
+		if (subscriptionsResult is not ListSubscriptionsResult.Success success)
+		{
+			return TypedResults.InternalServerError();
+		}
+
+		var result = subscriptionCalculatorService.GetMonthlySpending(success.Subscriptions);
+
+		return result switch
+		{
+			GetMonthlySpendingResult.Success r => TypedResults.Ok(r.Total
+																   .Adapt<MonthlyTotalResponse>()),
+			_ => TypedResults.InternalServerError()
+		};
+	}
 }
