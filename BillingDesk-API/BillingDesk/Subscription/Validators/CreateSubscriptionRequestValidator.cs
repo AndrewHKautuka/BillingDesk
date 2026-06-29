@@ -16,13 +16,20 @@ public sealed class CreateSubscriptionRequestValidator
 
 		RuleFor(request => request.Name)
 			.NotEmpty();
+
 		RuleFor(request => request.Cost)
 			.GreaterThan(0);
+
 		RuleFor(request => request.Currency)
-			.IsInEnum();
+			.IsInEnum()
+			.WithMessage("Currency must be one of the following values: USD, MWK, EUR.");
+
 		RuleFor(request => request.BillingCycle)
-			.IsInEnum();
+			.IsInEnum()
+			.WithMessage("BillingCycle must be one of the following values: Monthly, Yearly.");
+
 		RuleFor(request => request.StartDate)
-			.Must(startDate => startDate <= SubscriptionUtils.CalculateCutOffDate(today));
+			.Must(startDate => startDate <= SubscriptionUtils.CalculateCutOffDate(today))
+			.WithMessage("StartDate cannot be more than 1 year in the future.");
 	}
 }
