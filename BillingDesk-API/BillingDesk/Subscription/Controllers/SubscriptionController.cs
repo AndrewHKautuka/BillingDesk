@@ -24,7 +24,7 @@ public sealed class SubscriptionController(
 			Ok<SubscriptionResponse>,
 			ValidationProblem,
 			InternalServerError>>
-		CreateSubscriptionAsync(
+		CreateSubscription(
 			[FromBody] CreateSubscriptionRequest request,
 			CancellationToken ct = default)
 	{
@@ -51,7 +51,7 @@ public sealed class SubscriptionController(
 	public async Task<Results<
 			Ok<IReadOnlyList<SubscriptionResponse>>,
 			InternalServerError>>
-		ListSubscriptionsAsync(
+		ListSubscriptions(
 			[FromQuery] SubscriptionQuery query,
 			CancellationToken ct = default)
 	{
@@ -71,7 +71,7 @@ public sealed class SubscriptionController(
 			Ok<SubscriptionResponse>,
 			NotFound,
 			InternalServerError>>
-		GetSubscriptionAsync(
+		GetSubscription(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
@@ -93,7 +93,7 @@ public sealed class SubscriptionController(
 			ValidationProblem,
 			NotFound,
 			InternalServerError>>
-		UpdateSubscriptionAsync(
+		UpdateSubscription(
 			[FromRoute] Guid id,
 			[FromBody] UpdateSubscriptionRequest request,
 			CancellationToken ct = default)
@@ -123,7 +123,7 @@ public sealed class SubscriptionController(
 			NoContent,
 			NotFound,
 			InternalServerError>>
-		DeleteSubscriptionAsync(
+		DeleteSubscription(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
@@ -144,7 +144,7 @@ public sealed class SubscriptionController(
 			Ok<SubscriptionResponse>,
 			NotFound,
 			InternalServerError>>
-		ToggleSubscriptionStatusAsync(
+		ToggleSubscriptionStatus(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
