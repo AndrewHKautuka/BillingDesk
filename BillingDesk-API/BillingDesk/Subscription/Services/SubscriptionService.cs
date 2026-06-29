@@ -77,6 +77,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		}
 
 		var updatedSubscription = command.Adapt<SubscriptionModel>();
+		updatedSubscription.Status = existingSubscription.Status;
 
 		dbContext.Subscription
 				 .Update(updatedSubscription);
@@ -90,7 +91,6 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 		CancellationToken ct = default)
 	{
 		var subscription = await dbContext.Subscription
-										  .AsNoTracking()
 										  .Where(e => e.Id == command.Id)
 										  .FirstOrDefaultAsync(ct);
 
@@ -126,6 +126,7 @@ public sealed class SubscriptionService(BillingDeskDbContext dbContext)
 			_ => throw new ArgumentException(
 					 $"Illegal subscription status: {subscription.Status}") // Should not be possible to reach
 		};
+
 		await dbContext.SaveChangesAsync(ct);
 
 		var response = subscription.Adapt<SubscriptionResponse>();
