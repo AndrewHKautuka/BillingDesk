@@ -4,6 +4,6 @@ namespace BillingDesk.Subscription.Types.Results;
 
 public abstract record GetMonthlySpendingResult
 {
-	public sealed record Success(MonthlyTotalResponse Total)
+	public sealed record Success(MonthlyTotalResponse Responses)
 		: GetMonthlySpendingResult;
 }

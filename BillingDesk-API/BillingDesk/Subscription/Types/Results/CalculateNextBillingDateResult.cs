@@ -4,6 +4,6 @@ namespace BillingDesk.Subscription.Types.Results;
 
 public abstract record CalculateNextBillingDateResult
 {
-	public sealed record Success(BillingDateResponse NextBillingDate)
+	public sealed record Success(BillingDateResponse Response)
 		: CalculateNextBillingDateResult;
 }

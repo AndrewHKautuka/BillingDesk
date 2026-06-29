@@ -4,6 +4,6 @@ namespace BillingDesk.Subscription.Types.Results;
 
 public abstract record CreateSubscriptionResult
 {
-	public sealed record Success(SubscriptionResponse Subscription)
+	public sealed record Success(SubscriptionResponse Response)
 		: CreateSubscriptionResult;
 }
