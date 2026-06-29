@@ -1,8 +1,6 @@
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Types.Enums;
-using BillingDesk.Subscription.Types.Responses;
 using BillingDesk.Subscription.Types.Results;
-using Mapster;
 using NodaTime;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
@@ -22,7 +20,7 @@ public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculator
 
 		if (startDate > referenceDate)
 		{
-			return new CalculateNextBillingDateResult.Success(new BillingDateResponse(startDate));
+			return new CalculateNextBillingDateResult.Success(startDate);
 		}
 
 		var period = billingCycle switch
@@ -40,7 +38,7 @@ public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculator
 			nextBillingDate += period;
 		}
 
-		return new CalculateNextBillingDateResult.Success(new BillingDateResponse(nextBillingDate));
+		return new CalculateNextBillingDateResult.Success(nextBillingDate);
 	}
 
 	public GetMonthlySpendingResult GetMonthlySpending(
@@ -54,7 +52,7 @@ public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculator
 								  ? s.Cost / 12m
 								  : s.Cost);
 
-		return new GetMonthlySpendingResult.Success(new MonthlyTotalResponse(total));
+		return new GetMonthlySpendingResult.Success(total);
 	}
 
 	public GetUpcomingRenewalsResult GetUpcomingRenewals(
@@ -86,15 +84,13 @@ public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculator
 						   return result switch
 						   {
 							   CalculateNextBillingDateResult.Success r => (Subscription: e,
-																			BillingDateResponse: r.Response),
+																			r.NextBillingDate),
 							   _ => throw new ArgumentException(
 										$"Illegal result type: {result}")
 						   };
 					   })
-					   .Where(e => e.BillingDateResponse.NextBillingDate >= today
-								   && e.BillingDateResponse.NextBillingDate <= windowEnd)
-					   .Select(e => new RenewalResponse(e.Subscription.Adapt<SubscriptionResponse>(),
-														e.BillingDateResponse))
+					   .Where(e => e.NextBillingDate >= today
+								   && e.NextBillingDate <= windowEnd)
 					   .ToList();
 
 		return new GetUpcomingRenewalsResult.Success(renewals);
