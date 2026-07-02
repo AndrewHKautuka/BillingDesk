@@ -1,3 +1,4 @@
+using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Queries;
@@ -16,7 +17,8 @@ namespace BillingDesk.Subscription.Controllers;
 public sealed class SubscriptionController(
 	ISubscriptionService subscriptionService,
 	IValidator<CreateSubscriptionRequest> createRequestValidator,
-	IValidator<UpdateSubscriptionRequest> updateRequestValidator)
+	IValidator<UpdateSubscriptionRequest> updateRequestValidator,
+	ILogger<SubscriptionController> logger)
 	: ControllerBase
 {
 	[HttpPost]
@@ -28,6 +30,8 @@ public sealed class SubscriptionController(
 			[FromBody] CreateSubscriptionRequest request,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.CreatingSubscription(logger);
+
 		var validationResult = await createRequestValidator.ValidateAsync(request,
 																		  ct);
 
@@ -56,6 +60,8 @@ public sealed class SubscriptionController(
 			[FromQuery] SubscriptionQuery query,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.ListingSubscriptions(logger);
+
 		var result = await subscriptionService.ListSubscriptionsAsync(
 						 query.Adapt<ListSubscriptionsCommand>(),
 						 ct);
@@ -77,6 +83,8 @@ public sealed class SubscriptionController(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.GettingSubscription(logger, id);
+
 		var result = await subscriptionService.GetSubscriptionAsync(
 						 id.Adapt<GetSubscriptionCommand>(),
 						 ct);
@@ -101,6 +109,8 @@ public sealed class SubscriptionController(
 			[FromBody] UpdateSubscriptionRequest request,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.UpdatingSubscription(logger, id);
+
 		var validationResult = await updateRequestValidator.ValidateAsync(request,
 																		  ct);
 
@@ -131,6 +141,8 @@ public sealed class SubscriptionController(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.DeletingSubscription(logger, id);
+
 		var result = await subscriptionService.DeleteSubscriptionAsync(
 						 id.Adapt<DeleteSubscriptionCommand>(),
 						 ct);
@@ -152,6 +164,8 @@ public sealed class SubscriptionController(
 			[FromRoute] Guid id,
 			CancellationToken ct = default)
 	{
+		SubscriptionControllerLog.TogglingSubscriptionStatus(logger, id);
+
 		var result = await subscriptionService.ToggleSubscriptionStatusAsync(
 						 id.Adapt<ToggleSubscriptionStatusCommand>(),
 						 ct);

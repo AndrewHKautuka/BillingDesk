@@ -1,3 +1,4 @@
+using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Enums;
@@ -19,7 +20,8 @@ public sealed class SubscriptionCalculatorController(
 	ISubscriptionService subscriptionService,
 	ISubscriptionCalculatorService subscriptionCalculatorService,
 	IValidator<UpcomingRenewalsQuery> upcomingRenewalsQueryValidator,
-	IClock clock)
+	IClock clock,
+	ILogger<SubscriptionCalculatorController> logger)
 	: ControllerBase
 {
 	[HttpGet("upcoming")]
@@ -32,6 +34,8 @@ public sealed class SubscriptionCalculatorController(
 			[FromQuery] UpcomingRenewalsQuery query,
 			CancellationToken ct = default)
 	{
+		SubscriptionCalculatorControllerLog.GettingUpcomingRenewals(logger);
+
 		var validationResult = await upcomingRenewalsQueryValidator.ValidateAsync(query,
 																				  ct);
 
@@ -69,6 +73,8 @@ public sealed class SubscriptionCalculatorController(
 		GetMonthlyTotal(
 			CancellationToken ct = default)
 	{
+		SubscriptionCalculatorControllerLog.GettingMonthlyTotal(logger);
+
 		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
 									  new ListSubscriptionsCommand(SubscriptionStatus.Active),
 									  ct);
