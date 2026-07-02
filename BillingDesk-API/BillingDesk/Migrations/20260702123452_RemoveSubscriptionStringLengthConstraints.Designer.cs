@@ -4,6 +4,7 @@ using BillingDesk.Common;
 using BillingDesk.Subscription.Types.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BillingDesk.Migrations
 {
     [DbContext(typeof(BillingDeskDbContext))]
-    partial class BillingDeskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260702123452_RemoveSubscriptionStringLengthConstraints")]
+    partial class RemoveSubscriptionStringLengthConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
