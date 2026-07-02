@@ -1,7 +1,13 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using BillingDesk.Common.OpenAPITransformers;
+using BillingDesk.Subscription.Services;
+using BillingDesk.Subscription.Types.Queries;
+using BillingDesk.Subscription.Types.Requests;
+using BillingDesk.Subscription.Validators;
+using FluentValidation;
+using Microsoft.AspNetCore.Http.Json;
 using NodaTime;
-using NodaTime.Serialization.SystemTextJson;
 using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
 
@@ -16,11 +22,25 @@ MapsterConfig.ApplyMapsterConfig();
 // Singletons
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 
+// Services
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
+
+// Services
+builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscriptionRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateSubscriptionRequest>, UpdateSubscriptionRequestValidator>();
+builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQueryValidator>();
+
 builder.Services.AddControllers()
 	   .AddJsonOptions(options =>
 	   {
-		   options.JsonSerializerOptions.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+		   options.JsonSerializerOptions.ConfigureJsonSerializerOptions();
 	   });
+
+builder.Services.Configure<JsonOptions>(options =>
+{
+	options.SerializerOptions.ConfigureJsonSerializerOptions();
+});
 
 builder.Services.AddHealthChecks()
 	   .AddNpgSql(primaryConnectionString,
@@ -34,6 +54,7 @@ builder.Services.AddOpenApi("v1",
 							options =>
 							{
 								options.ConfigureNodaTime();
+								options.AddOperationTransformer<QueryParameterOperationTransformer>();
 							});
 
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>

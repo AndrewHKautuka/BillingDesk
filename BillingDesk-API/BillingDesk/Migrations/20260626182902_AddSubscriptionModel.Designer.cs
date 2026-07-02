@@ -4,6 +4,7 @@ using BillingDesk.Common;
 using BillingDesk.Subscription.Types.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BillingDesk.Migrations
 {
     [DbContext(typeof(BillingDeskDbContext))]
-    partial class BillingDeskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260626182902_AddSubscriptionModel")]
+    partial class AddSubscriptionModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,8 @@ namespace BillingDesk.Migrations
 
                     b.Property<string>("Category")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("category");
 
                     b.Property<decimal>("Cost")
@@ -54,7 +58,8 @@ namespace BillingDesk.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
                         .HasColumnName("name");
 
                     b.Property<LocalDate>("StartDate")
