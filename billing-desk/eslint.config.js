@@ -1,7 +1,10 @@
+// @ts-check
 import css from "@eslint/css"
 import js from "@eslint/js"
 import json from "@eslint/json"
 import markdown from "@eslint/markdown"
+import prettierConfig from "eslint-config-prettier/flat"
+import jsxA11y from "eslint-plugin-jsx-a11y"
 import pluginReact from "eslint-plugin-react"
 import reactHooks from "eslint-plugin-react-hooks"
 import { defineConfig } from "eslint/config"
@@ -26,7 +29,10 @@ export default defineConfig([
     plugins: { js },
     extends: ["js/recommended"],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
     },
   },
   tseslint.configs.recommended,
@@ -75,4 +81,6 @@ export default defineConfig([
     language: "css/css",
     extends: ["css/recommended"],
   },
+  // Prettier - must be last, disables ESLint rules that conflict with Prettier formatting
+  prettierConfig,
 ])
