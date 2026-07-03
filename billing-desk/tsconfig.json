@@ -26,6 +26,9 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": [
+        "./app/modules/*"
+      ],
+      "@/*": [
         "./app/*"
       ]
     },
