@@ -6,15 +6,8 @@
     ".react-router/types/**/*"
   ],
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022"
-    ],
-    "types": [
-      "node",
-      "vite/client"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["node", "vite/client"],
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "bundler",
@@ -25,12 +18,8 @@
     ],
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": [
-        "./app/modules/*"
-      ],
-      "@/*": [
-        "./app/*"
-      ]
+      "~/*": ["./app/modules/*"],
+      "@/*": ["./app/*"]
     },
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
@@ -39,7 +28,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

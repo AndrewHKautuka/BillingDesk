@@ -15,10 +15,7 @@
     "prettier-plugin-tailwindcss"
   ],
   "tailwindStylesheet": "app/app.css",
-  "tailwindFunctions": [
-    "cn",
-    "cva"
-  ],
+  "tailwindFunctions": ["cn", "cva"],
   "importOrder": [
     "^react$",
     "^@remix-run/(.*)$",
