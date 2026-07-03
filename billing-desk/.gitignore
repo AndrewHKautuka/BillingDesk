@@ -1,0 +1,13 @@
+.DS_Store
+node_modules
+
+# React Router
+.react-router
+build
+
+# typescript
+*.tsbuildinfo
+
+# Environment variables
+.env*
+!.env.example
