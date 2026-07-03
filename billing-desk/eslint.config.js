@@ -1,11 +1,9 @@
 // @ts-check
-import css from "@eslint/css"
 import js from "@eslint/js"
 import json from "@eslint/json"
 import markdown from "@eslint/markdown"
 import prettierConfig from "eslint-config-prettier/flat"
 import jsxA11y from "eslint-plugin-jsx-a11y"
-import pluginReact from "eslint-plugin-react"
 import reactHooks from "eslint-plugin-react-hooks"
 import { defineConfig } from "eslint/config"
 import globals from "globals"
@@ -36,23 +34,13 @@ export default defineConfig([
     },
   },
   tseslint.configs.recommended,
-  // React rules - scoped to JS/TS files only to prevent crashing on JSON/CSS/MD
+  // React hooks + accessibility - scoped to JS/TS files only
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     extends: [
-      pluginReact.configs.flat.recommended,
-      pluginReact.configs.flat["jsx-runtime"], // React 17+ new JSX transform: disables react/react-in-jsx-scope
       reactHooks.configs.flat.recommended,
       jsxA11y.flatConfigs.recommended,
     ],
-    settings: {
-      react: {
-        version: "detect",
-      },
-    },
-    rules: {
-      "react/prop-types": "off", // TypeScript handles this
-    },
   },
   // JSON
   {
@@ -73,13 +61,6 @@ export default defineConfig([
     plugins: { markdown },
     language: "markdown/gfm",
     extends: ["markdown/recommended"],
-  },
-  // CSS
-  {
-    files: ["**/*.css"],
-    plugins: { css },
-    language: "css/css",
-    extends: ["css/recommended"],
   },
   // Prettier - must be last, disables ESLint rules that conflict with Prettier formatting
   prettierConfig,
