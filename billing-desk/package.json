@@ -18,6 +18,7 @@
     "@hookform/resolvers": "^5.4.0",
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
+    "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
