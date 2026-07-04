@@ -7,8 +7,11 @@ import {
   ScrollRestoration,
 } from "react-router"
 
+import { QueryClientProvider } from "@tanstack/react-query"
+
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { queryClient } from "@/lib/query-client"
 
 import type { Route } from "./+types/root"
 import "./app.css"
@@ -23,8 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <TooltipProvider>{children}</TooltipProvider>
-        <Toaster />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -33,7 +35,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
+      </QueryClientProvider>
+      <Toaster position="bottom-right" richColors />
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
