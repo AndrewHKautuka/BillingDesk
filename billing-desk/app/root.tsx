@@ -24,7 +24,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <TooltipProvider>{children}</TooltipProvider>
-        <Toaster />
+        <Toaster position="bottom-right" richColors />
         <ScrollRestoration />
         <Scripts />
       </body>
