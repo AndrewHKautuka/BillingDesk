@@ -26,10 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>{children}</TooltipProvider>
-        </QueryClientProvider>
-        <Toaster position="bottom-right" richColors />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -38,7 +35,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Outlet />
+        </TooltipProvider>
+      </QueryClientProvider>
+      <Toaster position="bottom-right" richColors />
+    </>
+  )
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
