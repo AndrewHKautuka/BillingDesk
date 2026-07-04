@@ -2,6 +2,7 @@
 import js from "@eslint/js"
 import json from "@eslint/json"
 import markdown from "@eslint/markdown"
+import tanstackQuery from "@tanstack/eslint-plugin-query"
 import prettierConfig from "eslint-config-prettier/flat"
 import importZod from "eslint-plugin-import-zod"
 import jsxA11y from "eslint-plugin-jsx-a11y"
@@ -43,6 +44,9 @@ export default defineConfig([
       jsxA11y.flatConfigs.recommended,
     ],
   },
+  // TanStack Query
+  ...tanstackQuery.configs["flat/recommended-strict"],
+  // importZod
   ...importZod.configs.recommended,
   // JSON
   {
