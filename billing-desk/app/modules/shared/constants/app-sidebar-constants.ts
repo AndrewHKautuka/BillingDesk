@@ -1,18 +1,17 @@
-import { TestTube2Icon, TestTubeIcon } from "lucide-react"
-
-import type { AppSidebarNavItemProps } from "../types/app-sidebar-types"
+import { CalendarClockIcon, LayoutDashboardIcon } from "lucide-react"
+import type { AppSidebarNavItemProps } from "~/shared/types/app-sidebar-types"
 
 export const APP_SIDEBAR_HEADER_TEXT = "Billing Desk"
 
 export const APP_SIDEBAR_NAV_ITEMS: AppSidebarNavItemProps[] = [
   {
-    title: "Test",
+    title: "Dashboard",
     url: "/",
-    icon: TestTubeIcon,
+    icon: LayoutDashboardIcon,
   },
   {
-    title: "Test 2",
-    url: "/test",
-    icon: TestTube2Icon,
+    title: "Upcoming Renewals",
+    url: "/upcoming-renewals",
+    icon: CalendarClockIcon,
   },
 ]
