@@ -4,5 +4,4 @@ export interface AppSidebarNavItemProps {
   title: string
   url: string
   icon: LucideIcon
-  isActive?: boolean
 }

@@ -7,13 +7,12 @@ export const APP_SIDEBAR_HEADER_TEXT = "Billing Desk"
 export const APP_SIDEBAR_NAV_ITEMS: AppSidebarNavItemProps[] = [
   {
     title: "Test",
-    url: "/t",
+    url: "/",
     icon: TestTubeIcon,
   },
   {
     title: "Test 2",
     url: "/test",
     icon: TestTube2Icon,
-    isActive: false,
   },
 ]

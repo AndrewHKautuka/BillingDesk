@@ -40,10 +40,7 @@ export function AppSidebar() {
           <SidebarMenu>
             {APP_SIDEBAR_NAV_ITEMS.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton
-                  isActive={item.isActive}
-                  render={<Link to={item.url} />}
-                >
+                <SidebarMenuButton render={<Link to={item.url} />}>
                   <item.icon className="h-4 w-4" />
                   <span>{item.title}</span>
                 </SidebarMenuButton>
