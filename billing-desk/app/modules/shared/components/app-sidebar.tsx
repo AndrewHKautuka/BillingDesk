@@ -1,4 +1,9 @@
-import { APP_SIDEBAR_HEADER_TEXT } from "~/shared/constants/app-sidebar-constants"
+import { Link } from "react-router"
+
+import {
+  APP_SIDEBAR_HEADER_TEXT,
+  APP_SIDEBAR_NAV_ITEMS,
+} from "~/shared/constants/app-sidebar-constants"
 
 import {
   Sidebar,
@@ -6,8 +11,8 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSkeleton,
   SidebarSeparator,
   useSidebar,
 } from "@/components/ui/sidebar"
@@ -33,9 +38,15 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <SidebarMenuItem key={index}>
-                <SidebarMenuSkeleton />
+            {APP_SIDEBAR_NAV_ITEMS.map((item) => (
+              <SidebarMenuItem key={item.title}>
+                <SidebarMenuButton
+                  isActive={item.isActive}
+                  render={<Link to={item.url} />}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
