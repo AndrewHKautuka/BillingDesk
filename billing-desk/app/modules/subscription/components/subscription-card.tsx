@@ -24,19 +24,33 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
     model.currency.toUpperCase()
   )!
   const billingPerUnit = `/${model.billingCycle === "monthly" ? "Mon" : "Year"}`
+  const formattedStatus =
+    model.status[0].toLocaleUpperCase() + model.status.substring(1)
 
   return (
-    <Card size="sm">
+    <Card>
       <CardHeader>
         <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        <div className="flex flex-row gap-2">
-          <span className="text-muted-foreground">{`Started on:`}</span>
-          <Badge variant="outline" className="font-semibold">
-            <Calendar1Icon className="size-4" />
-            <span>{format(model.startDate, "PPP")}</span>
-          </Badge>
+      <CardContent className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-row gap-2">
+            <span className="text-muted-foreground">{`Started on:`}</span>
+            <Badge variant="outline" className="font-semibold">
+              <Calendar1Icon className="size-4" />
+              <span>{format(model.startDate, "PPP")}</span>
+            </Badge>
+          </div>
+
+          <div className="flex flex-row gap-2">
+            <span className="text-muted-foreground">Status:</span>
+            <Badge
+              variant={active ? "default" : "destructive"}
+              className="font-semibold"
+            >
+              <span>{formattedStatus}</span>
+            </Badge>
+          </div>
         </div>
 
         <div className="flex flex-row justify-center gap-1">
