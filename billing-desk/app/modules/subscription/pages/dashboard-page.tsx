@@ -3,6 +3,8 @@
 import { useState } from "react"
 
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
+import { SubscriptionTable } from "~/subscription/components/subscription-table"
+import { columns } from "~/subscription/components/subscription-table-columns"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -38,7 +40,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       </ToggleGroup>
 
       {displayStyle[0] === "list" ? (
-        <></>
+        <SubscriptionTable columns={columns} subscriptions={subscriptions} />
       ) : (
         <div className="grid grid-cols-4 gap-6">
           {subscriptions.map((subscription) => (
