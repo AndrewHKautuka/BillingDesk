@@ -51,6 +51,13 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
               <span>{formattedStatus}</span>
             </Badge>
           </div>
+
+          {!model.category || (
+            <div className="flex flex-row gap-2">
+              <span className="text-muted-foreground">Category:</span>
+              <span className="font-semibold">{model.category}</span>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-row justify-center gap-1">
