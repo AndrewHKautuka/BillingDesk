@@ -1,3 +1,5 @@
+"use client"
+
 import { format } from "date-fns"
 import { Calendar1Icon } from "lucide-react"
 import { formatCurrency } from "~/shared/utils/format-utils"

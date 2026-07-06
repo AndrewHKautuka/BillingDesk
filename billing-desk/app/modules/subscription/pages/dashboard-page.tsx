@@ -1,3 +1,5 @@
+"use clients"
+
 import { useState } from "react"
 
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
