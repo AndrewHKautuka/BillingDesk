@@ -20,6 +20,7 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
     model.cost,
     model.currency.toUpperCase()
   )!
+  const billingPerUnit = `/${model.billingCycle === "monthly" ? "Mon" : "Year"}`
 
   return (
     <Card size="sm">
@@ -27,9 +28,16 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
         <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div>
-          <span>{currency}</span>
-          <span>{cost}</span>
+        <div className="flex flex-row justify-center gap-1">
+          <span className="self-start text-2xl font-extralight tracking-tight text-muted-foreground">
+            {currency}
+          </span>
+          <span className="self-center py-1.5 text-4xl font-semibold tracking-tighter">
+            {cost}
+          </span>
+          <span className="self-end text-2xl font-extralight tracking-tight text-muted-foreground">
+            {billingPerUnit}
+          </span>
         </div>
       </CardContent>
       <CardFooter className="grid grid-cols-2 gap-2">
