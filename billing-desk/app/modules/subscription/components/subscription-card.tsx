@@ -1,6 +1,9 @@
+import { format } from "date-fns"
+import { Calendar1Icon } from "lucide-react"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -27,7 +30,15 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
       <CardHeader>
         <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2">
+          <span className="text-muted-foreground">{`Started on:`}</span>
+          <Badge variant="outline" className="font-semibold">
+            <Calendar1Icon className="size-4" />
+            <span>{format(model.startDate, "PPP")}</span>
+          </Badge>
+        </div>
+
         <div className="flex flex-row justify-center gap-1">
           <span className="self-start text-2xl font-extralight tracking-tight text-muted-foreground">
             {currency}
