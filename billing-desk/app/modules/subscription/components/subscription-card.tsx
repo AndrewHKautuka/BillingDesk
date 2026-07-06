@@ -11,14 +11,18 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
   const active = model.status === "active"
 
   return (
-    <Card>
+    <Card size="sm">
       <CardHeader>
-        <CardTitle>{model.name}</CardTitle>
+        <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
       </CardHeader>
       <CardFooter className="grid grid-cols-2 gap-2">
-        <Button variant="default">Edit</Button>
-        <Button variant="destructive">Delete</Button>
-        <Button variant="outline" className="col-span-2">
+        <Button variant="default" className="rounded-md">
+          Edit
+        </Button>
+        <Button variant="destructive" className="rounded-md">
+          Delete
+        </Button>
+        <Button variant="outline" className="col-span-2 rounded-md">
           {active ? "Mark as Unused" : "Reactivate"}
         </Button>
       </CardFooter>
