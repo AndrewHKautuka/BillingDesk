@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import type { FormattedCurrency } from "~/shared/types/format-utils-types"
+import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
@@ -34,7 +35,7 @@ export const columns: ColumnDef<Subscription>[] = [
       const [currency, amount] = formatted
 
       return (
-        <div className="text-right font-medium">
+        <div className="text-right">
           {currency} {amount}
         </div>
       )
@@ -42,7 +43,10 @@ export const columns: ColumnDef<Subscription>[] = [
   },
   {
     accessorKey: "startDate",
-    header: "Start Date",
+    header: () => <div className="text-right">Start Date</div>,
+    cell: ({ row }) => (
+      <div className="text-right">{formatDate(row.getValue("startDate"))}</div>
+    ),
   },
   {
     accessorKey: "status",
