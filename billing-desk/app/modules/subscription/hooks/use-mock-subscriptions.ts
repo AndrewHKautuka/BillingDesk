@@ -203,3 +203,24 @@ export function useMockSubscriptions() {
     toggleSubscriptionStatus,
   }
 }
+
+export function useMockMonthlyTotal(subscriptions: Subscription[]) {
+  // Calculate total monthly spending from active subscriptions
+  // Yearly costs are divided by 12, monthly costs are used as-is
+  const total = subscriptions.reduce((sum, sub) => {
+    // Only include active subscriptions
+    if (sub.status !== "active") {
+      return sum
+    }
+
+    // Normalize to monthly cost based on billing cycle
+    const monthlyCost = sub.billingCycle === "yearly" ? sub.cost / 12 : sub.cost
+
+    return sum + monthlyCost
+  }, 0)
+
+  return {
+    total,
+    isLoading: false,
+  }
+}
