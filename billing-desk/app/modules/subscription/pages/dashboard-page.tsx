@@ -5,19 +5,15 @@ import { useState } from "react"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
-import {
-  DEFAULT_DISPLAY_STYLE,
-  DISPLAY_STYLES,
-} from "~/subscription/constants/subscription-constants"
+import { DEFAULT_DISPLAY_STYLE } from "~/subscription/constants/subscription-constants"
 import type { Subscription } from "~/subscription/types/subscription-model"
+import type { DisplayStyle } from "~/subscription/types/subscription-types"
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 interface DashboardPageProps {
   subscriptions: Subscription[]
 }
-
-type DisplayStyle = (typeof DISPLAY_STYLES)[number]
 
 export function DashboardPage({ subscriptions }: DashboardPageProps) {
   const [displayStyle, setDisplayStyle] = useState<DisplayStyle>(
