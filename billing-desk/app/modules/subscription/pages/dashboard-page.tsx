@@ -5,6 +5,10 @@ import { useState } from "react"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
+import {
+  DEFAULT_DISPLAY_STYLE,
+  DISPLAY_STYLES,
+} from "~/subscription/constants/subscription-constants"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -13,14 +17,16 @@ interface DashboardPageProps {
   subscriptions: Subscription[]
 }
 
-type DisplayStyle = ["list"] | ["card-grid"]
+type DisplayStyle = (typeof DISPLAY_STYLES)[number]
 
 export function DashboardPage({ subscriptions }: DashboardPageProps) {
-  const [displayStyle, setDisplayStyle] = useState<DisplayStyle>(["card-grid"])
+  const [displayStyle, setDisplayStyle] = useState<DisplayStyle>(
+    DEFAULT_DISPLAY_STYLE
+  )
 
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
-      setDisplayStyle(newValue as DisplayStyle)
+      setDisplayStyle(newValue as unknown as DisplayStyle)
     }
   }
 
