@@ -180,10 +180,26 @@ export function useMockSubscriptions() {
     )
   }
 
+  const deleteSubscription = (id: string) => {
+    setSubscriptions((prev) => prev.filter((sub) => sub.id !== id))
+  }
+
+  const toggleSubscriptionStatus = (id: string) => {
+    setSubscriptions((prev) =>
+      prev.map((sub) =>
+        sub.id === id
+          ? { ...sub, status: sub.status === "active" ? "inactive" : "active" }
+          : sub
+      )
+    )
+  }
+
   return {
     subscriptions,
     isLoading: false,
     addSubscription,
     updateSubscription,
+    deleteSubscription,
+    toggleSubscriptionStatus,
   }
 }
