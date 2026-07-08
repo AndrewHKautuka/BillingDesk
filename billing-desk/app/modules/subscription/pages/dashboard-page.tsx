@@ -1,11 +1,9 @@
 "use clients"
 
-import { useState } from "react"
-
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
-import { DEFAULT_DISPLAY_STYLE } from "~/subscription/constants/subscription-constants"
+import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
 
@@ -16,9 +14,7 @@ interface DashboardPageProps {
 }
 
 export function DashboardPage({ subscriptions }: DashboardPageProps) {
-  const [displayStyle, setDisplayStyle] = useState<DisplayStyle>(
-    DEFAULT_DISPLAY_STYLE
-  )
+  const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
