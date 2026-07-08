@@ -1,7 +1,7 @@
 "use client"
 
-import { format } from "date-fns"
 import { Calendar1Icon } from "lucide-react"
+import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
@@ -40,7 +40,7 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
             <span className="text-muted-foreground">{`Started on:`}</span>
             <Badge variant="outline" className="font-semibold">
               <Calendar1Icon className="size-4" />
-              <span>{format(model.startDate, "PPP")}</span>
+              <span>{formatDate(model.startDate)}</span>
             </Badge>
           </div>
 
