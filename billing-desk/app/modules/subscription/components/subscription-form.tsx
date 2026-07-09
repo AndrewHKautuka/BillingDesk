@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { capitalCase } from "change-case"
 import { Controller, useForm } from "react-hook-form"
@@ -8,9 +10,12 @@ import {
   BILLING_CYCLE_OPTIONS,
   CURRENCY_OPTIONS,
 } from "~/subscription/types/subscription-enums"
+import type { Subscription } from "~/subscription/types/subscription-model"
 import {
   type CreateSubscriptionFormData,
   createSubscriptionSchema,
+  type UpdateSubscriptionFormData,
+  updateSubscriptionSchema,
 } from "~/subscription/validations/subscription-validations"
 
 import {
@@ -31,28 +36,69 @@ import { cn } from "@/lib/utils"
 
 interface SubscriptionFormProps {
   formId?: string
+  subscription?: Subscription
   onSubmit: (data: CreateSubscriptionFormData) => void
   inputClassName?: string
 }
 
+type SubscriptionFormData =
+  CreateSubscriptionFormData | UpdateSubscriptionFormData
+
 export function SubscriptionForm({
   formId,
+  subscription,
   onSubmit,
   inputClassName,
 }: SubscriptionFormProps) {
-  const { control, handleSubmit } = useForm<CreateSubscriptionFormData>({
-    resolver: zodResolver(createSubscriptionSchema),
-    defaultValues: {
-      name: "",
-      cost: 0,
-      currency: "usd" as const,
-      billingCycle: "monthly" as const,
-      startDate: new Date(),
-      category: "",
-    },
+  const schema = !subscription
+    ? createSubscriptionSchema
+    : updateSubscriptionSchema
+
+  const { control, handleSubmit, reset } = useForm<SubscriptionFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: subscription
+      ? {
+          name: subscription.name,
+          cost: subscription.cost,
+          currency: subscription.currency,
+          billingCycle: subscription.billingCycle,
+          startDate: subscription.startDate,
+          category: subscription.category,
+        }
+      : {
+          name: "",
+          cost: 0,
+          currency: "usd" as const,
+          billingCycle: "monthly" as const,
+          startDate: new Date(),
+          category: "",
+        },
   })
 
-  const handleFormSubmit = (data: CreateSubscriptionFormData) => {
+  // Reset form when subscription changes
+  useEffect(() => {
+    if (subscription) {
+      reset({
+        name: subscription.name,
+        cost: subscription.cost,
+        currency: subscription.currency,
+        billingCycle: subscription.billingCycle,
+        startDate: subscription.startDate,
+        category: subscription.category,
+      })
+    } else {
+      reset({
+        name: "",
+        cost: 0,
+        currency: "usd" as const,
+        billingCycle: "monthly" as const,
+        startDate: new Date(),
+        category: "",
+      })
+    }
+  }, [subscription, reset])
+
+  const handleFormSubmit = (data: SubscriptionFormData) => {
     onSubmit(data)
   }
 
