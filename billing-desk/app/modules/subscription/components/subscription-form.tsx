@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { capitalCase } from "change-case"
 import { Controller, useForm } from "react-hook-form"
 import { DatePicker } from "~/shared/components/date-picker"
 import {
@@ -123,11 +124,15 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {CURRENCY_OPTIONS.map((currency) => (
-                    <SelectItem key={currency} value={currency.toUpperCase()}>
-                      {currency.toUpperCase()}
-                    </SelectItem>
-                  ))}
+                  {CURRENCY_OPTIONS.map((currency) => {
+                    const formattedCurrency = currency.toUpperCase()
+
+                    return (
+                      <SelectItem key={currency} value={formattedCurrency}>
+                        {formattedCurrency}
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
 
@@ -160,18 +165,18 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {BILLING_CYCLE_OPTIONS.map((billingCycle) => (
-                    <SelectItem
-                      key={billingCycle}
-                      value={
-                        billingCycle.charAt(0).toUpperCase() +
-                        billingCycle.slice(1)
-                      }
-                    >
-                      {billingCycle.charAt(0).toUpperCase() +
-                        billingCycle.slice(1)}
-                    </SelectItem>
-                  ))}
+                  {BILLING_CYCLE_OPTIONS.map((billingCycle) => {
+                    const formattedBillingCycle = capitalCase(billingCycle)
+
+                    return (
+                      <SelectItem
+                        key={billingCycle}
+                        value={formattedBillingCycle}
+                      >
+                        {formattedBillingCycle}
+                      </SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { capitalCase } from "change-case"
 import { Calendar1Icon } from "lucide-react"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
@@ -26,8 +27,7 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
     model.currency.toUpperCase()
   )!
   const billingPerUnit = `/${model.billingCycle === "monthly" ? "Mon" : "Year"}`
-  const formattedStatus =
-    model.status[0].toLocaleUpperCase() + model.status.substring(1)
+  const formattedStatus = capitalCase(model.status)
 
   return (
     <Card>
