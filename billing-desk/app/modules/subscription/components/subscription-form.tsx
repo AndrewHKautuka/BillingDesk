@@ -120,7 +120,9 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                   aria-invalid={fieldState.invalid}
                   className="w-full"
                 >
-                  <SelectValue placeholder="Select currency" />
+                  <SelectValue placeholder="Select currency">
+                    {field.value ? field.value.toUpperCase() : null}
+                  </SelectValue>
                 </SelectTrigger>
 
                 <SelectContent>
@@ -157,7 +159,9 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                   aria-invalid={fieldState.invalid}
                   className="w-full"
                 >
-                  <SelectValue placeholder="Select billing cycle" />
+                  <SelectValue placeholder="Select billing cycle">
+                    {field.value ? capitalCase(field.value) : null}
+                  </SelectValue>
                 </SelectTrigger>
 
                 <SelectContent>
