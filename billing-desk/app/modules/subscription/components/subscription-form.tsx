@@ -124,15 +124,11 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {CURRENCY_OPTIONS.map((currency) => {
-                    const formattedCurrency = currency.toUpperCase()
-
-                    return (
-                      <SelectItem key={currency} value={formattedCurrency}>
-                        {formattedCurrency}
-                      </SelectItem>
-                    )
-                  })}
+                  {CURRENCY_OPTIONS.map((currency) => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency.toUpperCase()}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
@@ -148,7 +144,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="subscription-form-billingCycle">
-                Currency
+                Billing Cycle
               </FieldLabel>
 
               <Select
@@ -165,18 +161,11 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {BILLING_CYCLE_OPTIONS.map((billingCycle) => {
-                    const formattedBillingCycle = capitalCase(billingCycle)
-
-                    return (
-                      <SelectItem
-                        key={billingCycle}
-                        value={formattedBillingCycle}
-                      >
-                        {formattedBillingCycle}
-                      </SelectItem>
-                    )
-                  })}
+                  {BILLING_CYCLE_OPTIONS.map((billingCycle) => (
+                    <SelectItem key={billingCycle} value={billingCycle}>
+                      {capitalCase(billingCycle)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
 
