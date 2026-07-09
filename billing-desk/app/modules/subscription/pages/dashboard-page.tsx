@@ -1,5 +1,7 @@
 "use clients"
 
+import { useState } from "react"
+
 import { toast } from "sonner"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
@@ -23,6 +25,8 @@ interface DashboardPageProps {
 export function DashboardPage({ subscriptions }: DashboardPageProps) {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
+  const [open, setOpen] = useState(false)
+
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
       setDisplayStyle(newValue as unknown as DisplayStyle)
@@ -35,7 +39,12 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
 
       <div className="flex flex-row justify-between">
         <SubscriptionFormDialog
-          onSubmit={() => toast.success("Submitted")}
+          open={open}
+          onOpenChange={setOpen}
+          onSubmit={() => {
+            toast.success("Submitted")
+            setOpen(false)
+          }}
           triggerClassName={DIALOG_TRIGGER_CLASS_NAME}
           inputClassName={INPUT_CLASS_NAME}
           buttonClassName={BUTTON_CLASS_NAME}

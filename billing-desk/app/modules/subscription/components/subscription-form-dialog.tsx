@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dialog"
 
 interface SubscriptionFormDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
   onSubmit: (data: CreateSubscriptionFormData) => void
   triggerClassName?: string
   inputClassName?: string
@@ -24,13 +26,15 @@ interface SubscriptionFormDialogProps {
 }
 
 export function SubscriptionFormDialog({
+  open,
+  onOpenChange,
   onSubmit,
   triggerClassName,
   inputClassName,
   buttonClassName,
 }: SubscriptionFormDialogProps) {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger
         render={
           <Button variant="default" className={triggerClassName}>
