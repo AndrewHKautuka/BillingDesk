@@ -27,13 +27,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 
 interface SubscriptionFormProps {
   formId?: string
   onSubmit: (data: CreateSubscriptionFormData) => void
+  inputClassName?: string
 }
 
-export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
+export function SubscriptionForm({
+  formId,
+  onSubmit,
+  inputClassName,
+}: SubscriptionFormProps) {
   const { control, handleSubmit } = useForm<CreateSubscriptionFormData>({
     resolver: zodResolver(createSubscriptionSchema),
     defaultValues: {
@@ -51,11 +57,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
   }
 
   return (
-    <form
-      id={formId}
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="space-y-4"
-    >
+    <form id={formId} onSubmit={handleSubmit(handleFormSubmit)}>
       <FieldGroup>
         {/* Name Field */}
         <Controller
@@ -70,6 +72,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 id="subscription-form-name"
                 aria-invalid={fieldState.invalid}
                 placeholder="Enter subscription name"
+                className={inputClassName}
               />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -93,6 +96,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 step="0.01"
                 placeholder="0.00"
                 onChange={(e) => onChange(e.target.valueAsNumber)}
+                className={inputClassName}
               />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -118,7 +122,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 <SelectTrigger
                   id="subscription-form-currency"
                   aria-invalid={fieldState.invalid}
-                  className="w-full"
+                  className={cn("w-full", inputClassName)}
                 >
                   <SelectValue placeholder="Select currency">
                     {field.value ? field.value.toUpperCase() : null}
@@ -157,7 +161,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 <SelectTrigger
                   id="subscription-form-billingCycle"
                   aria-invalid={fieldState.invalid}
-                  className="w-full"
+                  className={cn("w-full", inputClassName)}
                 >
                   <SelectValue placeholder="Select billing cycle">
                     {field.value ? capitalCase(field.value) : null}
@@ -190,6 +194,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
               date={field.value}
               onChange={field.onChange}
               errors={[fieldState.error]}
+              buttonClassName={inputClassName}
             />
           )}
         />
@@ -209,6 +214,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 id="subscription-form-category"
                 aria-invalid={fieldState.invalid}
                 placeholder="Enter category"
+                className={inputClassName}
               />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

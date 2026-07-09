@@ -18,16 +18,22 @@ import {
 
 interface SubscriptionFormDialogProps {
   onSubmit: (data: CreateSubscriptionFormData) => void
+  triggerClassName?: string
+  inputClassName?: string
+  buttonClassName?: string
 }
 
 export function SubscriptionFormDialog({
   onSubmit,
+  triggerClassName,
+  inputClassName,
+  buttonClassName,
 }: SubscriptionFormDialogProps) {
   return (
     <Dialog>
       <DialogTrigger
         render={
-          <Button variant="default">
+          <Button variant="default" className={triggerClassName}>
             <PlusCircleIcon />
             <span>Add Subscription</span>
           </Button>
@@ -42,11 +48,25 @@ export function SubscriptionFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <SubscriptionForm formId="subscription-form" onSubmit={onSubmit} />
+        <SubscriptionForm
+          formId="subscription-form"
+          onSubmit={onSubmit}
+          inputClassName={inputClassName}
+        />
 
         <DialogFooter>
-          <DialogClose render={<Button variant="outline">Cancel</Button>} />
-          <Button type="submit" form="subscription-form">
+          <DialogClose
+            render={
+              <Button variant="outline" className={buttonClassName}>
+                Cancel
+              </Button>
+            }
+          />
+          <Button
+            type="submit"
+            form="subscription-form"
+            className={buttonClassName}
+          >
             Add Subscription
           </Button>
         </DialogFooter>

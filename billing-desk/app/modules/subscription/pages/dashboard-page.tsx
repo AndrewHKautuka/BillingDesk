@@ -29,7 +29,12 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       <h1>Dashboard</h1>
 
       <div className="flex flex-row justify-between">
-        <SubscriptionFormDialog onSubmit={() => toast.success("Submitted")} />
+        <SubscriptionFormDialog
+          onSubmit={() => toast.success("Submitted")}
+          triggerClassName="rounded-md"
+          inputClassName="rounded-md"
+          buttonClassName="rounded-md"
+        />
 
         <ToggleGroup
           variant="outline"
@@ -47,7 +52,11 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       ) : (
         <div className="grid grid-cols-4 gap-6">
           {subscriptions.map((subscription) => (
-            <SubscriptionCard key={subscription.id} model={subscription} />
+            <SubscriptionCard
+              key={subscription.id}
+              model={subscription}
+              buttonClassName="rounded-md"
+            />
           ))}
         </div>
       )}

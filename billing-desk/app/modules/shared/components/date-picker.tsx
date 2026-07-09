@@ -27,6 +27,7 @@ interface DatePickerProps {
   placeholder?: string
   errors?: Array<{ message?: string } | undefined>
   required?: boolean
+  buttonClassName?: string
 }
 
 export function DatePicker({
@@ -41,6 +42,7 @@ export function DatePicker({
   placeholder = "Select date",
   errors,
   required = false,
+  buttonClassName,
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
 
@@ -50,7 +52,12 @@ export function DatePicker({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           render={
-            <Button id={fieldId} variant="outline" data-empty={!date}>
+            <Button
+              id={fieldId}
+              variant="outline"
+              data-empty={!date}
+              className={buttonClassName}
+            >
               {date && isValid(date) ? (
                 formatDateForInput(date)
               ) : (

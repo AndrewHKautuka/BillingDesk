@@ -15,12 +15,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
 
 interface SubscriptionCardProps {
   model: Subscription
+  buttonClassName?: string
 }
 
-export function SubscriptionCard({ model }: SubscriptionCardProps) {
+export function SubscriptionCard({
+  model,
+  buttonClassName,
+}: SubscriptionCardProps) {
   const active = model.status === "active"
   const [currency, cost] = formatCurrency(
     model.cost,
@@ -75,13 +80,13 @@ export function SubscriptionCard({ model }: SubscriptionCardProps) {
         </div>
       </CardContent>
       <CardFooter className="grid grid-cols-2 gap-2">
-        <Button variant="default" className="rounded-md">
+        <Button variant="default" className={buttonClassName}>
           Edit
         </Button>
-        <Button variant="destructive" className="rounded-md">
+        <Button variant="destructive" className={buttonClassName}>
           Delete
         </Button>
-        <Button variant="outline" className="col-span-2 rounded-md">
+        <Button variant="outline" className={cn("col-span-2", buttonClassName)}>
           {active ? "Mark as Unused" : "Reactivate"}
         </Button>
       </CardFooter>
