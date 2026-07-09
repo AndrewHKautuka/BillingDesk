@@ -200,7 +200,9 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
           control={control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="subscription-form-category">Name</FieldLabel>
+              <FieldLabel htmlFor="subscription-form-category">
+                Category
+              </FieldLabel>
 
               <Input
                 {...field}
