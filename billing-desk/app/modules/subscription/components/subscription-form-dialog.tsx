@@ -1,6 +1,6 @@
 "use client"
 
-import { PlusCircleIcon } from "lucide-react"
+import { PlusCircleIcon, SquarePenIcon } from "lucide-react"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { CreateSubscriptionFormData } from "~/subscription/validations/subscription-validations"
@@ -47,7 +47,10 @@ export function SubscriptionFormDialog({
                 <span>Add Subscription</span>
               </>
             ) : (
-              "Edit"
+              <>
+                <SquarePenIcon />
+                <span>Edit</span>
+              </>
             )}
           </Button>
         }

@@ -3,7 +3,12 @@
 import { useState } from "react"
 
 import { capitalCase } from "change-case"
-import { Calendar1Icon } from "lucide-react"
+import {
+  Calendar1Icon,
+  CircleCheckBigIcon,
+  CircleMinusIcon,
+  Trash2Icon,
+} from "lucide-react"
 import { toast } from "sonner"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
@@ -106,11 +111,22 @@ export function SubscriptionCard({
         />
 
         <Button variant="destructive" className={buttonClassName}>
-          Delete
+          <Trash2Icon />
+          <span>Delete</span>
         </Button>
 
         <Button variant="outline" className={cn("col-span-2", buttonClassName)}>
-          {active ? "Mark as Unused" : "Reactivate"}
+          {active ? (
+            <>
+              <CircleMinusIcon />
+              <span>Mark as Unused</span>
+            </>
+          ) : (
+            <>
+              <CircleCheckBigIcon />
+              <span>Reactivate</span>
+            </>
+          )}
         </Button>
       </CardFooter>
     </Card>
