@@ -1,6 +1,8 @@
 "use clients"
 
+import { toast } from "sonner"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
+import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
@@ -26,16 +28,19 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
 
-      <ToggleGroup
-        variant="outline"
-        spacing={0}
-        value={displayStyle}
-        onValueChange={handleDisplayStyleChange}
-        className="self-end"
-      >
-        <ToggleGroupItem value="list">List</ToggleGroupItem>
-        <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
-      </ToggleGroup>
+      <div className="flex flex-row justify-between">
+        <SubscriptionFormDialog onSubmit={() => toast.success("Submitted")} />
+
+        <ToggleGroup
+          variant="outline"
+          spacing={0}
+          value={displayStyle}
+          onValueChange={handleDisplayStyleChange}
+        >
+          <ToggleGroupItem value="list">List</ToggleGroupItem>
+          <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
+        </ToggleGroup>
+      </div>
 
       {displayStyle[0] === "list" ? (
         <SubscriptionTable columns={columns} subscriptions={subscriptions} />
