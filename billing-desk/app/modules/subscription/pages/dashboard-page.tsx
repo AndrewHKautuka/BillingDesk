@@ -64,7 +64,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       {displayStyle[0] === "list" ? (
         <SubscriptionTable columns={columns} subscriptions={subscriptions} />
       ) : (
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {subscriptions.map((subscription) => (
             <SubscriptionCard
               key={subscription.id}
