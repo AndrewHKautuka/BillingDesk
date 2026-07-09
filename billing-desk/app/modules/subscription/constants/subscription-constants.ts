@@ -16,3 +16,7 @@ export const DEFAULT_DISPLAY_STYLE = ["card-grid"] as const
  * - "card-grid": Grid of subscription cards
  */
 export const DISPLAY_STYLES = [["list"], ["card-grid"]] as const
+
+export const INPUT_CLASS_NAME = "rounded-md" as const
+export const DIALOG_TRIGGER_CLASS_NAME = "rounded-md" as const
+export const BUTTON_CLASS_NAME = "rounded-md" as const

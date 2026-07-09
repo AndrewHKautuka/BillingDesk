@@ -5,6 +5,11 @@ import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
+import {
+  BUTTON_CLASS_NAME,
+  DIALOG_TRIGGER_CLASS_NAME,
+  INPUT_CLASS_NAME,
+} from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
@@ -31,9 +36,9 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       <div className="flex flex-row justify-between">
         <SubscriptionFormDialog
           onSubmit={() => toast.success("Submitted")}
-          triggerClassName="rounded-md"
-          inputClassName="rounded-md"
-          buttonClassName="rounded-md"
+          triggerClassName={DIALOG_TRIGGER_CLASS_NAME}
+          inputClassName={INPUT_CLASS_NAME}
+          buttonClassName={BUTTON_CLASS_NAME}
         />
 
         <ToggleGroup
@@ -55,7 +60,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
             <SubscriptionCard
               key={subscription.id}
               model={subscription}
-              buttonClassName="rounded-md"
+              buttonClassName={BUTTON_CLASS_NAME}
             />
           ))}
         </div>
