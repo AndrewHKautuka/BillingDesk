@@ -1,9 +1,17 @@
 "use client"
 
+import { useState } from "react"
+
 import { capitalCase } from "change-case"
 import { Calendar1Icon } from "lucide-react"
+import { toast } from "sonner"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
+import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
+import {
+  BUTTON_CLASS_NAME,
+  INPUT_CLASS_NAME,
+} from "~/subscription/constants/subscription-constants"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
@@ -26,6 +34,8 @@ export function SubscriptionCard({
   model,
   buttonClassName,
 }: SubscriptionCardProps) {
+  const [open, setOpen] = useState(false)
+
   const active = model.status === "active"
   const [currency, cost] = formatCurrency(
     model.cost,
@@ -39,6 +49,7 @@ export function SubscriptionCard({
       <CardHeader>
         <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
       </CardHeader>
+
       <CardContent className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-2">
@@ -79,13 +90,25 @@ export function SubscriptionCard({
           </span>
         </div>
       </CardContent>
+
       <CardFooter className="grid grid-cols-2 gap-2">
-        <Button variant="default" className={buttonClassName}>
-          Edit
-        </Button>
+        <SubscriptionFormDialog
+          open={open}
+          onOpenChange={setOpen}
+          subscription={model}
+          onSubmit={() => {
+            toast.success("Submitted")
+            setOpen(false)
+          }}
+          triggerClassName={buttonClassName}
+          inputClassName={INPUT_CLASS_NAME}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+
         <Button variant="destructive" className={buttonClassName}>
           Delete
         </Button>
+
         <Button variant="outline" className={cn("col-span-2", buttonClassName)}>
           {active ? "Mark as Unused" : "Reactivate"}
         </Button>

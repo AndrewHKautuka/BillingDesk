@@ -2,6 +2,7 @@
 
 import { PlusCircleIcon } from "lucide-react"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
+import type { Subscription } from "~/subscription/types/subscription-model"
 import type { CreateSubscriptionFormData } from "~/subscription/validations/subscription-validations"
 
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,7 @@ import {
 interface SubscriptionFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  subscription?: Subscription
   onSubmit: (data: CreateSubscriptionFormData) => void
   triggerClassName?: string
   inputClassName?: string
@@ -28,6 +30,7 @@ interface SubscriptionFormDialogProps {
 export function SubscriptionFormDialog({
   open,
   onOpenChange,
+  subscription,
   onSubmit,
   triggerClassName,
   inputClassName,
@@ -38,22 +41,34 @@ export function SubscriptionFormDialog({
       <DialogTrigger
         render={
           <Button variant="default" className={triggerClassName}>
-            <PlusCircleIcon />
-            <span>Add Subscription</span>
+            {!subscription ? (
+              <>
+                <PlusCircleIcon />
+                <span>Add Subscription</span>
+              </>
+            ) : (
+              "Edit"
+            )}
           </Button>
         }
       />
 
       <DialogContent showCloseButton={false} className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Add New Subscription</DialogTitle>
+          <DialogTitle>
+            {!subscription ? "Add New Subscription" : "Edit Subscription"}
+          </DialogTitle>
+
           <DialogDescription>
-            Fill in the details for your new subscription.
+            {!subscription
+              ? "Fill in the details for your new subscription."
+              : "Update the subscription details below."}
           </DialogDescription>
         </DialogHeader>
 
         <SubscriptionForm
           formId="subscription-form"
+          subscription={subscription}
           onSubmit={onSubmit}
           inputClassName={inputClassName}
         />
@@ -71,7 +86,7 @@ export function SubscriptionFormDialog({
             form="subscription-form"
             className={buttonClassName}
           >
-            Add Subscription
+            {!subscription ? "Add Subscription" : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>
