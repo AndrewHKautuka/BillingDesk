@@ -80,7 +80,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
         <Controller
           name="cost"
           control={control}
-          render={({ field, fieldState }) => (
+          render={({ field: { onChange, ...field }, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="subscription-form-cost">Cost</FieldLabel>
 
@@ -91,6 +91,7 @@ export function SubscriptionForm({ formId, onSubmit }: SubscriptionFormProps) {
                 type="number"
                 step="0.01"
                 placeholder="0.00"
+                onChange={(e) => onChange(e.target.valueAsNumber)}
               />
 
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
