@@ -12,7 +12,10 @@ import {
 import type { FormattedCurrency } from "~/shared/types/format-utils-types"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
-import type { SubscriptionStatus } from "~/subscription/types/subscription-enums"
+import type {
+  BillingCycle,
+  SubscriptionStatus,
+} from "~/subscription/types/subscription-enums"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
@@ -45,6 +48,17 @@ export const createColumns: (
         </div>
       )
     },
+  },
+  {
+    accessorKey: "name",
+    header: "Subscription",
+  },
+  {
+    accessorKey: "category",
+    header: "Category",
+    size: 90,
+    minSize: 90,
+    maxSize: 130,
   },
   {
     id: "formattedCost",
@@ -89,6 +103,42 @@ export const createColumns: (
     size: 90,
     minSize: 90,
     maxSize: 130,
+  },
+  {
+    id: "cylceFormattedCost",
+    accessorFn: (row) =>
+      [
+        formatCurrency(row.cost, row.currency.toUpperCase()) ?? null,
+        row.billingCycle,
+      ] as const,
+    header: () => <div className="text-right">Cost</div>,
+    cell: ({ row }) => {
+      const [formatted, billingCycle] = row.getValue("cylceFormattedCost") as [
+        FormattedCurrency | null,
+        BillingCycle,
+      ]
+
+      if (!formatted) {
+        return (
+          <div className="text-right">
+            <span className="text-muted-foreground italic">-</span>
+          </div>
+        )
+      }
+
+      const [currency, amount] = formatted
+
+      return (
+        <div className="text-right">
+          <span>
+            {currency} {amount} / {billingCycle === "monthly" ? "Mon" : "Year"}
+          </span>
+        </div>
+      )
+    },
+    size: 120,
+    minSize: 120,
+    maxSize: 160,
   },
   {
     accessorKey: "startDate",
