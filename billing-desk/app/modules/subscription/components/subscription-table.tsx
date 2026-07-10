@@ -1,11 +1,11 @@
 "use client"
 
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { columns } from "~/subscription/components/subscription-table-columns"
 
 import {
   Table,
@@ -18,18 +18,14 @@ import {
 
 import type { Subscription } from "../types/subscription-model"
 
-interface SubscriptionTableProps<TValue> {
-  columns: ColumnDef<Subscription, TValue>[]
+interface SubscriptionTableProps {
   subscriptions: Subscription[]
 }
 
-export function SubscriptionTable<TValue>({
-  columns,
-  subscriptions,
-}: SubscriptionTableProps<TValue>) {
+export function SubscriptionTable({ subscriptions }: SubscriptionTableProps) {
   const table = useReactTable({
     data: subscriptions,
-    columns,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
   })
 

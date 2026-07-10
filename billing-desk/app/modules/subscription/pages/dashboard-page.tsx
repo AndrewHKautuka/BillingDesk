@@ -8,7 +8,6 @@ import { DeleteConfirmationDialog } from "~/subscription/components/delete-confi
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
-import { columns } from "~/subscription/components/subscription-table-columns"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
@@ -103,7 +102,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       </div>
 
       {displayStyle[0] === "list" ? (
-        <SubscriptionTable columns={columns} subscriptions={subscriptions} />
+        <SubscriptionTable subscriptions={subscriptions} />
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {subscriptions.map((subscription) => (
