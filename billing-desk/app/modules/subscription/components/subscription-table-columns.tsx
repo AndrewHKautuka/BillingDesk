@@ -27,15 +27,8 @@ export const columns: ColumnDef<Subscription>[] = [
   },
   {
     id: "formattedCost",
-    accessorFn: (row) => {
-      const formatted = formatCurrency(row.cost, row.currency)
-
-      if (!formatted) {
-        return null
-      }
-
-      return formatted
-    },
+    accessorFn: (row) =>
+      formatCurrency(row.cost, row.currency.toUpperCase()) ?? null,
     header: () => <div className="text-right">Cost</div>,
     cell: ({ row }) => {
       const formatted = row.getValue(
