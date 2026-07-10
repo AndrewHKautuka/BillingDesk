@@ -2,6 +2,13 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import { capitalCase } from "change-case"
+import {
+  CircleCheckBigIcon,
+  CircleMinusIcon,
+  MenuIcon,
+  SquarePenIcon,
+  Trash2Icon,
+} from "lucide-react"
 import type { FormattedCurrency } from "~/shared/types/format-utils-types"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
@@ -9,12 +16,21 @@ import type { SubscriptionStatus } from "~/subscription/types/subscription-enums
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export const createColumns: (
   onEdit: (subscription: Subscription) => void,
   onDelete: (subscription: Subscription) => void,
   onToggleStatus: (subscription: Subscription) => void
-) => ColumnDef<Subscription>[] = () => [
+) => ColumnDef<Subscription>[] = (onEdit, onDelete, onToggleStatus) => [
   {
     id: "subscription",
     accessorFn: (row) => [row.name, row.category],
@@ -94,6 +110,61 @@ export const createColumns: (
             <span>{formattedStatus}</span>
           </Badge>
         </div>
+      )
+    },
+  },
+  {
+    id: "actions",
+    header: () => <div className="text-center">Actions</div>,
+    cell: ({ row }) => {
+      const subscription = row.original
+      const active = subscription.status === "active"
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <div className="flex justify-center">
+                <Button size="icon" variant="ghost">
+                  <MenuIcon />
+                </Button>
+              </div>
+            }
+          />
+
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Subscription Actions</DropdownMenuLabel>
+
+              <DropdownMenuItem onClick={() => onEdit(subscription)}>
+                <SquarePenIcon />
+                <span>Edit</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={() => onToggleStatus(subscription)}>
+                {active ? (
+                  <>
+                    <CircleMinusIcon className="size-4" />
+                    <span className="hidden sm:inline">Mark as Unused</span>
+                  </>
+                ) : (
+                  <>
+                    <CircleCheckBigIcon className="size-4" />
+                    <span className="hidden sm:inline">Reactivate</span>
+                  </>
+                )}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(subscription)}
+              >
+                <Trash2Icon />
+                <span>Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
   },
