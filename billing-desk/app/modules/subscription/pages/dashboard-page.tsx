@@ -102,7 +102,12 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       </div>
 
       {displayStyle[0] === "list" ? (
-        <SubscriptionTable subscriptions={subscriptions} />
+        <SubscriptionTable
+          subscriptions={subscriptions}
+          onEdit={handleEditSubscription}
+          onDelete={handleDeleteSubscription}
+          onToggleStatus={handleSubscriptionToggleStatus}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {subscriptions.map((subscription) => (

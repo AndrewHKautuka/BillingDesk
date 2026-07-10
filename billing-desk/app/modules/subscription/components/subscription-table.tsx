@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { columns } from "~/subscription/components/subscription-table-columns"
+import { createColumns } from "~/subscription/components/subscription-table-columns"
 
 import {
   Table,
@@ -20,12 +20,22 @@ import type { Subscription } from "../types/subscription-model"
 
 interface SubscriptionTableProps {
   subscriptions: Subscription[]
+  onEdit: (subscription: Subscription) => void
+  onDelete: (subscription: Subscription) => void
+  onToggleStatus: (subscription: Subscription) => void
 }
 
-export function SubscriptionTable({ subscriptions }: SubscriptionTableProps) {
+export function SubscriptionTable({
+  subscriptions,
+  onEdit,
+  onDelete,
+  onToggleStatus,
+}: SubscriptionTableProps) {
+  const columns = createColumns(onEdit, onDelete, onToggleStatus)
+
   const table = useReactTable({
     data: subscriptions,
-    columns: columns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
   })
 

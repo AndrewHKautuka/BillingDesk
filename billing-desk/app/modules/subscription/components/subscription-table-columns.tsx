@@ -10,7 +10,11 @@ import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
 
-export const columns: ColumnDef<Subscription>[] = [
+export const createColumns: (
+  onEdit: (subscription: Subscription) => void,
+  onDelete: (subscription: Subscription) => void,
+  onToggleStatus: (subscription: Subscription) => void
+) => ColumnDef<Subscription>[] = () => [
   {
     id: "subscription",
     accessorFn: (row) => [row.name, row.category],
