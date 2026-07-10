@@ -7,11 +7,11 @@ import {
   Calendar1Icon,
   CircleCheckBigIcon,
   CircleMinusIcon,
-  Trash2Icon,
 } from "lucide-react"
 import { toast } from "sonner"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
+import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import {
   BUTTON_CLASS_NAME,
@@ -39,7 +39,8 @@ export function SubscriptionCard({
   model,
   buttonClassName,
 }: SubscriptionCardProps) {
-  const [open, setOpen] = useState(false)
+  const [formOpen, setFormOpen] = useState(false)
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   const active = model.status === "active"
   const [currency, cost] = formatCurrency(
@@ -98,22 +99,29 @@ export function SubscriptionCard({
 
       <CardFooter className="grid grid-cols-2 gap-2">
         <SubscriptionFormDialog
-          open={open}
-          onOpenChange={setOpen}
+          open={formOpen}
+          onOpenChange={setFormOpen}
           subscription={model}
           onSubmit={() => {
             toast.success("Submitted")
-            setOpen(false)
+            setFormOpen(false)
           }}
           triggerClassName={buttonClassName}
           inputClassName={INPUT_CLASS_NAME}
           buttonClassName={BUTTON_CLASS_NAME}
         />
 
-        <Button variant="destructive" className={buttonClassName}>
-          <Trash2Icon />
-          <span>Delete</span>
-        </Button>
+        <DeleteConfirmationDialog
+          open={confirmDeleteOpen}
+          onOpenChange={setConfirmDeleteOpen}
+          subscription={model}
+          onConfirm={() => {
+            toast.success("Deleted subscription")
+            setConfirmDeleteOpen(false)
+          }}
+          triggerClassName={buttonClassName}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
 
         <Button variant="outline" className={cn("col-span-2", buttonClassName)}>
           {active ? (
