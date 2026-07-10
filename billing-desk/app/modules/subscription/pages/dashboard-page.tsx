@@ -7,6 +7,7 @@ import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
 import { columns } from "~/subscription/components/subscription-table-columns"
+import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
   DIALOG_TRIGGER_CLASS_NAME,
@@ -36,6 +37,8 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
   return (
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
+
+      <UnusedSubscriptionsBanner count={4} potentialSavings="$ 0" />
 
       <div className="flex flex-row justify-between">
         <SubscriptionFormDialog
