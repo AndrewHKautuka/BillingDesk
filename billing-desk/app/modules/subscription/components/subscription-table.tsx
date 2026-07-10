@@ -43,7 +43,7 @@ export function SubscriptionTable({
 
   return (
     <div className="overflow-hidden rounded-md border">
-      <Table>
+      <Table className="table-fixed">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
