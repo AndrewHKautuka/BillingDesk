@@ -30,3 +30,6 @@ export type CreateSubscriptionFormData = z.infer<
 export type UpdateSubscriptionFormData = z.infer<
   typeof updateSubscriptionSchema
 >
+
+export type SubscriptionFormData =
+  CreateSubscriptionFormData | UpdateSubscriptionFormData

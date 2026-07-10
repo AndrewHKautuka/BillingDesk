@@ -2,7 +2,7 @@
 
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
-import type { CreateSubscriptionFormData } from "~/subscription/validations/subscription-validations"
+import type { SubscriptionFormData } from "~/subscription/validations/subscription-validations"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -19,7 +19,7 @@ interface SubscriptionFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   subscription?: Subscription
-  onSubmit: (data: CreateSubscriptionFormData) => void
+  onSubmit: (data: SubscriptionFormData) => void
   inputClassName?: string
   buttonClassName?: string
 }

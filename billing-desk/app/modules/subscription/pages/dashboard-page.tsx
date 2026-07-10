@@ -18,10 +18,7 @@ import {
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
-import type {
-  CreateSubscriptionFormData,
-  UpdateSubscriptionFormData,
-} from "~/subscription/validations/subscription-validations"
+import type { SubscriptionFormData } from "~/subscription/validations/subscription-validations"
 
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -66,9 +63,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
     )
   }
 
-  const handleFormSubmission = (
-    data: CreateSubscriptionFormData | UpdateSubscriptionFormData
-  ) => {
+  const handleFormSubmission = (data: SubscriptionFormData) => {
     toast.success(`Submitted ${data.name}`)
     setFormOpen(false)
     setSelectedSubscription(undefined)

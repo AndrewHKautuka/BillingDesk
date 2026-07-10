@@ -12,9 +12,8 @@ import {
 } from "~/subscription/types/subscription-enums"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import {
-  type CreateSubscriptionFormData,
   createSubscriptionSchema,
-  type UpdateSubscriptionFormData,
+  type SubscriptionFormData,
   updateSubscriptionSchema,
 } from "~/subscription/validations/subscription-validations"
 
@@ -37,12 +36,9 @@ import { cn } from "@/lib/utils"
 interface SubscriptionFormProps {
   formId?: string
   subscription?: Subscription
-  onSubmit: (data: CreateSubscriptionFormData) => void
+  onSubmit: (data: SubscriptionFormData) => void
   inputClassName?: string
 }
-
-type SubscriptionFormData =
-  CreateSubscriptionFormData | UpdateSubscriptionFormData
 
 export function SubscriptionForm({
   formId,
