@@ -122,15 +122,15 @@ export const createColumns: (
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <div className="flex justify-center">
+          <div className="flex justify-center">
+            <DropdownMenuTrigger
+              render={
                 <Button size="icon" variant="ghost">
                   <MenuIcon />
                 </Button>
-              </div>
-            }
-          />
+              }
+            />
+          </div>
 
           <DropdownMenuContent>
             <DropdownMenuGroup>
