@@ -1,5 +1,4 @@
 import { AlertTriangleIcon } from "lucide-react"
-import { UNUSED_WARNING_THRESHOLD } from "~/subscription/constants/subscription-constants"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
@@ -14,10 +13,6 @@ export function UnusedSubscriptionsBanner({
   count,
   potentialSavings,
 }: UnusedSubscriptionsBannerProps) {
-  if (count <= UNUSED_WARNING_THRESHOLD) {
-    return null
-  }
-
   return (
     <Alert className="gap-1 rounded-lg border border-warning-border bg-warning text-warning-foreground">
       <AlertTriangleIcon className="mt-0.5 size-5 shrink-0" />

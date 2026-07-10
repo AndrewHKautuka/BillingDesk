@@ -13,11 +13,13 @@ import {
   BUTTON_CLASS_NAME,
   DIALOG_TRIGGER_CLASS_NAME,
   INPUT_CLASS_NAME,
+  UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
+import { calculateMonthlyCost } from "~/subscription/utils/subscription-utils"
 import type {
   CreateSubscriptionFormData,
   SubscriptionFormData,
@@ -44,6 +46,8 @@ export function DashboardPage() {
   const [selectedSubscription, setSelectedSubscription] = useState<
     Subscription | undefined
   >(undefined)
+
+  const potentialSavingsStr = calculateMonthlyCost(inactiveSubscriptions)
 
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
@@ -103,7 +107,12 @@ export function DashboardPage() {
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
 
-      <UnusedSubscriptionsBanner count={4} potentialSavings="$ 0" />
+      {inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
+        <UnusedSubscriptionsBanner
+          count={inactiveSubscriptions.length}
+          potentialSavings={potentialSavingsStr}
+        />
+      )}
 
       <div className="flex flex-row justify-between">
         <Button
