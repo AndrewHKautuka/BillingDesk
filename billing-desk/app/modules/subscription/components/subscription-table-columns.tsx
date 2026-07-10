@@ -55,6 +55,15 @@ export const columns: ColumnDef<Subscription>[] = [
     },
   },
   {
+    accessorKey: "billingCycle",
+    header: () => <div className="text-right">Billing Cycle</div>,
+    cell: ({ row }) => (
+      <div className="text-right">
+        <span>{capitalCase(row.getValue("billingCycle"))}</span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "startDate",
     header: () => <div className="text-right">Start Date</div>,
     cell: ({ row }) => (
