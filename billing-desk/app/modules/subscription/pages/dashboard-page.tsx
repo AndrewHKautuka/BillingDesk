@@ -5,6 +5,7 @@ import { useState } from "react"
 import { PlusCircleIcon } from "lucide-react"
 import { toast } from "sonner"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
+import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
@@ -16,10 +17,16 @@ import {
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
-import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
+import {
+  useMockMonthlyTotal,
+  useMockSubscriptions,
+} from "~/subscription/hooks/use-mock-subscriptions"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
-import { calculateMonthlyCost } from "~/subscription/utils/subscription-utils"
+import {
+  calculateMonthlyCost,
+  formatTotalMonthlySpending,
+} from "~/subscription/utils/subscription-utils"
 import type {
   CreateSubscriptionFormData,
   SubscriptionFormData,
@@ -40,6 +47,7 @@ export function DashboardPage() {
     deleteSubscription,
     toggleSubscriptionStatus,
   } = useMockSubscriptions()
+  const { total } = useMockMonthlyTotal(subscriptions)
 
   const [formOpen, setFormOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -48,6 +56,7 @@ export function DashboardPage() {
   >(undefined)
 
   const potentialSavingsStr = calculateMonthlyCost(inactiveSubscriptions)
+  const totalMonthlyDisplay = formatTotalMonthlySpending(total)
 
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
@@ -106,6 +115,8 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
+
+      <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
 
       {inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
         <UnusedSubscriptionsBanner
