@@ -5,6 +5,7 @@ import { capitalCase } from "change-case"
 import type { FormattedCurrency } from "~/shared/types/format-utils-types"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
+import type { SubscriptionStatus } from "~/subscription/types/subscription-enums"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
@@ -76,9 +77,9 @@ export const columns: ColumnDef<Subscription>[] = [
     accessorKey: "status",
     header: () => <div className="text-center">Status</div>,
     cell: ({ row }) => {
-      const status = row.getValue("status")
+      const status = row.getValue("status") as SubscriptionStatus
       const active = status === "active"
-      const formattedStatus = capitalCase(row.getValue("status"))
+      const formattedStatus = capitalCase(status)
 
       return (
         <div className="text-center">
