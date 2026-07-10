@@ -1,6 +1,10 @@
 import { useState } from "react"
 
 import type { Subscription } from "~/subscription/types/subscription-model"
+import type {
+  CreateSubscriptionFormData,
+  UpdateSubscriptionFormData,
+} from "~/subscription/validations/subscription-validations"
 
 const initialMockSubscriptions: Subscription[] = [
   {
@@ -170,13 +174,28 @@ export function useMockSubscriptions() {
     initialMockSubscriptions
   )
 
-  const addSubscription = (data: Subscription) => {
-    setSubscriptions((prev) => [...prev, data])
+  const addSubscription = (data: CreateSubscriptionFormData) => {
+    setSubscriptions((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        status: "active",
+        ...data,
+      },
+    ])
   }
 
-  const updateSubscription = (id: string, data: Subscription) => {
+  const updateSubscription = (id: string, data: UpdateSubscriptionFormData) => {
     setSubscriptions((prev) =>
-      prev.map((sub) => (sub.id === id ? { ...data, id } : sub))
+      prev.map((sub) =>
+        sub.id === id
+          ? {
+              id,
+              status: sub.status,
+              ...data,
+            }
+          : sub
+      )
     )
   }
 
@@ -188,7 +207,10 @@ export function useMockSubscriptions() {
     setSubscriptions((prev) =>
       prev.map((sub) =>
         sub.id === id
-          ? { ...sub, status: sub.status === "active" ? "inactive" : "active" }
+          ? {
+              ...sub,
+              status: sub.status === "active" ? "inactive" : "active",
+            }
           : sub
       )
     )
@@ -196,6 +218,9 @@ export function useMockSubscriptions() {
 
   return {
     subscriptions,
+    inactiveSubscriptions: subscriptions.filter(
+      (sub) => sub.status === "inactive"
+    ),
     isLoading: false,
     addSubscription,
     updateSubscription,
