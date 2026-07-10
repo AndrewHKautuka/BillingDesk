@@ -46,7 +46,7 @@ export function SubscriptionCard({
   const [currency, cost] = formatCurrency(
     subscription.cost,
     subscription.currency.toUpperCase()
-  )!
+  ) ?? ["", "N/A"]
   const billingPerUnit = `/${subscription.billingCycle === "monthly" ? "Mon" : "Year"}`
   const formattedStatus = capitalCase(subscription.status)
 
