@@ -63,10 +63,10 @@ export function SubscriptionForm({
         }
       : {
           name: "",
-          cost: 0,
-          currency: "usd" as const,
-          billingCycle: "monthly" as const,
-          startDate: new Date(),
+          cost: undefined,
+          currency: undefined,
+          billingCycle: undefined,
+          startDate: undefined,
           category: "",
         },
   })
@@ -85,10 +85,10 @@ export function SubscriptionForm({
     } else {
       reset({
         name: "",
-        cost: 0,
-        currency: "usd" as const,
-        billingCycle: "monthly" as const,
-        startDate: new Date(),
+        cost: undefined,
+        currency: undefined,
+        billingCycle: undefined,
+        startDate: undefined,
         category: "",
       })
     }

@@ -7,7 +7,9 @@ import {
 // Create Subscription Schema - All fields required for POST
 export const createSubscriptionSchema = z.object({
   name: z.string().nonempty("Name is required"),
-  cost: z.number().positive("Cost must be positive"),
+  cost: z
+    .number("Cost is required as a number")
+    .positive("Cost must be positive"),
   currency: z.enum(CURRENCY_OPTIONS, "Invalid currency"),
   billingCycle: z.enum(BILLING_CYCLE_OPTIONS, "Invalid billing cycle"),
   startDate: z.date("Start date is required"),
@@ -17,7 +19,9 @@ export const createSubscriptionSchema = z.object({
 // Update Subscription Schema - All fields required for PUT (full replacement)
 export const updateSubscriptionSchema = z.object({
   name: z.string().nonempty("Name is required"),
-  cost: z.number().positive("Cost must be positive"),
+  cost: z
+    .number("Cost is required as a number")
+    .positive("Cost must be positive"),
   currency: z.enum(CURRENCY_OPTIONS, "Invalid currency"),
   billingCycle: z.enum(BILLING_CYCLE_OPTIONS, "Invalid billing cycle"),
   startDate: z.date("Start date is required"),
