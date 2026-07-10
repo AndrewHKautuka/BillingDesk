@@ -27,9 +27,9 @@ export function AppSidebar() {
         {!isCollapsed && (
           <>
             <div className="p-4 text-center">
-              <span className="text-3xl font-bold text-sidebar-foreground">
+              <h2 className="text-sidebar-foreground">
                 {APP_SIDEBAR_HEADER_TEXT}
-              </span>
+              </h2>
             </div>
             <SidebarSeparator />
           </>

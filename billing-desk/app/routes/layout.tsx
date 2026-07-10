@@ -11,7 +11,9 @@ export default function LayoutRoute() {
         <AppSidebar />
         <main className="min-h-screen flex-1 p-4">
           <SidebarTrigger />
-          <Outlet />
+          <div className="p-6">
+            <Outlet />
+          </div>
         </main>
       </SidebarProvider>
     </div>

@@ -6,5 +6,16 @@
 		{
 			"path": "billing-desk"
 		}
-	]
+	],
+	"settings": {
+		"tailwindCSS.classAttributes": [
+			"class",
+			"className",
+			"ngClass",
+			"class:list",
+			"inputClassName",
+			"buttonClassName",
+			"triggerClassName"
+		]
+	}
 }
