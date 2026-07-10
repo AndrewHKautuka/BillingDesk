@@ -126,16 +126,7 @@ export function DashboardPage() {
         />
       )}
 
-      <div className="flex flex-row justify-between">
-        <Button
-          variant="default"
-          className={DIALOG_TRIGGER_CLASS_NAME}
-          onClick={handleAddSubscription}
-        >
-          <PlusCircleIcon />
-          <span>Add Subscription</span>
-        </Button>
-
+      <div className="flex flex-row-reverse justify-between">
         <ToggleGroup
           variant="outline"
           spacing={0}
@@ -145,6 +136,17 @@ export function DashboardPage() {
           <ToggleGroupItem value="list">List</ToggleGroupItem>
           <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
         </ToggleGroup>
+
+        {subscriptions.length !== 0 ? (
+          <Button
+            variant="default"
+            className={DIALOG_TRIGGER_CLASS_NAME}
+            onClick={handleAddSubscription}
+          >
+            <PlusCircleIcon />
+            <span>Add Subscription</span>
+          </Button>
+        ) : null}
       </div>
 
       {subscriptions.length === 0 ? (
