@@ -1,10 +1,13 @@
 "use client"
 
 import type { ColumnDef } from "@tanstack/react-table"
+import { capitalCase } from "change-case"
 import type { FormattedCurrency } from "~/shared/types/format-utils-types"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import type { Subscription } from "~/subscription/types/subscription-model"
+
+import { Badge } from "@/components/ui/badge"
 
 export const columns: ColumnDef<Subscription>[] = [
   {
@@ -29,14 +32,20 @@ export const columns: ColumnDef<Subscription>[] = [
       ) as FormattedCurrency | null
 
       if (!formatted) {
-        return <div className="text-right font-medium">-</div>
+        return (
+          <div className="text-right">
+            <span className="text-muted-foreground italic">-</span>
+          </div>
+        )
       }
 
       const [currency, amount] = formatted
 
       return (
         <div className="text-right">
-          {currency} {amount}
+          <span>
+            {currency} {amount}
+          </span>
         </div>
       )
     },
@@ -45,11 +54,29 @@ export const columns: ColumnDef<Subscription>[] = [
     accessorKey: "startDate",
     header: () => <div className="text-right">Start Date</div>,
     cell: ({ row }) => (
-      <div className="text-right">{formatDate(row.getValue("startDate"))}</div>
+      <div className="text-right">
+        <span>{formatDate(row.getValue("startDate"))}</span>
+      </div>
     ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => <div className="text-center">Status</div>,
+    cell: ({ row }) => {
+      const status = row.getValue("status")
+      const active = status === "active"
+      const formattedStatus = capitalCase(row.getValue("status"))
+
+      return (
+        <div className="text-center">
+          <Badge
+            variant={active ? "default" : "destructive"}
+            className="font-semibold"
+          >
+            <span>{formattedStatus}</span>
+          </Badge>
+        </div>
+      )
+    },
   },
 ]
