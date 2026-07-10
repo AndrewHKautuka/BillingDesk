@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 
-import { PlusCircleIcon } from "lucide-react"
 import { toast } from "sonner"
+import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
@@ -13,7 +13,6 @@ import { SubscriptionsDisplayEmpty } from "~/subscription/components/subscriptio
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
-  DIALOG_TRIGGER_CLASS_NAME,
   INPUT_CLASS_NAME,
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
@@ -34,7 +33,6 @@ import type {
   UpdateSubscriptionFormData,
 } from "~/subscription/validations/subscription-validations"
 
-import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 export function DashboardPage() {
@@ -138,14 +136,9 @@ export function DashboardPage() {
         </ToggleGroup>
 
         {subscriptions.length !== 0 ? (
-          <Button
-            variant="default"
-            className={DIALOG_TRIGGER_CLASS_NAME}
-            onClick={handleAddSubscription}
-          >
-            <PlusCircleIcon />
-            <span>Add Subscription</span>
-          </Button>
+          <AddSubscriptionDialogTrigger
+            handleAddSubscription={handleAddSubscription}
+          />
         ) : null}
       </div>
 

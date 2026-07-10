@@ -1,7 +1,6 @@
-import { PackageOpenIcon, PlusCircleIcon } from "lucide-react"
-import { DIALOG_TRIGGER_CLASS_NAME } from "~/subscription/constants/subscription-constants"
+import { PackageOpenIcon } from "lucide-react"
+import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 
-import { Button } from "@/components/ui/button"
 import {
   Empty,
   EmptyContent,
@@ -33,14 +32,9 @@ export function SubscriptionsDisplayEmpty({
       </EmptyHeader>
 
       <EmptyContent>
-        <Button
-          variant="default"
-          className={DIALOG_TRIGGER_CLASS_NAME}
-          onClick={handleAddSubscription}
-        >
-          <PlusCircleIcon />
-          <span>Add Subscription</span>
-        </Button>
+        <AddSubscriptionDialogTrigger
+          handleAddSubscription={handleAddSubscription}
+        />
       </EmptyContent>
     </Empty>
   )
