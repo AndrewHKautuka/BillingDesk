@@ -71,7 +71,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
           {subscriptions.map((subscription) => (
             <SubscriptionCard
               key={subscription.id}
-              model={subscription}
+              subscription={subscription}
               buttonClassName={BUTTON_CLASS_NAME}
             />
           ))}

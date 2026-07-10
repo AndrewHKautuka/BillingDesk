@@ -31,29 +31,31 @@ import {
 import { cn } from "@/lib/utils"
 
 interface SubscriptionCardProps {
-  model: Subscription
+  subscription: Subscription
   buttonClassName?: string
 }
 
 export function SubscriptionCard({
-  model,
+  subscription,
   buttonClassName,
 }: SubscriptionCardProps) {
   const [formOpen, setFormOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
-  const active = model.status === "active"
+  const active = subscription.status === "active"
   const [currency, cost] = formatCurrency(
-    model.cost,
-    model.currency.toUpperCase()
+    subscription.cost,
+    subscription.currency.toUpperCase()
   )!
-  const billingPerUnit = `/${model.billingCycle === "monthly" ? "Mon" : "Year"}`
-  const formattedStatus = capitalCase(model.status)
+  const billingPerUnit = `/${subscription.billingCycle === "monthly" ? "Mon" : "Year"}`
+  const formattedStatus = capitalCase(subscription.status)
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">{model.name}</CardTitle>
+        <CardTitle className="text-lg font-semibold">
+          {subscription.name}
+        </CardTitle>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4">
@@ -62,7 +64,7 @@ export function SubscriptionCard({
             <span className="text-muted-foreground">{`Started on:`}</span>
             <Badge variant="outline" className="font-semibold">
               <Calendar1Icon className="size-4" />
-              <span>{formatDate(model.startDate)}</span>
+              <span>{formatDate(subscription.startDate)}</span>
             </Badge>
           </div>
 
@@ -76,10 +78,10 @@ export function SubscriptionCard({
             </Badge>
           </div>
 
-          {!model.category || (
+          {subscription.category && (
             <div className="flex flex-row gap-2">
               <span className="text-muted-foreground">Category:</span>
-              <span className="font-semibold">{model.category}</span>
+              <span className="font-semibold">{subscription.category}</span>
             </div>
           )}
         </div>
@@ -101,7 +103,7 @@ export function SubscriptionCard({
         <SubscriptionFormDialog
           open={formOpen}
           onOpenChange={setFormOpen}
-          subscription={model}
+          subscription={subscription}
           onSubmit={() => {
             toast.success("Submitted")
             setFormOpen(false)
@@ -114,7 +116,7 @@ export function SubscriptionCard({
         <DeleteConfirmationDialog
           open={confirmDeleteOpen}
           onOpenChange={setConfirmDeleteOpen}
-          subscription={model}
+          subscription={subscription}
           onConfirm={() => {
             toast.success("Deleted subscription")
             setConfirmDeleteOpen(false)
