@@ -74,6 +74,9 @@ export const createColumns: (
         </div>
       )
     },
+    size: 90,
+    minSize: 90,
+    maxSize: 130,
   },
   {
     accessorKey: "billingCycle",
@@ -83,6 +86,9 @@ export const createColumns: (
         <span>{capitalCase(row.getValue("billingCycle"))}</span>
       </div>
     ),
+    size: 90,
+    minSize: 90,
+    maxSize: 130,
   },
   {
     accessorKey: "startDate",
@@ -92,6 +98,9 @@ export const createColumns: (
         <span>{formatDate(row.getValue("startDate"))}</span>
       </div>
     ),
+    size: 90,
+    minSize: 90,
+    maxSize: 130,
   },
   {
     accessorKey: "status",
@@ -112,6 +121,9 @@ export const createColumns: (
         </div>
       )
     },
+    size: 60,
+    minSize: 60,
+    maxSize: 80,
   },
   {
     id: "actions",
@@ -167,5 +179,8 @@ export const createColumns: (
         </DropdownMenu>
       )
     },
+    size: 40,
+    minSize: 40,
+    maxSize: 40,
   },
 ]
