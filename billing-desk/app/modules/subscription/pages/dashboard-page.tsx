@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { PlusCircleIcon } from "lucide-react"
 import { toast } from "sonner"
+import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
@@ -33,6 +34,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
   const [formOpen, setFormOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
   const [selectedSubscription, setSelectedSubscription] = useState<
     Subscription | undefined
   >(undefined)
@@ -53,6 +55,11 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
     setFormOpen(true)
   }
 
+  const handleDeleteSubscription = (subscription: Subscription) => {
+    setSelectedSubscription(subscription)
+    setDeleteOpen(true)
+  }
+
   const handleSubscriptionToggleStatus = (subscription: Subscription) => {
     toast.info(
       `Toggling status for "${subscription.name}" (not yet implemented)`
@@ -64,6 +71,12 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
   ) => {
     toast.success(`Submitted ${data.name}`)
     setFormOpen(false)
+    setSelectedSubscription(undefined)
+  }
+
+  const handleDeleteConfirmed = () => {
+    toast.success("Subscription deleted")
+    setDeleteOpen(false)
     setSelectedSubscription(undefined)
   }
 
@@ -103,6 +116,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
               key={subscription.id}
               subscription={subscription}
               onEdit={handleEditSubscription}
+              onDelete={handleDeleteSubscription}
               onToggleStatus={handleSubscriptionToggleStatus}
               buttonClassName={BUTTON_CLASS_NAME}
             />
@@ -118,6 +132,16 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
         inputClassName={INPUT_CLASS_NAME}
         buttonClassName={BUTTON_CLASS_NAME}
       />
+
+      {selectedSubscription && (
+        <DeleteConfirmationDialog
+          open={deleteOpen}
+          onOpenChange={setDeleteOpen}
+          subscription={selectedSubscription}
+          onConfirm={handleDeleteConfirmed}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      )}
     </div>
   )
 }

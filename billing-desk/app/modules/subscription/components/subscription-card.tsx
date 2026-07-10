@@ -1,19 +1,15 @@
 "use client"
 
-import { useState } from "react"
-
 import { capitalCase } from "change-case"
 import {
   Calendar1Icon,
   CircleCheckBigIcon,
   CircleMinusIcon,
   SquarePenIcon,
+  Trash2Icon,
 } from "lucide-react"
-import { toast } from "sonner"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
-import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
-import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
@@ -30,6 +26,7 @@ import { cn } from "@/lib/utils"
 interface SubscriptionCardProps {
   subscription: Subscription
   onEdit: (subscription: Subscription) => void
+  onDelete: (subscription: Subscription) => void
   onToggleStatus: (subscription: Subscription) => void
   buttonClassName?: string
 }
@@ -37,11 +34,10 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({
   subscription,
   onEdit,
+  onDelete,
   onToggleStatus,
   buttonClassName,
 }: SubscriptionCardProps) {
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-
   const active = subscription.status === "active"
   const [currency, cost] = formatCurrency(
     subscription.cost,
@@ -109,17 +105,14 @@ export function SubscriptionCard({
           <span>Edit</span>
         </Button>
 
-        <DeleteConfirmationDialog
-          open={confirmDeleteOpen}
-          onOpenChange={setConfirmDeleteOpen}
-          subscription={subscription}
-          onConfirm={() => {
-            toast.success("Deleted subscription")
-            setConfirmDeleteOpen(false)
-          }}
-          triggerClassName={buttonClassName}
-          buttonClassName={BUTTON_CLASS_NAME}
-        />
+        <Button
+          variant="destructive"
+          className={buttonClassName}
+          onClick={() => onDelete(subscription)}
+        >
+          <Trash2Icon />
+          <span>Delete</span>
+        </Button>
 
         <Button
           variant="outline"

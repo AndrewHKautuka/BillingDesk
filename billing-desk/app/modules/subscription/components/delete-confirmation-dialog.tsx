@@ -1,4 +1,3 @@
-import { Trash2Icon } from "lucide-react"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import {
@@ -10,16 +9,13 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
 
 interface DeleteConfirmationDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   subscription: Subscription
   onConfirm: () => void
-  triggerClassName?: string
   buttonClassName?: string
 }
 
@@ -28,7 +24,6 @@ export function DeleteConfirmationDialog({
   onOpenChange,
   subscription,
   onConfirm,
-  triggerClassName,
   buttonClassName,
 }: DeleteConfirmationDialogProps) {
   const handleConfirm = () => {
@@ -37,15 +32,6 @@ export function DeleteConfirmationDialog({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger
-        render={
-          <Button variant="destructive" className={triggerClassName}>
-            <Trash2Icon />
-            <span>Delete</span>
-          </Button>
-        }
-      />
-
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Subscription</AlertDialogTitle>
