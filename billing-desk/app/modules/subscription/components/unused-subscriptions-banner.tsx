@@ -26,7 +26,7 @@ export function UnusedSubscriptionsBanner({
         Savings Opportunity
       </AlertTitle>
 
-      <AlertDescription>
+      <AlertDescription className="text-warning-muted-foreground">
         You have {count} unused subscriptions. Potential savings:{" "}
         <strong>{potentialSavings}/month</strong>.
       </AlertDescription>
