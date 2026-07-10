@@ -15,19 +15,29 @@ import {
   INPUT_CLASS_NAME,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
+import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
-import type { SubscriptionFormData } from "~/subscription/validations/subscription-validations"
+import type {
+  CreateSubscriptionFormData,
+  SubscriptionFormData,
+  UpdateSubscriptionFormData,
+} from "~/subscription/validations/subscription-validations"
 
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
-interface DashboardPageProps {
-  subscriptions: Subscription[]
-}
-
-export function DashboardPage({ subscriptions }: DashboardPageProps) {
+export function DashboardPage() {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
+
+  const {
+    subscriptions,
+    inactiveSubscriptions,
+    addSubscription,
+    updateSubscription,
+    deleteSubscription,
+    toggleSubscriptionStatus,
+  } = useMockSubscriptions()
 
   const [formOpen, setFormOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -57,19 +67,34 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
   }
 
   const handleSubscriptionToggleStatus = (subscription: Subscription) => {
-    toast.info(
-      `Toggling status for "${subscription.name}" (not yet implemented)`
+    toggleSubscriptionStatus(subscription.id)
+    toast.success(
+      `${subscription.name} is now ${subscription.status === "active" ? "inactive" : "active"}`
     )
   }
 
   const handleFormSubmission = (data: SubscriptionFormData) => {
-    toast.success(`Submitted ${data.name}`)
+    if (selectedSubscription) {
+      // Edit mode: update existing subscription
+      updateSubscription(
+        selectedSubscription.id,
+        data as UpdateSubscriptionFormData
+      )
+    } else {
+      // Add mode: create new subscription with generated UUID
+      addSubscription(data as CreateSubscriptionFormData)
+      toast.success(`Created new subscription ${data.name}`)
+    }
+
     setFormOpen(false)
     setSelectedSubscription(undefined)
   }
 
   const handleDeleteConfirmed = () => {
-    toast.success("Subscription deleted")
+    if (selectedSubscription) {
+      deleteSubscription(selectedSubscription.id)
+      toast.success("Subscription deleted")
+    }
     setDeleteOpen(false)
     setSelectedSubscription(undefined)
   }
