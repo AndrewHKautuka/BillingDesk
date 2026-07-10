@@ -1,6 +1,5 @@
 "use client"
 
-import { PlusCircleIcon, SquarePenIcon } from "lucide-react"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { CreateSubscriptionFormData } from "~/subscription/validations/subscription-validations"
@@ -14,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 
 interface SubscriptionFormDialogProps {
@@ -22,7 +20,6 @@ interface SubscriptionFormDialogProps {
   onOpenChange: (open: boolean) => void
   subscription?: Subscription
   onSubmit: (data: CreateSubscriptionFormData) => void
-  triggerClassName?: string
   inputClassName?: string
   buttonClassName?: string
 }
@@ -32,30 +29,11 @@ export function SubscriptionFormDialog({
   onOpenChange,
   subscription,
   onSubmit,
-  triggerClassName,
   inputClassName,
   buttonClassName,
 }: SubscriptionFormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger
-        render={
-          <Button variant="default" className={triggerClassName}>
-            {!subscription ? (
-              <>
-                <PlusCircleIcon />
-                <span>Add Subscription</span>
-              </>
-            ) : (
-              <>
-                <SquarePenIcon />
-                <span>Edit</span>
-              </>
-            )}
-          </Button>
-        }
-      />
-
       <DialogContent showCloseButton={false} className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>

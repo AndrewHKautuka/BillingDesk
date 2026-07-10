@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import { PlusCircleIcon } from "lucide-react"
 import { toast } from "sonner"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
@@ -16,7 +17,12 @@ import {
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
+import type {
+  CreateSubscriptionFormData,
+  UpdateSubscriptionFormData,
+} from "~/subscription/validations/subscription-validations"
 
+import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 interface DashboardPageProps {
@@ -26,7 +32,10 @@ interface DashboardPageProps {
 export function DashboardPage({ subscriptions }: DashboardPageProps) {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
-  const [open, setOpen] = useState(false)
+  const [formOpen, setFormOpen] = useState(false)
+  const [selectedSubscription, setSelectedSubscription] = useState<
+    Subscription | undefined
+  >(undefined)
 
   const handleDisplayStyleChange = (newValue: string[]) => {
     if (newValue.length > 0) {
@@ -34,10 +43,28 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
     }
   }
 
+  const handleAddSubscription = () => {
+    setSelectedSubscription(undefined)
+    setFormOpen(true)
+  }
+
+  const handleEditSubscription = (subscription: Subscription) => {
+    setSelectedSubscription(subscription)
+    setFormOpen(true)
+  }
+
   const handleSubscriptionToggleStatus = (subscription: Subscription) => {
     toast.info(
       `Toggling status for "${subscription.name}" (not yet implemented)`
     )
+  }
+
+  const handleFormSubmission = (
+    data: CreateSubscriptionFormData | UpdateSubscriptionFormData
+  ) => {
+    toast.success(`Submitted ${data.name}`)
+    setFormOpen(false)
+    setSelectedSubscription(undefined)
   }
 
   return (
@@ -47,17 +74,14 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
       <UnusedSubscriptionsBanner count={4} potentialSavings="$ 0" />
 
       <div className="flex flex-row justify-between">
-        <SubscriptionFormDialog
-          open={open}
-          onOpenChange={setOpen}
-          onSubmit={() => {
-            toast.success("Submitted")
-            setOpen(false)
-          }}
-          triggerClassName={DIALOG_TRIGGER_CLASS_NAME}
-          inputClassName={INPUT_CLASS_NAME}
-          buttonClassName={BUTTON_CLASS_NAME}
-        />
+        <Button
+          variant="default"
+          className={DIALOG_TRIGGER_CLASS_NAME}
+          onClick={handleAddSubscription}
+        >
+          <PlusCircleIcon />
+          <span>Add Subscription</span>
+        </Button>
 
         <ToggleGroup
           variant="outline"
@@ -78,12 +102,22 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
             <SubscriptionCard
               key={subscription.id}
               subscription={subscription}
+              onEdit={handleEditSubscription}
               onToggleStatus={handleSubscriptionToggleStatus}
               buttonClassName={BUTTON_CLASS_NAME}
             />
           ))}
         </div>
       )}
+
+      <SubscriptionFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        subscription={selectedSubscription}
+        onSubmit={handleFormSubmission}
+        inputClassName={INPUT_CLASS_NAME}
+        buttonClassName={BUTTON_CLASS_NAME}
+      />
     </div>
   )
 }

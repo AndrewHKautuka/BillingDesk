@@ -7,16 +7,13 @@ import {
   Calendar1Icon,
   CircleCheckBigIcon,
   CircleMinusIcon,
+  SquarePenIcon,
 } from "lucide-react"
 import { toast } from "sonner"
 import { formatDate } from "~/shared/utils/date-formatters"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
-import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
-import {
-  BUTTON_CLASS_NAME,
-  INPUT_CLASS_NAME,
-} from "~/subscription/constants/subscription-constants"
+import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
 import type { Subscription } from "~/subscription/types/subscription-model"
 
 import { Badge } from "@/components/ui/badge"
@@ -32,16 +29,17 @@ import { cn } from "@/lib/utils"
 
 interface SubscriptionCardProps {
   subscription: Subscription
+  onEdit: (subscription: Subscription) => void
   onToggleStatus: (subscription: Subscription) => void
   buttonClassName?: string
 }
 
 export function SubscriptionCard({
   subscription,
+  onEdit,
   onToggleStatus,
   buttonClassName,
 }: SubscriptionCardProps) {
-  const [formOpen, setFormOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   const active = subscription.status === "active"
@@ -102,18 +100,14 @@ export function SubscriptionCard({
       </CardContent>
 
       <CardFooter className="grid grid-cols-2 gap-2">
-        <SubscriptionFormDialog
-          open={formOpen}
-          onOpenChange={setFormOpen}
-          subscription={subscription}
-          onSubmit={() => {
-            toast.success("Submitted")
-            setFormOpen(false)
-          }}
-          triggerClassName={buttonClassName}
-          inputClassName={INPUT_CLASS_NAME}
-          buttonClassName={BUTTON_CLASS_NAME}
-        />
+        <Button
+          variant="default"
+          className={buttonClassName}
+          onClick={() => onEdit(subscription)}
+        >
+          <SquarePenIcon />
+          <span>Edit</span>
+        </Button>
 
         <DeleteConfirmationDialog
           open={confirmDeleteOpen}
