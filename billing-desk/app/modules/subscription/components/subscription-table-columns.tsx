@@ -11,8 +11,19 @@ import { Badge } from "@/components/ui/badge"
 
 export const columns: ColumnDef<Subscription>[] = [
   {
-    accessorKey: "name",
+    id: "subscription",
+    accessorFn: (row) => [row.name, row.category],
     header: "Subscription",
+    cell: ({ row }) => {
+      const [name, category] = row.getValue("subscription") as [string, string]
+
+      return (
+        <div className="flex flex-col">
+          <span>{name}</span>
+          <span className="text-xs text-muted-foreground">{category}</span>
+        </div>
+      )
+    },
   },
   {
     id: "formattedCost",
