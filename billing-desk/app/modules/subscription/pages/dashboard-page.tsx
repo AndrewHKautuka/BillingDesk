@@ -9,6 +9,7 @@ import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
+import { SubscriptionsDisplayEmpty } from "~/subscription/components/subscriptions-display-empty"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
@@ -146,7 +147,11 @@ export function DashboardPage() {
         </ToggleGroup>
       </div>
 
-      {displayStyle[0] === "list" ? (
+      {subscriptions.length === 0 ? (
+        <SubscriptionsDisplayEmpty
+          handleAddSubscription={handleAddSubscription}
+        />
+      ) : displayStyle[0] === "list" ? (
         <SubscriptionTable
           subscriptions={subscriptions}
           onEdit={handleEditSubscription}
