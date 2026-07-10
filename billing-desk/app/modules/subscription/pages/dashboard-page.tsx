@@ -34,6 +34,12 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
     }
   }
 
+  const handleSubscriptionToggleStatus = (subscription: Subscription) => {
+    toast.info(
+      `Toggling status for "${subscription.name}" (not yet implemented)`
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
@@ -72,6 +78,7 @@ export function DashboardPage({ subscriptions }: DashboardPageProps) {
             <SubscriptionCard
               key={subscription.id}
               subscription={subscription}
+              onToggleStatus={handleSubscriptionToggleStatus}
               buttonClassName={BUTTON_CLASS_NAME}
             />
           ))}

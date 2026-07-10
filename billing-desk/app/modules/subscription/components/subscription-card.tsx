@@ -32,11 +32,13 @@ import { cn } from "@/lib/utils"
 
 interface SubscriptionCardProps {
   subscription: Subscription
+  onToggleStatus: (subscription: Subscription) => void
   buttonClassName?: string
 }
 
 export function SubscriptionCard({
   subscription,
+  onToggleStatus,
   buttonClassName,
 }: SubscriptionCardProps) {
   const [formOpen, setFormOpen] = useState(false)
@@ -125,7 +127,11 @@ export function SubscriptionCard({
           buttonClassName={BUTTON_CLASS_NAME}
         />
 
-        <Button variant="outline" className={cn("col-span-2", buttonClassName)}>
+        <Button
+          variant="outline"
+          className={cn("col-span-2", buttonClassName)}
+          onClick={() => onToggleStatus(subscription)}
+        >
           {active ? (
             <>
               <CircleMinusIcon />
