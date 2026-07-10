@@ -19,7 +19,7 @@ export function UnusedSubscriptionsBanner({
   }
 
   return (
-    <Alert className="gap-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">
+    <Alert className="gap-1 rounded-lg border border-warning-border bg-warning text-warning-foreground">
       <AlertTriangleIcon className="mt-0.5 size-5 shrink-0" />
 
       <AlertTitle className="text-lg font-semibold">
