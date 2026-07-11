@@ -4,20 +4,20 @@ import type { Renewal } from "~/subscription/types/subscription-model"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-interface SameDayRenewalsBannerProps {
+interface SameDayUpcomingRenewalsBannerProps {
   /** Array of [dateString, Renewal[]] tuples representing renewals grouped by date. */
   warningDates: [string, Renewal[]][]
 }
 
-export function SameDayRenewalsBanner({
+export function SameDayUpcomingRenewalsBanner({
   warningDates,
-}: SameDayRenewalsBannerProps) {
+}: SameDayUpcomingRenewalsBannerProps) {
   return (
     <Alert className="gap-1 rounded-lg border border-warning-border bg-warning text-warning-foreground">
       <AlertTriangleIcon className="mt-0.5 size-5 shrink-0" />
 
       <AlertTitle className="text-lg font-semibold">
-        Multiple Renewals on the Same Day
+        Multiple Upcoming Renewals on the Same Day
       </AlertTitle>
 
       <AlertDescription className="text-warning-muted-foreground">

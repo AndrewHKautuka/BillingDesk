@@ -9,7 +9,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 
-export function RenewalsDisplayEmpty() {
+export function UpcomingRenewalsDisplayEmpty() {
   return (
     <Empty>
       <EmptyHeader>

@@ -2,8 +2,8 @@
 
 import { differenceInDays } from "date-fns"
 import { RenewalCard } from "~/subscription/components/renewal-card"
-import { RenewalsDisplayEmpty } from "~/subscription/components/renewals-display-empty"
-import { SameDayRenewalsBanner } from "~/subscription/components/same-day-renewals-banner"
+import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
+import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/upcoming-renewals-display-empty"
 import { UpcomingRenewalsFiltersForm } from "~/subscription/components/upcoming-renewals-filter-form"
 import {
   BUTTON_CLASS_NAME,
@@ -16,7 +16,7 @@ import { useMockRenewals } from "~/subscription/hooks/use-mock-renewals"
 import { computeSameDayWarningRenewals } from "~/subscription/utils/subscription-utils"
 import type { UpcomingRenewalsFilters } from "~/subscription/validations/subscription-filter-validations"
 
-export function RenewalsPage() {
+export function UpcomingRenewalsPage() {
   const { lookaheadDays, setLookaheadDays } = useDisplayPreferences()
 
   const { renewals } = useMockRenewals(lookaheadDays)
@@ -54,7 +54,7 @@ export function RenewalsPage() {
       <h1>Upcoming Renewals</h1>
 
       {sameDayWarningDates.length > 0 && (
-        <SameDayRenewalsBanner warningDates={sameDayWarningDates} />
+        <SameDayUpcomingRenewalsBanner warningDates={sameDayWarningDates} />
       )}
 
       <UpcomingRenewalsFiltersForm
@@ -65,7 +65,7 @@ export function RenewalsPage() {
       />
 
       {renewals.length === 0 ? (
-        <RenewalsDisplayEmpty />
+        <UpcomingRenewalsDisplayEmpty />
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {renewalsWithUrgency.map(({ renewal, isImminent }) => (
