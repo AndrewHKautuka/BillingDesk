@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 import {
@@ -39,21 +41,31 @@ import { cn } from "@/lib/utils"
 
 interface UpcomingRenewalsFiltersFormProps {
   applyFilters: (filters: UpcomingRenewalsFilters) => void
+  initialFilters?: UpcomingRenewalsFilters
   inputClassName?: string
 }
 
 export function UpcomingRenewalsFiltersForm({
   applyFilters,
+  initialFilters,
   inputClassName,
 }: UpcomingRenewalsFiltersFormProps) {
   const formId = "upcoming-renewals-filter-form"
 
-  const { control, handleSubmit } = useForm<UpcomingRenewalsFilters>({
+  const { control, handleSubmit, reset } = useForm<UpcomingRenewalsFilters>({
     resolver: zodResolver(upcomingRenewalsFilters),
-    defaultValues: {
+    defaultValues: initialFilters ?? {
       lookAheadDays: DEFAULT_LOOKAHEAD_DAYS,
     },
   })
+
+  useEffect(() => {
+    if (initialFilters) {
+      reset(initialFilters)
+    } else {
+      reset()
+    }
+  }, [reset, initialFilters])
 
   const handleFormSubmit = (filters: UpcomingRenewalsFilters) => {
     applyFilters(filters)
