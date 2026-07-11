@@ -138,7 +138,11 @@ export function UpcomingRenewalsFiltersForm({
 
       <CardFooter>
         <Field orientation="horizontal" className="flex-row-reverse">
-          <Button variant="destructive" className={buttonClassName}>
+          <Button
+            variant="destructive"
+            className={buttonClassName}
+            onClick={() => reset()}
+          >
             Reset
           </Button>
 
