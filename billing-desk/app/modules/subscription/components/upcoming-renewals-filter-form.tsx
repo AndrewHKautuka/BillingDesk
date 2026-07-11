@@ -43,12 +43,14 @@ interface UpcomingRenewalsFiltersFormProps {
   applyFilters: (filters: UpcomingRenewalsFilters) => void
   initialFilters?: UpcomingRenewalsFilters
   inputClassName?: string
+  buttonClassName?: string
 }
 
 export function UpcomingRenewalsFiltersForm({
   applyFilters,
   initialFilters,
   inputClassName,
+  buttonClassName,
 }: UpcomingRenewalsFiltersFormProps) {
   const formId = "upcoming-renewals-filter-form"
 
@@ -136,9 +138,11 @@ export function UpcomingRenewalsFiltersForm({
 
       <CardFooter>
         <Field orientation="horizontal" className="flex-row-reverse">
-          <Button variant="destructive">Reset</Button>
+          <Button variant="destructive" className={buttonClassName}>
+            Reset
+          </Button>
 
-          <Button type="submit" form={formId}>
+          <Button type="submit" form={formId} className={buttonClassName}>
             Apply
           </Button>
         </Field>
