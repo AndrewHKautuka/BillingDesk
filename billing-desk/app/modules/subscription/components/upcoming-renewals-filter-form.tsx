@@ -46,6 +46,10 @@ interface UpcomingRenewalsFiltersFormProps {
   buttonClassName?: string
 }
 
+const defaultFilters: UpcomingRenewalsFilters = {
+  lookAheadDays: DEFAULT_LOOKAHEAD_DAYS,
+}
+
 export function UpcomingRenewalsFiltersForm({
   applyFilters,
   initialFilters,
@@ -56,9 +60,7 @@ export function UpcomingRenewalsFiltersForm({
 
   const { control, handleSubmit, reset } = useForm<UpcomingRenewalsFilters>({
     resolver: zodResolver(upcomingRenewalsFilters),
-    defaultValues: initialFilters ?? {
-      lookAheadDays: DEFAULT_LOOKAHEAD_DAYS,
-    },
+    defaultValues: initialFilters ?? defaultFilters,
   })
 
   useEffect(() => {
@@ -138,16 +140,24 @@ export function UpcomingRenewalsFiltersForm({
 
       <CardFooter>
         <Field orientation="horizontal" className="flex-row-reverse">
+          <Button type="submit" form={formId} className={buttonClassName}>
+            Apply
+          </Button>
+
           <Button
-            variant="destructive"
+            variant="outline"
             className={buttonClassName}
             onClick={() => reset()}
           >
             Reset
           </Button>
 
-          <Button type="submit" form={formId} className={buttonClassName}>
-            Apply
+          <Button
+            variant="destructive"
+            className={buttonClassName}
+            onClick={() => reset(defaultFilters)}
+          >
+            Reset to Defaults
           </Button>
         </Field>
       </CardFooter>
