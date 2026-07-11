@@ -85,7 +85,7 @@ export function UpcomingRenewalsFiltersForm({
 
       <CardContent>
         <form id={formId} onSubmit={handleSubmit(handleFormSubmit)}>
-          <FieldGroup className="grid grid-cols-4">
+          <FieldGroup className="grid grid-cols-1 sm:grid-cols-4">
             <Controller
               name="lookAheadDays"
               control={control}

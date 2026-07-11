@@ -32,21 +32,24 @@ export function RenewalCard({ renewal, isImminent }: RenewalCardProps) {
         isImminent && "border-red-500 bg-red-50 dark:bg-red-950/20"
       )}
     >
-      <CardHeader>
+      <CardHeader className="pb-2 sm:pb-4">
         <CardTitle
           className={cn(
-            "text-lg font-semibold",
+            "truncate text-base font-semibold sm:text-lg",
             isImminent && "text-red-600 dark:text-red-400"
           )}
+          title={subscription.name}
         >
           {subscription.name}
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-3 sm:gap-4">
         <div className="flex flex-col gap-2">
-          <div className="flex flex-row gap-2">
-            <span className="text-muted-foreground">Next billing:</span>
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <span className="shrink-0 text-sm text-muted-foreground">
+              Next billing:
+            </span>
             <Badge
               variant="outline"
               className={cn(
@@ -59,8 +62,10 @@ export function RenewalCard({ renewal, isImminent }: RenewalCardProps) {
             </Badge>
           </div>
 
-          <div className="flex flex-row gap-2">
-            <span className="text-muted-foreground">Days until renewal:</span>
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <span className="shrink-0 text-sm text-muted-foreground">
+              Days until renewal:
+            </span>
             <Badge
               variant={isImminent ? "destructive" : "secondary"}
               className="font-semibold"
@@ -76,34 +81,38 @@ export function RenewalCard({ renewal, isImminent }: RenewalCardProps) {
             </Badge>
           </div>
 
-          <div className="flex flex-row gap-2">
-            <span className="text-muted-foreground">Billing cycle:</span>
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <span className="shrink-0 text-sm text-muted-foreground">
+              Billing cycle:
+            </span>
             <span className="font-semibold capitalize">
               {subscription.billingCycle}
             </span>
           </div>
 
           {subscription.category && (
-            <div className="flex flex-row gap-2">
-              <span className="text-muted-foreground">Category:</span>
+            <div className="flex flex-row flex-wrap items-center gap-2">
+              <span className="shrink-0 text-sm text-muted-foreground">
+                Category:
+              </span>
               <span className="font-semibold">{subscription.category}</span>
             </div>
           )}
         </div>
 
         <div className="flex flex-row justify-center gap-1">
-          <span className="self-start text-2xl font-extralight tracking-tight text-muted-foreground">
+          <span className="self-start text-xl font-extralight tracking-tight text-muted-foreground sm:text-2xl">
             {currency}
           </span>
           <span
             className={cn(
-              "self-center py-1.5 text-4xl font-semibold tracking-tighter",
+              "self-center py-1.5 text-3xl font-semibold tracking-tighter sm:text-4xl",
               isImminent && "text-red-600 dark:text-red-400"
             )}
           >
             {cost}
           </span>
-          <span className="self-end text-2xl font-extralight tracking-tight text-muted-foreground">
+          <span className="self-end text-xl font-extralight tracking-tight text-muted-foreground sm:text-2xl">
             {billingPerUnit}
           </span>
         </div>
