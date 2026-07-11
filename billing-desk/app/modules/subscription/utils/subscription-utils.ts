@@ -1,5 +1,8 @@
 import { formatCurrency } from "~/shared/utils/format-utils"
-import type { Subscription } from "~/subscription/types/subscription-model"
+import type {
+  Renewal,
+  Subscription,
+} from "~/subscription/types/subscription-model"
 
 export function calculateMonthlyCost(subscriptions: Subscription[]): string {
   // TODO: fix up calculation for multiple currencies
@@ -31,4 +34,33 @@ export function formatTotalMonthlySpending(total: number) {
     : `$${total.toFixed(2)}`
 
   return totalMonthlyDisplay
+}
+
+export function computeSameDayWarningRenewals(
+  renewals: Renewal[],
+  warningThreshold: number
+): [string, Renewal[]][] {
+  const sameDayRenewals = renewals.reduce<[string, Renewal[]][]>(
+    (acc, renewal) => {
+      const dateLabel = renewal.nextBillingDate.nextBillingDate.toDateString()
+
+      let group = acc.find(([date]) => date === dateLabel)
+
+      if (!group) {
+        group = [dateLabel, []]
+        acc.push(group)
+      }
+
+      const [, renewals] = group
+      renewals.push(renewal)
+      return acc
+    },
+    []
+  )
+
+  const warningDates = sameDayRenewals.filter(
+    ([, renewals]) => renewals.length >= warningThreshold
+  )
+
+  return warningDates
 }
