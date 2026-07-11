@@ -14,3 +14,12 @@ export interface Subscription {
   status: SubscriptionStatus
   category: string
 }
+
+export interface BillingDate {
+  nextBillingDate: Date
+}
+
+export interface Renewal {
+  nextBillingDate: BillingDate
+  subscription: Subscription
+}

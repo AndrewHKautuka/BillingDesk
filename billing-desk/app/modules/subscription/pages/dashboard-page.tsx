@@ -46,7 +46,7 @@ export function DashboardPage() {
     deleteSubscription,
     toggleSubscriptionStatus,
   } = useMockSubscriptions()
-  const { total } = useMockMonthlyTotal(subscriptions)
+  const { total } = useMockMonthlyTotal()
 
   const [formOpen, setFormOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
