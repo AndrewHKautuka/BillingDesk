@@ -40,25 +40,21 @@ export function computeSameDayWarningRenewals(
   renewals: Renewal[],
   warningThreshold: number
 ): [string, Renewal[]][] {
-  const sameDayRenewals = renewals.reduce<[string, Renewal[]][]>(
+  const renewalsByDate = renewals.reduce<Map<string, Renewal[]>>(
     (acc, renewal) => {
-      const dateLabel = renewal.nextBillingDate.nextBillingDate.toDateString()
+      const dateKey = renewal.nextBillingDate.nextBillingDate.toDateString()
 
-      let group = acc.find(([date]) => date === dateLabel)
-
-      if (!group) {
-        group = [dateLabel, []]
-        acc.push(group)
+      if (!acc.has(dateKey)) {
+        acc.set(dateKey, [])
       }
 
-      const [, renewals] = group
-      renewals.push(renewal)
+      acc.get(dateKey)!.push(renewal)
       return acc
     },
-    []
+    new Map<string, Renewal[]>()
   )
 
-  const warningDates = sameDayRenewals.filter(
+  const warningDates = Array.from(renewalsByDate.entries()).filter(
     ([, renewals]) => renewals.length >= warningThreshold
   )
 
