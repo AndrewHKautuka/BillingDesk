@@ -62,6 +62,7 @@ builder.Services.AddOpenApi("v1",
 								options.ConfigureNodaTime();
 								options.AddOperationTransformer<QueryParameterOperationTransformer>();
 								options.AddOperationTransformer<ProblemDetailsOperationTransformer>();
+								options.AddSchemaTransformer<ProblemDetailsSchemaTransformer>();
 							});
 
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>
