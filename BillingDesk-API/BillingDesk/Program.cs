@@ -17,6 +17,7 @@ var primaryConnectionString = builder.Configuration.GetConnectionString("Primary
 
 // Static configurations
 MapsterConfig.ApplyMapsterConfig();
+ValidatorOptionsConfig.ApplyValidatorOptionsConfig();
 
 // Add services to the container.
 // Singletons
