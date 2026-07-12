@@ -31,6 +31,8 @@ builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscrip
 builder.Services.AddScoped<IValidator<UpdateSubscriptionRequest>, UpdateSubscriptionRequestValidator>();
 builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQueryValidator>();
 
+builder.Services.AddProblemDetails();
+
 builder.Services.AddControllers(options =>
 	   {
 		   options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -64,8 +66,6 @@ builder.Services.AddDbContext<BillingDeskDbContext>(options =>
 {
 	options.UseConfiguredDbContext(primaryConnectionString);
 });
-
-builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
