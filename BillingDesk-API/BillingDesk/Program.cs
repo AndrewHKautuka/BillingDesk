@@ -31,7 +31,10 @@ builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscrip
 builder.Services.AddScoped<IValidator<UpdateSubscriptionRequest>, UpdateSubscriptionRequestValidator>();
 builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQueryValidator>();
 
-builder.Services.AddControllers()
+builder.Services.AddControllers(options =>
+	   {
+		   options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+	   })
 	   .AddJsonOptions(options =>
 	   {
 		   options.JsonSerializerOptions.ConfigureJsonSerializerOptions();
