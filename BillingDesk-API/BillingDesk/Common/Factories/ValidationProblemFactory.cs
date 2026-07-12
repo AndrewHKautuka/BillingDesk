@@ -1,5 +1,5 @@
 using System.Text.Json;
-using BillingDesk.Common.Types.Errors;
+using BillingDesk.Common.Types.Responses;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
