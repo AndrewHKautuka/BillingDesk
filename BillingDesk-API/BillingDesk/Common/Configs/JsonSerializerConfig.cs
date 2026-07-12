@@ -13,5 +13,6 @@ public static class JsonSerializerConfig
 		options.Converters
 			   .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 		options.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
+		options.NumberHandling = JsonNumberHandling.Strict;
 	}
 }
