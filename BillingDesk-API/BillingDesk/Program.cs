@@ -62,6 +62,8 @@ builder.Services.AddDbContext<BillingDeskDbContext>(options =>
 	options.UseConfiguredDbContext(primaryConnectionString);
 });
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -78,6 +80,9 @@ if (app.Environment.IsDevelopment())
 		options.DocumentTitle = "Billing Desk API - Swagger UI";
 	});
 }
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
 
