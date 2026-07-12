@@ -1,3 +1,4 @@
+using BillingDesk.Common.Factories;
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
@@ -24,7 +25,7 @@ public sealed class SubscriptionController(
 	[HttpPost]
 	public async Task<Results<
 			Ok<SubscriptionResponse>,
-			ValidationProblem,
+			ProblemHttpResult,
 			InternalServerError>>
 		CreateSubscription(
 			[FromBody] CreateSubscriptionRequest request,
@@ -37,7 +38,8 @@ public sealed class SubscriptionController(
 
 		if (!validationResult.IsValid)
 		{
-			return TypedResults.ValidationProblem(validationResult.ToDictionary());
+			return TypedResults.Problem(
+				ValidationProblemFactory.FromFluentValidation(validationResult, HttpContext.Request.Path));
 		}
 
 		var result = await subscriptionService.CreateSubscriptionAsync(
@@ -101,7 +103,7 @@ public sealed class SubscriptionController(
 	[HttpPut("{id:guid}")]
 	public async Task<Results<
 			Ok<SubscriptionResponse>,
-			ValidationProblem,
+			ProblemHttpResult,
 			NotFound,
 			InternalServerError>>
 		UpdateSubscription(
@@ -116,7 +118,8 @@ public sealed class SubscriptionController(
 
 		if (!validationResult.IsValid)
 		{
-			return TypedResults.ValidationProblem(validationResult.ToDictionary());
+			return TypedResults.Problem(
+				ValidationProblemFactory.FromFluentValidation(validationResult, HttpContext.Request.Path));
 		}
 
 		var result = await subscriptionService.UpdateSubscriptionAsync(
