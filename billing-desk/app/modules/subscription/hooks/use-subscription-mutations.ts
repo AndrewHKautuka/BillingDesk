@@ -9,6 +9,7 @@ import {
 } from "~/subscription/actions/subscription-actions"
 import {
   monthlyTotalQueryOptions,
+  subscriptionQueryOptions,
   subscriptionsQueryOptions,
 } from "~/subscription/queries/subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
@@ -59,7 +60,7 @@ export function useCreateSubscription(): UseMutationResult<
  * Mutation hook for updating an existing subscription.
  * Maps UpdateSubscriptionFormData to an UpdateSubscriptionRequest DTO,
  * calls the API, and maps the response back to the Subscription domain model.
- * On success, invalidates the "subscriptions" and "monthly-total" query caches.
+ * On success, invalidates the "subscriptions", "subscriptions/{id}", and "monthly-total" query caches.
  */
 export function useUpdateSubscription(): UseMutationResult<
   Subscription,
@@ -86,9 +87,12 @@ export function useUpdateSubscription(): UseMutationResult<
 
       return mapSubscriptionResponseToSubscription(response)
     },
-    onSuccess: () => {
+    onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({
         queryKey: subscriptionsQueryOptions().queryKey,
+      })
+      queryClient.invalidateQueries({
+        queryKey: subscriptionQueryOptions(id).queryKey,
       })
       queryClient.invalidateQueries({
         queryKey: monthlyTotalQueryOptions().queryKey,
