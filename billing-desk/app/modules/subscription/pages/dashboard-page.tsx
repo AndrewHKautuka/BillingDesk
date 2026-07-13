@@ -17,11 +17,11 @@ import {
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
+import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import {
-  useMockMonthlyTotal,
-  useMockSubscriptions,
-} from "~/subscription/hooks/use-mock-subscriptions"
-import { useSubscriptions } from "~/subscription/hooks/use-subscription-queries"
+  useMonthlyTotal,
+  useSubscriptions,
+} from "~/subscription/hooks/use-subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
 import {
@@ -52,7 +52,10 @@ export function DashboardPage() {
     deleteSubscription,
     toggleSubscriptionStatus,
   } = useMockSubscriptions()
-  const { total } = useMockMonthlyTotal()
+
+  const { data: totalResponse, isLoading: isLoadingTotal } = useMonthlyTotal()
+
+  const total = totalResponse?.total ?? 0
 
   const [formOpen, setFormOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -121,7 +124,7 @@ export function DashboardPage() {
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
 
-      {isLoading ? (
+      {isLoadingTotal ? (
         <MonthlySpendingCardSkeleton />
       ) : (
         <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
