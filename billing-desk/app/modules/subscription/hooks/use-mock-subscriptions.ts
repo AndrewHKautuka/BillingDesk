@@ -529,7 +529,7 @@ export function useMockSubscriptions() {
     inactiveSubscriptions: subscriptions.filter(
       (sub) => sub.status === "inactive"
     ),
-    isLoading: false,
+    isLoading: true,
     addSubscription,
     updateSubscription,
     deleteSubscription,
@@ -556,6 +556,6 @@ export function useMockMonthlyTotal() {
 
   return {
     total,
-    isLoading: false,
+    isLoading: true,
   }
 }

@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
+import { SubscriptionsDisplaySkeleton } from "~/subscription/components/skeletons/subscriptions-display"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionsDisplay } from "~/subscription/components/subscriptions-display"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
@@ -43,6 +44,7 @@ export function DashboardPage() {
     updateSubscription,
     deleteSubscription,
     toggleSubscriptionStatus,
+    isLoading,
   } = useMockSubscriptions()
   const { total } = useMockMonthlyTotal()
 
@@ -140,15 +142,19 @@ export function DashboardPage() {
         ) : null}
       </div>
 
-      <SubscriptionsDisplay
-        subscriptions={subscriptions}
-        displayStyle={displayStyle}
-        handleAddSubscription={handleAddSubscription}
-        handleEditSubscription={handleEditSubscription}
-        handleDeleteSubscription={handleDeleteSubscription}
-        handleSubscriptionToggleStatus={handleSubscriptionToggleStatus}
-        buttonClassName={BUTTON_CLASS_NAME}
-      />
+      {isLoading ? (
+        <SubscriptionsDisplaySkeleton />
+      ) : (
+        <SubscriptionsDisplay
+          subscriptions={subscriptions}
+          displayStyle={displayStyle}
+          handleAddSubscription={handleAddSubscription}
+          handleEditSubscription={handleEditSubscription}
+          handleDeleteSubscription={handleDeleteSubscription}
+          handleSubscriptionToggleStatus={handleSubscriptionToggleStatus}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      )}
 
       <SubscriptionFormDialog
         open={formOpen}
