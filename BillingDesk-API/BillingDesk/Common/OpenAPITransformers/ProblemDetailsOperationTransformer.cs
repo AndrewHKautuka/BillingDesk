@@ -6,7 +6,8 @@ namespace BillingDesk.Common.OpenAPITransformers;
 
 public sealed class ProblemDetailsOperationTransformer : IOpenApiOperationTransformer
 {
-	public async Task TransformAsync(OpenApiOperation operation,
+	public async Task TransformAsync(
+		OpenApiOperation operation,
 		OpenApiOperationTransformerContext context,
 		CancellationToken cancellationToken)
 	{

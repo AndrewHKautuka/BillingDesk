@@ -7,7 +7,8 @@ namespace BillingDesk.Common.OpenAPITransformers;
 
 public sealed class ProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
 {
-	public Task TransformAsync(OpenApiSchema schema,
+	public Task TransformAsync(
+		OpenApiSchema schema,
 		OpenApiSchemaTransformerContext context,
 		CancellationToken cancellationToken)
 	{

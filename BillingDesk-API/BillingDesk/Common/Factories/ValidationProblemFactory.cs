@@ -7,7 +7,9 @@ namespace BillingDesk.Common.Factories;
 
 public static class ValidationProblemFactory
 {
-	public static ProblemDetails FromFluentValidation(ValidationResult result, string instance)
+	public static ProblemDetails FromFluentValidation(
+		ValidationResult result,
+		string instance)
 	{
 		var errors = result.Errors
 						   .Select(e => new ValidationError(ToPointer(e.PropertyName),
@@ -25,7 +27,9 @@ public static class ValidationProblemFactory
 																		  .ConvertName));
 	}
 
-	private static ProblemDetails Build(IEnumerable<ValidationError> errors, string instance)
+	private static ProblemDetails Build(
+		IEnumerable<ValidationError> errors,
+		string instance)
 	{
 		return new ProblemDetails
 			   {
@@ -33,7 +37,10 @@ public static class ValidationProblemFactory
 				   Title = "One or more validation errors occurred.",
 				   Status = StatusCodes.Status400BadRequest,
 				   Instance = instance,
-				   Extensions = { ["errors"] = errors.ToArray() }
+				   Extensions =
+				   {
+					   ["errors"] = errors.ToArray()
+				   }
 			   };
 	}
 }
