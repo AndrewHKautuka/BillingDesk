@@ -1,4 +1,3 @@
-import type { ApiError } from "~/shared/types/api-error-types"
 import type { SubscriptionStatus } from "~/subscription/types/subscription-enums"
 import type {
   MonthlyTotalResponse,
@@ -10,7 +9,7 @@ import apiClient from "@/lib/axios-client"
 
 export async function fetchSubscriptions(
   status?: SubscriptionStatus
-): Promise<SubscriptionResponse[] | ApiError> {
+): Promise<SubscriptionResponse[]> {
   const response = await apiClient.get<SubscriptionResponse[]>(
     "/subscriptions",
     {
@@ -25,7 +24,7 @@ export async function fetchSubscriptions(
 
 export async function fetchSubscription(
   id: string
-): Promise<SubscriptionResponse | ApiError> {
+): Promise<SubscriptionResponse> {
   const response = await apiClient.get<SubscriptionResponse>(
     `/subscriptions/${id}`
   )
@@ -35,7 +34,7 @@ export async function fetchSubscription(
 
 export async function fetchUpcomingRenewals(
   days?: number
-): Promise<RenewalResponse[] | ApiError> {
+): Promise<RenewalResponse[]> {
   const response = await apiClient.get<RenewalResponse[]>(
     "/subscriptions/upcoming",
     {
@@ -48,9 +47,7 @@ export async function fetchUpcomingRenewals(
   return response.data
 }
 
-export async function fetchMonthlyTotal(): Promise<
-  MonthlyTotalResponse | ApiError
-> {
+export async function fetchMonthlyTotal(): Promise<MonthlyTotalResponse> {
   const response = await apiClient.get<MonthlyTotalResponse>(
     "/subscriptions/monthly-total"
   )

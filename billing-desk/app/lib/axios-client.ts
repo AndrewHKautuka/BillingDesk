@@ -16,16 +16,16 @@ export const apiClient: AxiosInstance = axios.create({
   },
 })
 
-// Response interceptor: transform axios errors into typed error shapes so
-// callers receive a resolved value (ApiError) rather than a rejected promise.
-// This lets the data/action layer handle errors consistently without try/catch.
+// Response interceptor: transform axios errors into typed ApiError shapes and
+// reject the promise so callers (Tanstack Query, mutation hooks) receive them
+// as thrown exceptions rather than resolved values.
 apiClient.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
     if (axios.isAxiosError(error)) {
-      // Server responded with a non-2xx status - return Problem Details payload
+      // Server responded with a non-2xx status — reject with ProblemDetails payload
       if (error.response) {
-        return Promise.resolve(error.response.data as ProblemDetails)
+        return Promise.reject(error.response.data as ProblemDetails)
       }
 
       // Request was made but timed out (axios sets code to "ECONNABORTED")
@@ -34,7 +34,7 @@ apiClient.interceptors.response.use(
           type: "timeout",
           message: "The request took too long. Please try again.",
         }
-        return Promise.resolve(timeoutError)
+        return Promise.reject(timeoutError)
       }
 
       // Request was made but no response received (network failure)
@@ -42,7 +42,7 @@ apiClient.interceptors.response.use(
         type: "network",
         message: "Unable to reach the server. Please check your connection.",
       }
-      return Promise.resolve(networkError)
+      return Promise.reject(networkError)
     }
 
     // Completely unexpected error (not an axios error)
@@ -50,7 +50,7 @@ apiClient.interceptors.response.use(
       type: "network",
       message: "An unexpected error occurred.",
     }
-    return Promise.resolve(unknownError)
+    return Promise.reject(unknownError)
   }
 )
 

@@ -1,4 +1,3 @@
-import type { ApiError } from "~/shared/types/api-error-types"
 import type {
   CreateSubscriptionRequest,
   UpdateSubscriptionRequest,
@@ -9,7 +8,7 @@ import apiClient from "@/lib/axios-client"
 
 export async function createSubscription(
   data: CreateSubscriptionRequest
-): Promise<SubscriptionResponse | ApiError> {
+): Promise<SubscriptionResponse> {
   const response = await apiClient.post<SubscriptionResponse>(
     "/subscriptions",
     data
@@ -21,7 +20,7 @@ export async function createSubscription(
 export async function updateSubscription(
   id: string,
   data: UpdateSubscriptionRequest
-): Promise<SubscriptionResponse | ApiError> {
+): Promise<SubscriptionResponse> {
   const response = await apiClient.put<SubscriptionResponse>(
     `/subscriptions/${id}`,
     data
@@ -30,13 +29,13 @@ export async function updateSubscription(
   return response.data
 }
 
-export async function deleteSubscription(id: string): Promise<void | ApiError> {
+export async function deleteSubscription(id: string): Promise<void> {
   await apiClient.delete(`/subscriptions/${id}`)
 }
 
 export async function toggleSubscriptionStatus(
   id: string
-): Promise<SubscriptionResponse | ApiError> {
+): Promise<SubscriptionResponse> {
   const response = await apiClient.patch<SubscriptionResponse>(
     `/subscriptions/${id}/toggle-status`
   )
