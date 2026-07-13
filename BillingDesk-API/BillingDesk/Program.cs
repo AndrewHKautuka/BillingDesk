@@ -29,10 +29,19 @@ builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
 
-// Services
+// Validators
 builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscriptionRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateSubscriptionRequest>, UpdateSubscriptionRequestValidator>();
 builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQueryValidator>();
+
+builder.Services.AddCors(options =>
+{
+	var frontendUrl = builder.Configuration.GetValue<string>("FrontendUrl")!;
+	options.AddDefaultPolicy(policy =>
+	{
+		policy.WithOrigins(frontendUrl).AllowAnyMethod().AllowAnyHeader();
+	});
+});
 
 builder.Services.AddProblemDetails();
 
@@ -107,6 +116,8 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
