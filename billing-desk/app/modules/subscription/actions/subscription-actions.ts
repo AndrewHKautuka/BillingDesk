@@ -29,3 +29,17 @@ export async function updateSubscription(
 
   return response.data
 }
+
+export async function deleteSubscription(id: string): Promise<void | ApiError> {
+  await apiClient.delete(`/subscriptions/${id}`)
+}
+
+export async function toggleSubscriptionStatus(
+  id: string
+): Promise<SubscriptionResponse | ApiError> {
+  const response = await apiClient.patch<SubscriptionResponse>(
+    `/subscriptions/${id}/toggle-status`
+  )
+
+  return response.data
+}
