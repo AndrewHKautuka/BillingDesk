@@ -1,3 +1,4 @@
+using BillingDesk.Common.Factories;
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
@@ -28,7 +29,7 @@ public sealed class SubscriptionCalculatorController(
 	public async Task<Results<
 			Ok<IReadOnlyList<RenewalResponse>>,
 			BadRequest,
-			ValidationProblem,
+			ProblemHttpResult,
 			InternalServerError>>
 		GetUpcomingRenewals(
 			[FromQuery] UpcomingRenewalsQuery query,
@@ -41,7 +42,8 @@ public sealed class SubscriptionCalculatorController(
 
 		if (!validationResult.IsValid)
 		{
-			return TypedResults.ValidationProblem(validationResult.ToDictionary());
+			return TypedResults.Problem(
+				ValidationProblemFactory.FromFluentValidation(validationResult, HttpContext.Request.Path));
 		}
 
 		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
