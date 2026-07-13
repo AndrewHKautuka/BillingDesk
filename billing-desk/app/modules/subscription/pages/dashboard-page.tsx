@@ -21,6 +21,7 @@ import {
   useMockMonthlyTotal,
   useMockSubscriptions,
 } from "~/subscription/hooks/use-mock-subscriptions"
+import { useSubscriptions } from "~/subscription/hooks/use-subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
 import {
@@ -38,6 +39,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 export function DashboardPage() {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
+  const { isLoading } = useSubscriptions()
+
   const {
     subscriptions,
     inactiveSubscriptions,
@@ -45,7 +48,6 @@ export function DashboardPage() {
     updateSubscription,
     deleteSubscription,
     toggleSubscriptionStatus,
-    isLoading,
   } = useMockSubscriptions()
   const { total } = useMockMonthlyTotal()
 
