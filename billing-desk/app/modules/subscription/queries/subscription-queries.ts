@@ -1,13 +1,26 @@
 import { queryOptions } from "@tanstack/react-query"
 import type { ApiError } from "~/shared/types/api-error-types"
-import { SUBSCRIPTION_KEYS } from "~/subscription/constants/subscription-query-constants"
 import {
+  MONTHLY_TOTAL_KEYS,
+  RENEWAL_KEYS,
+  SUBSCRIPTION_KEYS,
+} from "~/subscription/constants/subscription-query-constants"
+import {
+  fetchMonthlyTotal,
   fetchSubscription,
   fetchSubscriptions,
+  fetchUpcomingRenewals,
 } from "~/subscription/data/subscription-data"
 import type { SubscriptionStatus } from "~/subscription/types/subscription-enums"
-import type { Subscription } from "~/subscription/types/subscription-model"
-import { mapSubscriptionResponseToSubscription } from "~/subscription/utils/mappers"
+import type {
+  Renewal,
+  Subscription,
+} from "~/subscription/types/subscription-model"
+import type { MonthlyTotalResponse } from "~/subscription/types/subscription-responses"
+import {
+  mapRenewalResponseToRenewal,
+  mapSubscriptionResponseToSubscription,
+} from "~/subscription/utils/mappers"
 
 /**
  * Query options factory for fetching a list of subscriptions, optionally filtered by status.
@@ -33,4 +46,26 @@ export const subscriptionQueryOptions = (id: string) =>
 
       return mapSubscriptionResponseToSubscription(response)
     },
+  })
+
+/**
+ * Query options factory for fetching upcoming renewals within the given number of days.
+ */
+export const upcomingRenewalsQueryOptions = (days: number) =>
+  queryOptions<Renewal[], ApiError>({
+    queryKey: RENEWAL_KEYS.upcomingWithin(days),
+    queryFn: async () => {
+      const responses = await fetchUpcomingRenewals(days)
+
+      return responses.map(mapRenewalResponseToRenewal)
+    },
+  })
+
+/**
+ * Query options factory for fetching the monthly total cost.
+ */
+export const monthlyTotalQueryOptions = () =>
+  queryOptions<MonthlyTotalResponse, ApiError>({
+    queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(),
+    queryFn: () => fetchMonthlyTotal(),
   })
