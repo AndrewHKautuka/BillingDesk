@@ -10,13 +10,19 @@ public static class ValidationProblemFactory
 	public static ProblemDetails FromFluentValidation(ValidationResult result, string instance)
 	{
 		var errors = result.Errors
-						   .Select(e => new ValidationError("#/" + string.Join('/',
-																			   e.PropertyName
-																				.Split('.')
-																				.Select(JsonNamingPolicy.CamelCase
-																										.ConvertName)),
+						   .Select(e => new ValidationError(ToPointer(e.PropertyName),
 															e.ErrorMessage));
 		return Build(errors, instance);
+	}
+
+	private static string ToPointer(string dottedPath)
+	{
+		return string.IsNullOrEmpty(dottedPath)
+				   ? "#"
+				   : "#/" + string.Join('/',
+										dottedPath.Split('.')
+												  .Select(JsonNamingPolicy.CamelCase
+																		  .ConvertName));
 	}
 
 	private static ProblemDetails Build(IEnumerable<ValidationError> errors, string instance)
