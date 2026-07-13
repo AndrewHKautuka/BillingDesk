@@ -13,3 +13,13 @@ export const SUBSCRIPTION_KEYS = {
   details: () => [...SUBSCRIPTION_KEYS.all, "detail"] as const,
   detail: (id: string) => [...SUBSCRIPTION_KEYS.details(), id] as const,
 }
+
+export const RENEWAL_KEYS = {
+  all: ["renewals"] as const,
+  upcoming: () => [...RENEWAL_KEYS.all, "upcoming"] as const,
+  upcomingWithin: (days: number) => [...RENEWAL_KEYS.upcoming(), days] as const,
+}
+
+export const MONTHLY_TOTAL_KEYS = {
+  monthlyTotal: () => ["monthly-total"] as const,
+}
