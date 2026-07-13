@@ -6,10 +6,8 @@ import { toast } from "sonner"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
-import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
-import { SubscriptionTable } from "~/subscription/components/subscription-table"
-import { SubscriptionsDisplayEmpty } from "~/subscription/components/subscriptions-display-empty"
+import { SubscriptionsDisplay } from "~/subscription/components/subscriptions-display"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
@@ -142,31 +140,15 @@ export function DashboardPage() {
         ) : null}
       </div>
 
-      {subscriptions.length === 0 ? (
-        <SubscriptionsDisplayEmpty
-          handleAddSubscription={handleAddSubscription}
-        />
-      ) : displayStyle[0] === "list" ? (
-        <SubscriptionTable
-          subscriptions={subscriptions}
-          onEdit={handleEditSubscription}
-          onDelete={handleDeleteSubscription}
-          onToggleStatus={handleSubscriptionToggleStatus}
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {subscriptions.map((subscription) => (
-            <SubscriptionCard
-              key={subscription.id}
-              subscription={subscription}
-              onEdit={handleEditSubscription}
-              onDelete={handleDeleteSubscription}
-              onToggleStatus={handleSubscriptionToggleStatus}
-              buttonClassName={BUTTON_CLASS_NAME}
-            />
-          ))}
-        </div>
-      )}
+      <SubscriptionsDisplay
+        subscriptions={subscriptions}
+        displayStyle={displayStyle}
+        handleAddSubscription={handleAddSubscription}
+        handleEditSubscription={handleEditSubscription}
+        handleDeleteSubscription={handleDeleteSubscription}
+        handleSubscriptionToggleStatus={handleSubscriptionToggleStatus}
+        buttonClassName={BUTTON_CLASS_NAME}
+      />
 
       <SubscriptionFormDialog
         open={formOpen}
