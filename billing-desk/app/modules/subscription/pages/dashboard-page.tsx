@@ -39,11 +39,14 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 export function DashboardPage() {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
-  const { isLoading } = useSubscriptions()
+  const { data, isLoading } = useSubscriptions()
+
+  const subscriptions = data ?? []
+  const inactiveSubscriptions = subscriptions.filter(
+    (sub) => sub.status === "inactive"
+  )
 
   const {
-    subscriptions,
-    inactiveSubscriptions,
     addSubscription,
     updateSubscription,
     deleteSubscription,
