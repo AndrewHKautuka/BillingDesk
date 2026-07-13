@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
+import { MonthlySpendingCardSkeleton } from "~/subscription/components/skeletons/monthly-spending-card"
 import { SubscriptionsDisplaySkeleton } from "~/subscription/components/skeletons/subscriptions-display"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionsDisplay } from "~/subscription/components/subscriptions-display"
@@ -115,7 +116,11 @@ export function DashboardPage() {
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
 
-      <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
+      {isLoading ? (
+        <MonthlySpendingCardSkeleton />
+      ) : (
+        <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
+      )}
 
       {!isLoading &&
         inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
