@@ -1,5 +1,6 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using BillingDesk.Subscription.Seeders;
 using BillingDesk.Common.Factories;
 using BillingDesk.Common.OpenAPITransformers;
 using BillingDesk.Subscription.Services;
@@ -28,6 +29,7 @@ builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
+builder.Services.AddScoped<SubscriptionSeeder>();
 
 // Validators
 builder.Services.AddScoped<IValidator<CreateSubscriptionRequest>, CreateSubscriptionRequestValidator>();
@@ -124,5 +126,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHealthChecksConfig("/health");
+
+using (var scope = app.Services.CreateScope())
+{
+	await scope.ServiceProvider.GetRequiredService<SubscriptionSeeder>().SeedAsync();
+}
 
 await app.RunAsync();
