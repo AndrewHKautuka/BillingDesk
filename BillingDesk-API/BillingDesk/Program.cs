@@ -1,15 +1,17 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
+using BillingDesk.Common.Factories;
 using BillingDesk.Common.OpenAPITransformers;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Validators;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
+using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +70,20 @@ builder.Services.AddOpenApi("v1",
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>
 {
 	options.UseConfiguredDbContext(primaryConnectionString);
+});
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+	options.InvalidModelStateResponseFactory = context =>
+		new ObjectResult(ValidationProblemFactory.FromModelState(context.ModelState,
+																 context.HttpContext.Request.Path))
+		{
+			StatusCode = StatusCodes.Status400BadRequest,
+			ContentTypes =
+			{
+				"application/problem+json"
+			}
+		};
 });
 
 var app = builder.Build();
