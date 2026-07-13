@@ -8,6 +8,10 @@ import {
   updateSubscription,
 } from "~/subscription/actions/subscription-actions"
 import {
+  MONTHLY_TOTAL_KEYS,
+  SUBSCRIPTION_KEYS,
+} from "~/subscription/constants/subscription-query-constants"
+import {
   monthlyTotalQueryOptions,
   subscriptionQueryOptions,
   subscriptionsQueryOptions,
@@ -103,8 +107,10 @@ export function useUpdateSubscription(): UseMutationResult<
 
 /**
  * Mutation hook for toggling a subscription's active/inactive status.
- * Calls the API and maps the response back to the Subscription domain model.
- * On success, invalidates the "subscriptions" and "monthly-total" query caches.
+ * Implements optimistic updates: immediately reflects the toggled status in the
+ * cache before the API responds, and rolls back on error.
+ * On success, updates the cache with the actual API response and invalidates
+ * the "subscriptions" and "monthly-total" query caches.
  */
 export function useToggleSubscriptionStatus(): UseMutationResult<
   Subscription,
@@ -113,18 +119,79 @@ export function useToggleSubscriptionStatus(): UseMutationResult<
 > {
   const queryClient = useQueryClient()
 
-  return useMutation<Subscription, ApiError, string>({
+  return useMutation<
+    Subscription,
+    ApiError,
+    string,
+    {
+      previousSubscriptions: Subscription[] | undefined
+    }
+  >({
     mutationFn: async (id: string) => {
       const response = await toggleSubscriptionStatus(id)
 
       return mapSubscriptionResponseToSubscription(response)
     },
-    onSuccess: () => {
+
+    onMutate: async (id: string) => {
+      // Cancel any outgoing refetches to avoid overwriting the optimistic update
+      await queryClient.cancelQueries({
+        queryKey: SUBSCRIPTION_KEYS.all,
+      })
+
+      // Snapshot the current cache value for potential rollback
+      const previousSubscriptions = queryClient.getQueryData<Subscription[]>(
+        SUBSCRIPTION_KEYS.all
+      )
+
+      // Optimistically toggle the status in the cache
+      queryClient.setQueriesData<Subscription[]>(
+        {
+          queryKey: SUBSCRIPTION_KEYS.all,
+        },
+        (old) =>
+          old?.map((sub) =>
+            sub.id === id
+              ? {
+                  ...sub,
+                  status: sub.status === "active" ? "inactive" : "active",
+                }
+              : sub
+          )
+      )
+
+      return {
+        previousSubscriptions,
+      }
+    },
+
+    onSuccess: (subscription) => {
+      // Replace the optimistic entry with the actual response from the server
+      queryClient.setQueriesData<Subscription[]>(
+        {
+          queryKey: SUBSCRIPTION_KEYS.all,
+        },
+        (old) =>
+          old?.map((sub) => (sub.id === subscription.id ? subscription : sub))
+      )
+    },
+
+    onError: (_err, _id, context) => {
+      // Roll back to the snapshot if the mutation fails
+      if (context?.previousSubscriptions !== undefined) {
+        queryClient.setQueryData(
+          SUBSCRIPTION_KEYS.all,
+          context.previousSubscriptions
+        )
+      }
+    },
+
+    onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: subscriptionsQueryOptions().queryKey,
+        queryKey: SUBSCRIPTION_KEYS.all,
       })
       queryClient.invalidateQueries({
-        queryKey: monthlyTotalQueryOptions().queryKey,
+        queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(),
       })
     },
   })
