@@ -37,6 +37,7 @@ interface SubscriptionFormProps {
   formId?: string
   subscription?: Subscription
   onSubmit: (data: SubscriptionFormData) => void
+  formError?: string
   inputClassName?: string
 }
 
@@ -44,6 +45,7 @@ export function SubscriptionForm({
   formId,
   subscription,
   onSubmit,
+  formError,
   inputClassName,
 }: SubscriptionFormProps) {
   const schema = !subscription
@@ -99,7 +101,11 @@ export function SubscriptionForm({
   }
 
   return (
-    <form id={formId} onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      id={formId}
+      onSubmit={handleSubmit(handleFormSubmit)}
+      data-invalid={formError ? "true" : undefined}
+    >
       <FieldGroup>
         {/* Name Field */}
         <Controller
