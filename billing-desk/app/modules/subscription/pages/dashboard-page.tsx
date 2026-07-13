@@ -117,12 +117,13 @@ export function DashboardPage() {
 
       <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
 
-      {inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
-        <UnusedSubscriptionsBanner
-          count={inactiveSubscriptions.length}
-          potentialSavings={potentialSavingsStr}
-        />
-      )}
+      {!isLoading &&
+        inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
+          <UnusedSubscriptionsBanner
+            count={inactiveSubscriptions.length}
+            potentialSavings={potentialSavingsStr}
+          />
+        )}
 
       <div className="flex flex-row-reverse justify-between">
         <ToggleGroup
@@ -130,6 +131,7 @@ export function DashboardPage() {
           spacing={0}
           value={displayStyle}
           onValueChange={handleDisplayStyleChange}
+          disabled={isLoading}
         >
           <ToggleGroupItem value="list">List</ToggleGroupItem>
           <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
@@ -138,6 +140,7 @@ export function DashboardPage() {
         {subscriptions.length !== 0 ? (
           <AddSubscriptionDialogTrigger
             handleAddSubscription={handleAddSubscription}
+            disabled={isLoading}
           />
         ) : null}
       </div>
