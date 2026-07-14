@@ -3,6 +3,11 @@
 import { useState } from "react"
 
 import { toast } from "sonner"
+import type { ApiError, ProblemDetails } from "~/shared/types/api-error-types"
+import {
+  getApiErrorMessage,
+  isProblemDetails,
+} from "~/shared/utils/problem-details-utils"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
@@ -94,20 +99,31 @@ export function DashboardPage() {
   }
 
   const handleFormSubmission = async (data: SubscriptionFormData) => {
-    if (selectedSubscription) {
-      // Edit mode: update existing subscription
-      updateSubscription(
-        selectedSubscription.id,
-        data as UpdateSubscriptionFormData
-      )
-    } else {
-      // Add mode: create new subscription with generated UUID
-      await addSubscription(data as CreateSubscriptionFormData)
-      toast.success(`Created new subscription ${data.name}`)
-    }
+    try {
+      if (selectedSubscription) {
+        // Edit mode: update existing subscription
+        updateSubscription(
+          selectedSubscription.id,
+          data as UpdateSubscriptionFormData
+        )
+      } else {
+        // Add mode: create new subscription with generated UUID
+        await addSubscription(data as CreateSubscriptionFormData)
+        toast.success(`Created new subscription ${data.name}`)
+      }
 
-    setFormOpen(false)
-    setSelectedSubscription(undefined)
+      setFormOpen(false)
+      setSelectedSubscription(undefined)
+    } catch (error) {
+      const apiError = error as ApiError
+
+      toast.error(getApiErrorMessage(apiError))
+
+      if (isProblemDetails(apiError) && apiError.status === 400) {
+        return apiError as ProblemDetails
+      }
+      // Keep dialog open on error so the user doesn't lose their input
+    }
   }
 
   const handleDeleteConfirmed = () => {
