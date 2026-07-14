@@ -64,7 +64,11 @@ export function DashboardPage() {
 
   const { toggleSubscriptionStatus } = useMockSubscriptions()
 
-  const { data: totalResponse, isLoading: isLoadingTotal } = useMonthlyTotal()
+  const {
+    data: totalResponse,
+    isLoading: isLoadingTotal,
+    isError: isTotalError,
+  } = useMonthlyTotal()
 
   const total = totalResponse?.total ?? 0
 
@@ -157,7 +161,7 @@ export function DashboardPage() {
 
       {isLoadingTotal ? (
         <MonthlySpendingCardSkeleton />
-      ) : isError ? null : (
+      ) : isError || isTotalError ? null : (
         <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
       )}
 
