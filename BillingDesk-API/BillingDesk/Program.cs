@@ -111,6 +111,8 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 		};
 });
 
+builder.Services.Configure<FxRatesConfig>(configuration.GetSection(FxRatesConfig.SectionName));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
