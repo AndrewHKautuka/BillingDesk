@@ -1,3 +1,4 @@
+import { formatDateForInput } from "~/shared/utils/date-formatters"
 import type {
   Renewal,
   Subscription,
@@ -46,6 +47,7 @@ export function mapSubscriptionFormDataToSubscriptionCreateRequest(
 ): CreateSubscriptionRequest {
   return {
     ...formData,
+    startDate: formatDateForInput(formData.startDate),
   }
 }
 
@@ -57,5 +59,6 @@ export function mapSubscriptionFormDataToSubscriptionUpdateRequest(
 ): UpdateSubscriptionRequest {
   return {
     ...formData,
+    startDate: formatDateForInput(formData.startDate),
   }
 }
