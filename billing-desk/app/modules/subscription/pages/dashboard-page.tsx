@@ -179,7 +179,7 @@ export function DashboardPage() {
           <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
         </ToggleGroup>
 
-        {subscriptions.length !== 0 ? (
+        {isLoading || subscriptions.length !== 0 ? (
           <AddSubscriptionDialogTrigger
             handleAddSubscription={handleAddSubscription}
             disabled={isLoading}
