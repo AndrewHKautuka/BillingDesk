@@ -23,7 +23,10 @@ import {
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
 import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
-import { useCreateSubscription } from "~/subscription/hooks/use-subscription-mutations"
+import {
+  useCreateSubscription,
+  useUpdateSubscription,
+} from "~/subscription/hooks/use-subscription-mutations"
 import {
   useMonthlyTotal,
   useSubscriptions,
@@ -53,8 +56,9 @@ export function DashboardPage() {
   )
 
   const { mutateAsync: addSubscription } = useCreateSubscription()
+  const { mutateAsync: updateSubscription } = useUpdateSubscription()
 
-  const { updateSubscription, deleteSubscription, toggleSubscriptionStatus } =
+  const { deleteSubscription, toggleSubscriptionStatus } =
     useMockSubscriptions()
 
   const { data: totalResponse, isLoading: isLoadingTotal } = useMonthlyTotal()
@@ -102,10 +106,11 @@ export function DashboardPage() {
     try {
       if (selectedSubscription) {
         // Edit mode: update existing subscription
-        updateSubscription(
-          selectedSubscription.id,
-          data as UpdateSubscriptionFormData
-        )
+        updateSubscription({
+          id: selectedSubscription.id,
+          data: data as UpdateSubscriptionFormData,
+        })
+        toast.success(`Updated ${data.name}`)
       } else {
         // Add mode: create new subscription with generated UUID
         await addSubscription(data as CreateSubscriptionFormData)
