@@ -16,6 +16,7 @@ import { UnusedSubscriptionsBannerError } from "~/subscription/components/errors
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
 import { MonthlySpendingCardSkeleton } from "~/subscription/components/skeletons/monthly-spending-card"
 import { SubscriptionsDisplaySkeleton } from "~/subscription/components/skeletons/subscriptions-display"
+import { UnusedSubscriptionsBannerSkeleton } from "~/subscription/components/skeletons/unused-subscriptions-banner"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
 import { SubscriptionsDisplay } from "~/subscription/components/subscriptions-display"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
@@ -174,7 +175,9 @@ export function DashboardPage() {
         <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
       )}
 
-      {isLoading ? null : isError ? (
+      {isLoading ? (
+        <UnusedSubscriptionsBannerSkeleton />
+      ) : isError ? (
         <UnusedSubscriptionsBannerError error={error} />
       ) : inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD ? (
         <UnusedSubscriptionsBanner
