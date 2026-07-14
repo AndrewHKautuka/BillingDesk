@@ -5,7 +5,7 @@ export interface CreateSubscriptionRequest {
   cost: number
   currency: Currency
   billingCycle: BillingCycle
-  startDate: Date
+  startDate: string
   category: string
 }
 
@@ -14,6 +14,6 @@ export interface UpdateSubscriptionRequest {
   cost: number
   currency: Currency
   billingCycle: BillingCycle
-  startDate: Date
+  startDate: string
   category: string
 }

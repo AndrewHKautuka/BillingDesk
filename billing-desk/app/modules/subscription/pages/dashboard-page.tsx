@@ -3,13 +3,22 @@
 import { useState } from "react"
 
 import { toast } from "sonner"
+import type { ApiError, ProblemDetails } from "~/shared/types/api-error-types"
+import {
+  getApiErrorMessage,
+  isProblemDetails,
+} from "~/shared/utils/problem-details-utils"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
+import { MonthlySpendingCardError } from "~/subscription/components/errors/monthly-spending-card-error"
+import { SubscriptionsDisplayError } from "~/subscription/components/errors/subscription-display-error"
+import { UnusedSubscriptionsBannerError } from "~/subscription/components/errors/unused-subscriptions-banner-error"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
-import { SubscriptionCard } from "~/subscription/components/subscription-card"
+import { MonthlySpendingCardSkeleton } from "~/subscription/components/skeletons/monthly-spending-card"
+import { SubscriptionsDisplaySkeleton } from "~/subscription/components/skeletons/subscriptions-display"
+import { UnusedSubscriptionsBannerSkeleton } from "~/subscription/components/skeletons/unused-subscriptions-banner"
 import { SubscriptionFormDialog } from "~/subscription/components/subscription-form-dialog"
-import { SubscriptionTable } from "~/subscription/components/subscription-table"
-import { SubscriptionsDisplayEmpty } from "~/subscription/components/subscriptions-display-empty"
+import { SubscriptionsDisplay } from "~/subscription/components/subscriptions-display"
 import { UnusedSubscriptionsBanner } from "~/subscription/components/unused-subscriptions-banner"
 import {
   BUTTON_CLASS_NAME,
@@ -17,10 +26,16 @@ import {
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
+import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import {
-  useMockMonthlyTotal,
-  useMockSubscriptions,
-} from "~/subscription/hooks/use-mock-subscriptions"
+  useCreateSubscription,
+  useDeleteSubscription,
+  useUpdateSubscription,
+} from "~/subscription/hooks/use-subscription-mutations"
+import {
+  useMonthlyTotal,
+  useSubscriptions,
+} from "~/subscription/hooks/use-subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
 import {
@@ -38,15 +53,27 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 export function DashboardPage() {
   const { displayStyle, setDisplayStyle } = useDisplayPreferences()
 
+  const { data, isLoading, isError, error, refetch } = useSubscriptions()
+
+  const subscriptions = data ?? []
+  const inactiveSubscriptions = subscriptions.filter(
+    (sub) => sub.status === "inactive"
+  )
+
+  const { mutateAsync: addSubscription } = useCreateSubscription()
+  const { mutateAsync: updateSubscription } = useUpdateSubscription()
+  const { mutateAsync: deleteSubscription } = useDeleteSubscription()
+
+  const { toggleSubscriptionStatus } = useMockSubscriptions()
+
   const {
-    subscriptions,
-    inactiveSubscriptions,
-    addSubscription,
-    updateSubscription,
-    deleteSubscription,
-    toggleSubscriptionStatus,
-  } = useMockSubscriptions()
-  const { total } = useMockMonthlyTotal()
+    data: totalResponse,
+    isLoading: isLoadingTotal,
+    isError: isTotalError,
+    error: totalError,
+  } = useMonthlyTotal()
+
+  const total = totalResponse?.total ?? 0
 
   const [formOpen, setFormOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -85,44 +112,79 @@ export function DashboardPage() {
     )
   }
 
-  const handleFormSubmission = (data: SubscriptionFormData) => {
-    if (selectedSubscription) {
-      // Edit mode: update existing subscription
-      updateSubscription(
-        selectedSubscription.id,
-        data as UpdateSubscriptionFormData
-      )
-    } else {
-      // Add mode: create new subscription with generated UUID
-      addSubscription(data as CreateSubscriptionFormData)
-      toast.success(`Created new subscription ${data.name}`)
-    }
+  const handleFormSubmission = async (data: SubscriptionFormData) => {
+    try {
+      if (selectedSubscription) {
+        // Edit mode: update existing subscription
+        await updateSubscription({
+          id: selectedSubscription.id,
+          data: data as UpdateSubscriptionFormData,
+        })
+        toast.success(`Updated ${data.name}`)
+      } else {
+        // Add mode: create new subscription with generated UUID
+        await addSubscription(data as CreateSubscriptionFormData)
+        toast.success(`Created new subscription ${data.name}`)
+      }
 
-    setFormOpen(false)
-    setSelectedSubscription(undefined)
+      setFormOpen(false)
+      setSelectedSubscription(undefined)
+    } catch (error) {
+      const apiError = error as ApiError
+
+      toast.error(getApiErrorMessage(apiError))
+
+      if (isProblemDetails(apiError) && apiError.status === 400) {
+        return apiError as ProblemDetails
+      }
+      // Keep dialog open on error so the user doesn't lose their input
+    }
   }
 
-  const handleDeleteConfirmed = () => {
-    if (selectedSubscription) {
-      deleteSubscription(selectedSubscription.id)
-      toast.success("Subscription deleted")
+  const handleDeleteConfirmed = async () => {
+    try {
+      if (selectedSubscription) {
+        await deleteSubscription(selectedSubscription.id)
+        toast.success("Subscription deleted")
+      }
+      setDeleteOpen(false)
+      setSelectedSubscription(undefined)
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(getApiErrorMessage(apiError), {
+        description: `Failed to delete "${selectedSubscription?.name || "subscription"}". Please try again.`,
+      })
+      // Keep dialog open on error so the user doesn't lose their input
     }
-    setDeleteOpen(false)
-    setSelectedSubscription(undefined)
   }
 
   return (
     <div className="flex flex-col gap-6">
       <h1>Dashboard</h1>
 
-      <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
+      {isLoadingTotal ? (
+        <MonthlySpendingCardSkeleton />
+      ) : isError || isTotalError ? (
+        <MonthlySpendingCardError
+          error={(isTotalError ? totalError : error)!}
+          isSubscriptionsError={isError}
+          refetchSubscriptions={refetch}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      ) : (
+        <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
+      )}
 
-      {inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
+      {isLoading ? (
+        <UnusedSubscriptionsBannerSkeleton />
+      ) : isError ? (
+        <UnusedSubscriptionsBannerError error={error} />
+      ) : inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD ? (
         <UnusedSubscriptionsBanner
           count={inactiveSubscriptions.length}
           potentialSavings={potentialSavingsStr}
         />
-      )}
+      ) : null}
 
       <div className="flex flex-row-reverse justify-between">
         <ToggleGroup
@@ -130,42 +192,38 @@ export function DashboardPage() {
           spacing={0}
           value={displayStyle}
           onValueChange={handleDisplayStyleChange}
+          disabled={isLoading || isError}
         >
           <ToggleGroupItem value="list">List</ToggleGroupItem>
           <ToggleGroupItem value="card-grid">Card Grid</ToggleGroupItem>
         </ToggleGroup>
 
-        {subscriptions.length !== 0 ? (
+        {isLoading || isError || subscriptions.length !== 0 ? (
           <AddSubscriptionDialogTrigger
             handleAddSubscription={handleAddSubscription}
+            disabled={isLoading || isError}
           />
         ) : null}
       </div>
 
-      {subscriptions.length === 0 ? (
-        <SubscriptionsDisplayEmpty
-          handleAddSubscription={handleAddSubscription}
-        />
-      ) : displayStyle[0] === "list" ? (
-        <SubscriptionTable
-          subscriptions={subscriptions}
-          onEdit={handleEditSubscription}
-          onDelete={handleDeleteSubscription}
-          onToggleStatus={handleSubscriptionToggleStatus}
+      {isLoading ? (
+        <SubscriptionsDisplaySkeleton />
+      ) : isError ? (
+        <SubscriptionsDisplayError
+          error={error}
+          refetchSubscriptions={refetch}
+          buttonClassName={BUTTON_CLASS_NAME}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {subscriptions.map((subscription) => (
-            <SubscriptionCard
-              key={subscription.id}
-              subscription={subscription}
-              onEdit={handleEditSubscription}
-              onDelete={handleDeleteSubscription}
-              onToggleStatus={handleSubscriptionToggleStatus}
-              buttonClassName={BUTTON_CLASS_NAME}
-            />
-          ))}
-        </div>
+        <SubscriptionsDisplay
+          subscriptions={subscriptions}
+          displayStyle={displayStyle}
+          handleAddSubscription={handleAddSubscription}
+          handleEditSubscription={handleEditSubscription}
+          handleDeleteSubscription={handleDeleteSubscription}
+          handleSubscriptionToggleStatus={handleSubscriptionToggleStatus}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
       )}
 
       <SubscriptionFormDialog

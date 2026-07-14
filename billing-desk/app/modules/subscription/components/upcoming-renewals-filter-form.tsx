@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils"
 interface UpcomingRenewalsFiltersFormProps {
   applyFilters: (filters: UpcomingRenewalsFilters) => void
   initialFilters?: UpcomingRenewalsFilters
+  disabled?: boolean
   inputClassName?: string
   buttonClassName?: string
 }
@@ -53,6 +54,7 @@ const defaultFilters: UpcomingRenewalsFilters = {
 export function UpcomingRenewalsFiltersForm({
   applyFilters,
   initialFilters,
+  disabled,
   inputClassName,
   buttonClassName,
 }: UpcomingRenewalsFiltersFormProps) {
@@ -91,6 +93,7 @@ export function UpcomingRenewalsFiltersForm({
             <Controller
               name="lookAheadDays"
               control={control}
+              disabled={disabled}
               render={({ field, fieldState }) => (
                 <Field
                   data-invalid={fieldState.invalid}
@@ -114,6 +117,7 @@ export function UpcomingRenewalsFiltersForm({
                     name={field.name}
                     value={field.value}
                     onValueChange={field.onChange}
+                    disabled={field.disabled}
                   >
                     <SelectTrigger
                       id={`${formId}-${field.name}`}
@@ -140,7 +144,12 @@ export function UpcomingRenewalsFiltersForm({
 
       <CardFooter>
         <Field orientation="horizontal" className="flex-row-reverse">
-          <Button type="submit" form={formId} className={buttonClassName}>
+          <Button
+            type="submit"
+            form={formId}
+            className={buttonClassName}
+            disabled={disabled}
+          >
             Apply
           </Button>
 
@@ -148,6 +157,7 @@ export function UpcomingRenewalsFiltersForm({
             variant="outline"
             className={buttonClassName}
             onClick={() => reset()}
+            disabled={disabled}
           >
             Reset
           </Button>
@@ -156,6 +166,7 @@ export function UpcomingRenewalsFiltersForm({
             variant="destructive"
             className={buttonClassName}
             onClick={() => reset(defaultFilters)}
+            disabled={disabled}
           >
             Reset to Defaults
           </Button>

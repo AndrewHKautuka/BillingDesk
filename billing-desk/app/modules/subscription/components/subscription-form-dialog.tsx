@@ -1,5 +1,6 @@
 "use client"
 
+import type { ProblemDetails } from "~/shared/types/api-error-types"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { SubscriptionFormData } from "~/subscription/validations/subscription-validations"
@@ -19,7 +20,7 @@ interface SubscriptionFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   subscription?: Subscription
-  onSubmit: (data: SubscriptionFormData) => void
+  onSubmit: (data: SubscriptionFormData) => Promise<void | ProblemDetails>
   inputClassName?: string
   buttonClassName?: string
 }
@@ -34,7 +35,10 @@ export function SubscriptionFormDialog({
 }: SubscriptionFormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="sm:max-w-[500px]">
+      <DialogContent
+        showCloseButton={false}
+        className="sm:max-w-[500px] [&:has(form[data-invalid=true])]:border-destructive [&:has(form[data-invalid=true])]:ring-2 [&:has(form[data-invalid=true])]:ring-destructive"
+      >
         <DialogHeader>
           <DialogTitle>
             {!subscription ? "Add New Subscription" : "Edit Subscription"}
@@ -62,6 +66,7 @@ export function SubscriptionFormDialog({
               </Button>
             }
           />
+
           <Button
             type="submit"
             form="subscription-form"

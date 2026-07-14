@@ -5,7 +5,7 @@ import type {
 } from "./subscription-enums"
 
 export interface BillingDateResponse {
-  nextBillingDate: Date
+  nextBillingDate: string
 }
 
 export interface MonthlyTotalResponse {
@@ -18,7 +18,7 @@ export interface SubscriptionResponse {
   cost: number
   currency: Currency
   billingCycle: BillingCycle
-  startDate: Date
+  startDate: string
   status: SubscriptionStatus
   category: string
 }

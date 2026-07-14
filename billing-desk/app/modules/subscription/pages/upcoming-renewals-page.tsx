@@ -1,9 +1,13 @@
 "use client"
 
 import { differenceInDays } from "date-fns"
+import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/empties/upcoming-renewals-display-empty"
+import { SameDayUpcomingRenewalsBannerError } from "~/subscription/components/errors/same-day-upcoming-renewals-banner-error"
+import { UpcomingRenewalsDisplayError } from "~/subscription/components/errors/upcoming-renewals-display-error"
 import { RenewalCard } from "~/subscription/components/renewal-card"
 import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
-import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/upcoming-renewals-display-empty"
+import { SameDayUpcomingRenewalsBannerSkeleton } from "~/subscription/components/skeletons/same-day-upcoming-renewals-banner"
+import { UpcomingRenewalsDisplaySkeleton } from "~/subscription/components/skeletons/upcoming-renewals-display"
 import { UpcomingRenewalsFiltersForm } from "~/subscription/components/upcoming-renewals-filter-form"
 import {
   BUTTON_CLASS_NAME,
@@ -12,14 +16,17 @@ import {
   SAME_DAY_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
-import { useMockRenewals } from "~/subscription/hooks/use-mock-renewals"
+import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
 import { computeSameDayWarningRenewals } from "~/subscription/utils/subscription-utils"
 import type { UpcomingRenewalsFilters } from "~/subscription/validations/subscription-filter-validations"
 
 export function UpcomingRenewalsPage() {
   const { lookaheadDays, setLookaheadDays } = useDisplayPreferences()
 
-  const { renewals } = useMockRenewals(lookaheadDays)
+  const { data, isLoading, isError, error, refetch } =
+    useUpcomingRenewals(lookaheadDays)
+
+  const renewals = data ?? []
 
   const today = new Date()
 
@@ -53,18 +60,31 @@ export function UpcomingRenewalsPage() {
     <div className="flex flex-col gap-6">
       <h1>Upcoming Renewals</h1>
 
-      {sameDayWarningDates.length > 0 && (
+      {isLoading ? (
+        <SameDayUpcomingRenewalsBannerSkeleton />
+      ) : isError ? (
+        <SameDayUpcomingRenewalsBannerError error={error} />
+      ) : sameDayWarningDates.length > 0 ? (
         <SameDayUpcomingRenewalsBanner warningDates={sameDayWarningDates} />
-      )}
+      ) : null}
 
       <UpcomingRenewalsFiltersForm
         applyFilters={applyFilters}
         initialFilters={initialFilters}
+        disabled={isLoading || isError}
         inputClassName={INPUT_CLASS_NAME}
         buttonClassName={BUTTON_CLASS_NAME}
       />
 
-      {renewals.length === 0 ? (
+      {isLoading ? (
+        <UpcomingRenewalsDisplaySkeleton />
+      ) : isError ? (
+        <UpcomingRenewalsDisplayError
+          error={error}
+          refetchRenewals={refetch}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      ) : renewals.length === 0 ? (
         <UpcomingRenewalsDisplayEmpty />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">

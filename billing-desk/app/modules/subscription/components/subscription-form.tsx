@@ -6,6 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { capitalCase } from "change-case"
 import { Controller, useForm } from "react-hook-form"
 import { DatePicker } from "~/shared/components/date-picker"
+import { FormServerError } from "~/shared/components/form-server-error"
+import type { ProblemDetails } from "~/shared/types/api-error-types"
+import { applyServerValidationErrors } from "~/shared/utils/problem-details-utils"
 import {
   BILLING_CYCLE_OPTIONS,
   CURRENCY_OPTIONS,
@@ -36,7 +39,7 @@ import { cn } from "@/lib/utils"
 interface SubscriptionFormProps {
   formId?: string
   subscription?: Subscription
-  onSubmit: (data: SubscriptionFormData) => void
+  onSubmit: (data: SubscriptionFormData) => Promise<void | ProblemDetails>
   inputClassName?: string
 }
 
@@ -50,7 +53,13 @@ export function SubscriptionForm({
     ? createSubscriptionSchema
     : updateSubscriptionSchema
 
-  const { control, handleSubmit, reset } = useForm<SubscriptionFormData>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+  } = useForm<SubscriptionFormData>({
     resolver: zodResolver(schema),
     defaultValues: subscription
       ? {
@@ -94,12 +103,20 @@ export function SubscriptionForm({
     }
   }, [subscription, reset])
 
-  const handleFormSubmit = (data: SubscriptionFormData) => {
-    onSubmit(data)
+  const handleFormSubmit = async (data: SubscriptionFormData) => {
+    const result = await onSubmit(data)
+
+    if (typeof result === "object") {
+      applyServerValidationErrors(setError, result)
+    }
   }
 
   return (
-    <form id={formId} onSubmit={handleSubmit(handleFormSubmit)}>
+    <form
+      id={formId}
+      onSubmit={handleSubmit(handleFormSubmit)}
+      data-invalid={errors.root?.serverError ? "true" : undefined}
+    >
       <FieldGroup>
         {/* Name Field */}
         <Controller
@@ -263,6 +280,10 @@ export function SubscriptionForm({
             </Field>
           )}
         />
+
+        {errors.root?.serverError && (
+          <FormServerError serverError={errors.root.serverError} />
+        )}
       </FieldGroup>
     </form>
   )
