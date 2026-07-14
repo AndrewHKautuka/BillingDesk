@@ -16,7 +16,8 @@ using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var primaryConnectionString = builder.Configuration.GetConnectionString("Primary")!;
+var configuration = builder.Configuration;
+var primaryConnectionString = configuration.GetConnectionString("Primary")!;
 
 // Static configurations
 MapsterConfig.ApplyMapsterConfig();
@@ -38,7 +39,7 @@ builder.Services.AddScoped<IValidator<UpcomingRenewalsQuery>, UpcomingRenewalsQu
 
 builder.Services.AddCors(options =>
 {
-	var frontendUrl = builder.Configuration.GetValue<string>("FrontendUrl")!;
+	var frontendUrl = configuration.GetValue<string>("FrontendUrl")!;
 	options.AddDefaultPolicy(policy =>
 	{
 		policy.WithOrigins(frontendUrl).AllowAnyMethod().AllowAnyHeader();
