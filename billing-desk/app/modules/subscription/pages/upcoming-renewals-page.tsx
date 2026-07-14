@@ -6,6 +6,7 @@ import { SameDayUpcomingRenewalsBannerError } from "~/subscription/components/er
 import { UpcomingRenewalsDisplayError } from "~/subscription/components/errors/upcoming-renewals-display-error"
 import { RenewalCard } from "~/subscription/components/renewal-card"
 import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
+import { SameDayUpcomingRenewalsBannerSkeleton } from "~/subscription/components/skeletons/same-day-upcoming-renewals-banner"
 import { UpcomingRenewalsDisplaySkeleton } from "~/subscription/components/skeletons/upcoming-renewals-display"
 import { UpcomingRenewalsFiltersForm } from "~/subscription/components/upcoming-renewals-filter-form"
 import {
@@ -59,7 +60,9 @@ export function UpcomingRenewalsPage() {
     <div className="flex flex-col gap-6">
       <h1>Upcoming Renewals</h1>
 
-      {isLoading ? null : isError ? (
+      {isLoading ? (
+        <SameDayUpcomingRenewalsBannerSkeleton />
+      ) : isError ? (
         <SameDayUpcomingRenewalsBannerError error={error} />
       ) : sameDayWarningDates.length > 0 ? (
         <SameDayUpcomingRenewalsBanner warningDates={sameDayWarningDates} />
