@@ -11,6 +11,7 @@ import {
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
 import { SubscriptionsDisplayError } from "~/subscription/components/errors/subscription-display-error"
+import { UnusedSubscriptionsBannerError } from "~/subscription/components/errors/unused-subscriptions-banner-error"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
 import { MonthlySpendingCardSkeleton } from "~/subscription/components/skeletons/monthly-spending-card"
 import { SubscriptionsDisplaySkeleton } from "~/subscription/components/skeletons/subscriptions-display"
@@ -160,13 +161,14 @@ export function DashboardPage() {
         <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
       )}
 
-      {!isLoading &&
-        inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD && (
-          <UnusedSubscriptionsBanner
-            count={inactiveSubscriptions.length}
-            potentialSavings={potentialSavingsStr}
-          />
-        )}
+      {isLoading ? null : isError ? (
+        <UnusedSubscriptionsBannerError error={error} />
+      ) : inactiveSubscriptions.length > UNUSED_WARNING_THRESHOLD ? (
+        <UnusedSubscriptionsBanner
+          count={inactiveSubscriptions.length}
+          potentialSavings={potentialSavingsStr}
+        />
+      ) : null}
 
       <div className="flex flex-row-reverse justify-between">
         <ToggleGroup
