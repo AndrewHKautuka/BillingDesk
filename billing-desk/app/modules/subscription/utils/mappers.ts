@@ -1,4 +1,7 @@
-import { formatDateForInput } from "~/shared/utils/date-formatters"
+import {
+  formatDateForInput,
+  parseDateFromInput,
+} from "~/shared/utils/date-formatters"
 import type {
   Renewal,
   Subscription,
@@ -24,6 +27,7 @@ export function mapSubscriptionResponseToSubscription(
 ): Subscription {
   return {
     ...response,
+    startDate: parseDateFromInput(response.startDate),
   }
 }
 
@@ -34,7 +38,11 @@ export function mapRenewalResponseToRenewal(
   response: RenewalResponse
 ): Renewal {
   return {
-    nextBillingDate: response.nextBillingDate,
+    nextBillingDate: {
+      nextBillingDate: parseDateFromInput(
+        response.nextBillingDate.nextBillingDate
+      ),
+    },
     subscription: mapSubscriptionResponseToSubscription(response.subscription),
   }
 }
