@@ -1,6 +1,7 @@
 "use client"
 
 import { FormServerError } from "~/shared/components/form-server-error"
+import type { ProblemDetails } from "~/shared/types/api-error-types"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { SubscriptionFormData } from "~/subscription/validations/subscription-validations"
@@ -20,7 +21,7 @@ interface SubscriptionFormDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   subscription?: Subscription
-  onSubmit: (data: SubscriptionFormData) => void
+  onSubmit: (data: SubscriptionFormData) => Promise<void | ProblemDetails>
   formError?: string
   inputClassName?: string
   buttonClassName?: string
