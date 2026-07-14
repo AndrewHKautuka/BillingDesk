@@ -1,6 +1,6 @@
+import { SubscriptionsDisplayEmpty } from "~/subscription/components/empties/subscriptions-display-empty"
 import { SubscriptionCard } from "~/subscription/components/subscription-card"
 import { SubscriptionTable } from "~/subscription/components/subscription-table"
-import { SubscriptionsDisplayEmpty } from "~/subscription/components/subscriptions-display-empty"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
 

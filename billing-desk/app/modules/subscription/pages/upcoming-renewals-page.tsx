@@ -1,9 +1,9 @@
 "use client"
 
 import { differenceInDays } from "date-fns"
+import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/empties/upcoming-renewals-display-empty"
 import { RenewalCard } from "~/subscription/components/renewal-card"
 import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
-import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/upcoming-renewals-display-empty"
 import { UpcomingRenewalsFiltersForm } from "~/subscription/components/upcoming-renewals-filter-form"
 import {
   BUTTON_CLASS_NAME,
