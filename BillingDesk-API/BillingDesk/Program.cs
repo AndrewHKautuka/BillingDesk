@@ -2,6 +2,7 @@ using BillingDesk.Common;
 using BillingDesk.Common.Configs;
 using BillingDesk.Common.Factories;
 using BillingDesk.Common.OpenAPITransformers;
+using BillingDesk.Payment.Services;
 using BillingDesk.Payment.Types.Configs;
 using BillingDesk.Subscription.Seeders;
 using BillingDesk.Subscription.Services;
@@ -30,6 +31,7 @@ ValidatorOptionsConfig.ApplyValidatorOptionsConfig();
 // Add services to the container.
 // Singletons
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
+builder.Services.AddSingleton<IFxRateProvider, ConfigurationFxRateProvider>();
 
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
