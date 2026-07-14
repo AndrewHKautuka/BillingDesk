@@ -2,8 +2,10 @@
 
 import { differenceInDays } from "date-fns"
 import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/empties/upcoming-renewals-display-empty"
+import { UpcomingRenewalsDisplayError } from "~/subscription/components/errors/upcoming-renewals-display-error"
 import { RenewalCard } from "~/subscription/components/renewal-card"
 import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
+import { UpcomingRenewalsDisplaySkeleton } from "~/subscription/components/skeletons/upcoming-renewals-display"
 import { UpcomingRenewalsFiltersForm } from "~/subscription/components/upcoming-renewals-filter-form"
 import {
   BUTTON_CLASS_NAME,
@@ -19,7 +21,8 @@ import type { UpcomingRenewalsFilters } from "~/subscription/validations/subscri
 export function UpcomingRenewalsPage() {
   const { lookaheadDays, setLookaheadDays } = useDisplayPreferences()
 
-  const { data } = useUpcomingRenewals(lookaheadDays)
+  const { data, isLoading, isError, error, refetch } =
+    useUpcomingRenewals(lookaheadDays)
 
   const renewals = data ?? []
 
@@ -55,7 +58,7 @@ export function UpcomingRenewalsPage() {
     <div className="flex flex-col gap-6">
       <h1>Upcoming Renewals</h1>
 
-      {sameDayWarningDates.length > 0 && (
+      {!isLoading && sameDayWarningDates.length > 0 && (
         <SameDayUpcomingRenewalsBanner warningDates={sameDayWarningDates} />
       )}
 
@@ -66,7 +69,15 @@ export function UpcomingRenewalsPage() {
         buttonClassName={BUTTON_CLASS_NAME}
       />
 
-      {renewals.length === 0 ? (
+      {isLoading ? (
+        <UpcomingRenewalsDisplaySkeleton />
+      ) : isError ? (
+        <UpcomingRenewalsDisplayError
+          error={error}
+          refetchRenewals={refetch}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      ) : renewals.length === 0 ? (
         <UpcomingRenewalsDisplayEmpty />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
