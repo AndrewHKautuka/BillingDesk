@@ -71,6 +71,7 @@ export function UpcomingRenewalsPage() {
       <UpcomingRenewalsFiltersForm
         applyFilters={applyFilters}
         initialFilters={initialFilters}
+        disabled={isLoading || isError}
         inputClassName={INPUT_CLASS_NAME}
         buttonClassName={BUTTON_CLASS_NAME}
       />
