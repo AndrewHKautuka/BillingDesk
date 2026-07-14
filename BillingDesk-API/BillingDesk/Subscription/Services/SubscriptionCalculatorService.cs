@@ -1,3 +1,5 @@
+using BillingDesk.Payment.Services;
+using BillingDesk.Payment.Utils;
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Types.Enums;
 using BillingDesk.Subscription.Types.Results;
@@ -6,7 +8,9 @@ using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Subscription.Services;
 
-public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculatorService> logger)
+public sealed class SubscriptionCalculatorService(
+	IFxRateProvider fxRateProvider,
+	ILogger<SubscriptionCalculatorService> logger)
 	: ISubscriptionCalculatorService
 {
 	public CalculateNextBillingDateResult CalculateNextBillingDate(
@@ -48,9 +52,10 @@ public sealed class SubscriptionCalculatorService(ILogger<SubscriptionCalculator
 
 		var total = subscriptions
 					.Where(s => s.Status == SubscriptionStatus.Active)
-					.Sum(s => s.BillingCycle == BillingCycle.Yearly
-								  ? s.Cost / 12m
-								  : s.Cost);
+					.Sum(s => FxRateUtils.ConvertCostToMonthlyKwacha(fxRateProvider,
+																	 s.BillingCycle,
+																	 s.Currency,
+																	 s.Cost));
 
 		return new GetMonthlySpendingResult.Success(total);
 	}
