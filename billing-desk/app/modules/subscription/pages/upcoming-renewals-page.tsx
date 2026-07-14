@@ -2,6 +2,7 @@
 
 import { differenceInDays } from "date-fns"
 import { UpcomingRenewalsDisplayEmpty } from "~/subscription/components/empties/upcoming-renewals-display-empty"
+import { SameDayUpcomingRenewalsBannerError } from "~/subscription/components/errors/same-day-upcoming-renewals-banner-error"
 import { UpcomingRenewalsDisplayError } from "~/subscription/components/errors/upcoming-renewals-display-error"
 import { RenewalCard } from "~/subscription/components/renewal-card"
 import { SameDayUpcomingRenewalsBanner } from "~/subscription/components/same-day-upcoming-renewals-banner"
@@ -58,9 +59,11 @@ export function UpcomingRenewalsPage() {
     <div className="flex flex-col gap-6">
       <h1>Upcoming Renewals</h1>
 
-      {!isLoading && sameDayWarningDates.length > 0 && (
+      {isLoading ? null : isError ? (
+        <SameDayUpcomingRenewalsBannerError error={error} />
+      ) : sameDayWarningDates.length > 0 ? (
         <SameDayUpcomingRenewalsBanner warningDates={sameDayWarningDates} />
-      )}
+      ) : null}
 
       <UpcomingRenewalsFiltersForm
         applyFilters={applyFilters}
