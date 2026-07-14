@@ -10,6 +10,7 @@ import {
 } from "~/shared/utils/problem-details-utils"
 import { AddSubscriptionDialogTrigger } from "~/subscription/components/add-subscription-dialog-trigger"
 import { DeleteConfirmationDialog } from "~/subscription/components/delete-confirmation-dialog"
+import { MonthlySpendingCardError } from "~/subscription/components/errors/monthly-spending-card-error"
 import { SubscriptionsDisplayError } from "~/subscription/components/errors/subscription-display-error"
 import { UnusedSubscriptionsBannerError } from "~/subscription/components/errors/unused-subscriptions-banner-error"
 import { MonthlySpendingCard } from "~/subscription/components/monthly-spending-card"
@@ -68,6 +69,7 @@ export function DashboardPage() {
     data: totalResponse,
     isLoading: isLoadingTotal,
     isError: isTotalError,
+    error: totalError,
   } = useMonthlyTotal()
 
   const total = totalResponse?.total ?? 0
@@ -161,7 +163,14 @@ export function DashboardPage() {
 
       {isLoadingTotal ? (
         <MonthlySpendingCardSkeleton />
-      ) : isError || isTotalError ? null : (
+      ) : isError || isTotalError ? (
+        <MonthlySpendingCardError
+          error={(isTotalError ? totalError : error)!}
+          isSubscriptionsError={isError}
+          refetchSubscriptions={refetch}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      ) : (
         <MonthlySpendingCard totalMonthlySpending={totalMonthlyDisplay} />
       )}
 
