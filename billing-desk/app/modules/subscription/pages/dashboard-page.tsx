@@ -106,7 +106,7 @@ export function DashboardPage() {
     try {
       if (selectedSubscription) {
         // Edit mode: update existing subscription
-        updateSubscription({
+        await updateSubscription({
           id: selectedSubscription.id,
           data: data as UpdateSubscriptionFormData,
         })
