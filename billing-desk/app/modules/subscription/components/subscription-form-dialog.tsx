@@ -1,6 +1,5 @@
 "use client"
 
-import { FormServerError } from "~/shared/components/form-server-error"
 import type { ProblemDetails } from "~/shared/types/api-error-types"
 import { SubscriptionForm } from "~/subscription/components/subscription-form"
 import type { Subscription } from "~/subscription/types/subscription-model"
@@ -22,7 +21,6 @@ interface SubscriptionFormDialogProps {
   onOpenChange: (open: boolean) => void
   subscription?: Subscription
   onSubmit: (data: SubscriptionFormData) => Promise<void | ProblemDetails>
-  formError?: string
   inputClassName?: string
   buttonClassName?: string
 }
@@ -32,7 +30,6 @@ export function SubscriptionFormDialog({
   onOpenChange,
   subscription,
   onSubmit,
-  formError,
   inputClassName,
   buttonClassName,
 }: SubscriptionFormDialogProps) {
@@ -59,29 +56,24 @@ export function SubscriptionFormDialog({
           subscription={subscription}
           onSubmit={onSubmit}
           inputClassName={inputClassName}
-          formError={formError}
         />
 
-        <DialogFooter className="flex-col sm:flex-col">
-          {formError && <FormServerError message={formError} />}
+        <DialogFooter>
+          <DialogClose
+            render={
+              <Button variant="outline" className={buttonClassName}>
+                Cancel
+              </Button>
+            }
+          />
 
-          <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-            <DialogClose
-              render={
-                <Button variant="outline" className={buttonClassName}>
-                  Cancel
-                </Button>
-              }
-            />
-
-            <Button
-              type="submit"
-              form="subscription-form"
-              className={buttonClassName}
-            >
-              {!subscription ? "Add Subscription" : "Save Changes"}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            form="subscription-form"
+            className={buttonClassName}
+          >
+            {!subscription ? "Add Subscription" : "Save Changes"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

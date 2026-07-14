@@ -1,17 +1,18 @@
 import { AlertOctagonIcon } from "lucide-react"
+import type { GlobalError } from "react-hook-form"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface FormServerErrorProps {
-  message?: string
+  serverError?: GlobalError
 }
 
-export function FormServerError({ message }: FormServerErrorProps) {
+export function FormServerError({ serverError }: FormServerErrorProps) {
   return (
     <Alert variant="destructive">
       <AlertOctagonIcon />
       <AlertTitle>Cross-Field/Wide-Form Error</AlertTitle>
-      <AlertDescription>{message}</AlertDescription>
+      <AlertDescription>{serverError?.message}</AlertDescription>
     </Alert>
   )
 }

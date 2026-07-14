@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { capitalCase } from "change-case"
 import { Controller, useForm } from "react-hook-form"
 import { DatePicker } from "~/shared/components/date-picker"
+import { FormServerError } from "~/shared/components/form-server-error"
 import type { ProblemDetails } from "~/shared/types/api-error-types"
 import { applyServerValidationErrors } from "~/shared/utils/problem-details-utils"
 import {
@@ -39,7 +40,6 @@ interface SubscriptionFormProps {
   formId?: string
   subscription?: Subscription
   onSubmit: (data: SubscriptionFormData) => Promise<void | ProblemDetails>
-  formError?: string
   inputClassName?: string
 }
 
@@ -47,34 +47,38 @@ export function SubscriptionForm({
   formId,
   subscription,
   onSubmit,
-  formError,
   inputClassName,
 }: SubscriptionFormProps) {
   const schema = !subscription
     ? createSubscriptionSchema
     : updateSubscriptionSchema
 
-  const { control, handleSubmit, reset, setError } =
-    useForm<SubscriptionFormData>({
-      resolver: zodResolver(schema),
-      defaultValues: subscription
-        ? {
-            name: subscription.name,
-            cost: subscription.cost,
-            currency: subscription.currency,
-            billingCycle: subscription.billingCycle,
-            startDate: subscription.startDate,
-            category: subscription.category,
-          }
-        : {
-            name: "",
-            cost: undefined,
-            currency: undefined,
-            billingCycle: undefined,
-            startDate: undefined,
-            category: "",
-          },
-    })
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setError,
+  } = useForm<SubscriptionFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: subscription
+      ? {
+          name: subscription.name,
+          cost: subscription.cost,
+          currency: subscription.currency,
+          billingCycle: subscription.billingCycle,
+          startDate: subscription.startDate,
+          category: subscription.category,
+        }
+      : {
+          name: "",
+          cost: undefined,
+          currency: undefined,
+          billingCycle: undefined,
+          startDate: undefined,
+          category: "",
+        },
+  })
 
   // Reset form when subscription changes
   useEffect(() => {
@@ -102,7 +106,7 @@ export function SubscriptionForm({
   const handleFormSubmit = async (data: SubscriptionFormData) => {
     const result = await onSubmit(data)
 
-    if (typeof result === "object" && result !== null) {
+    if (typeof result === "object") {
       applyServerValidationErrors(setError, result)
     }
   }
@@ -111,7 +115,7 @@ export function SubscriptionForm({
     <form
       id={formId}
       onSubmit={handleSubmit(handleFormSubmit)}
-      data-invalid={formError ? "true" : undefined}
+      data-invalid={errors.root?.serverError ? "true" : undefined}
     >
       <FieldGroup>
         {/* Name Field */}
@@ -276,6 +280,10 @@ export function SubscriptionForm({
             </Field>
           )}
         />
+
+        {errors.root?.serverError && (
+          <FormServerError serverError={errors.root.serverError} />
+        )}
       </FieldGroup>
     </form>
   )
