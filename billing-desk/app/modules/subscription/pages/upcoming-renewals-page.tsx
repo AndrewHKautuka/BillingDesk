@@ -12,14 +12,16 @@ import {
   SAME_DAY_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
-import { useMockRenewals } from "~/subscription/hooks/use-mock-renewals"
+import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
 import { computeSameDayWarningRenewals } from "~/subscription/utils/subscription-utils"
 import type { UpcomingRenewalsFilters } from "~/subscription/validations/subscription-filter-validations"
 
 export function UpcomingRenewalsPage() {
   const { lookaheadDays, setLookaheadDays } = useDisplayPreferences()
 
-  const { renewals } = useMockRenewals(lookaheadDays)
+  const { data } = useUpcomingRenewals(lookaheadDays)
+
+  const renewals = data ?? []
 
   const today = new Date()
 
