@@ -25,6 +25,7 @@ import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferen
 import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import {
   useCreateSubscription,
+  useDeleteSubscription,
   useUpdateSubscription,
 } from "~/subscription/hooks/use-subscription-mutations"
 import {
@@ -57,9 +58,9 @@ export function DashboardPage() {
 
   const { mutateAsync: addSubscription } = useCreateSubscription()
   const { mutateAsync: updateSubscription } = useUpdateSubscription()
+  const { mutateAsync: deleteSubscription } = useDeleteSubscription()
 
-  const { deleteSubscription, toggleSubscriptionStatus } =
-    useMockSubscriptions()
+  const { toggleSubscriptionStatus } = useMockSubscriptions()
 
   const { data: totalResponse, isLoading: isLoadingTotal } = useMonthlyTotal()
 
@@ -131,13 +132,21 @@ export function DashboardPage() {
     }
   }
 
-  const handleDeleteConfirmed = () => {
-    if (selectedSubscription) {
-      deleteSubscription(selectedSubscription.id)
-      toast.success("Subscription deleted")
+  const handleDeleteConfirmed = async () => {
+    try {
+      if (selectedSubscription) {
+        await deleteSubscription(selectedSubscription.id)
+        toast.success("Subscription deleted")
+      }
+      setDeleteOpen(false)
+      setSelectedSubscription(undefined)
+    } catch (error) {
+      const apiError = error as ApiError
+      toast.error(getApiErrorMessage(apiError), {
+        description: `Failed to delete "${selectedSubscription?.name || "subscription"}". Please try again.`,
+      })
+      // Keep dialog open on error so the user doesn't lose their input
     }
-    setDeleteOpen(false)
-    setSelectedSubscription(undefined)
   }
 
   return (
