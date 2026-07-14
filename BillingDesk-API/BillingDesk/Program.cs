@@ -1,8 +1,9 @@
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
-using BillingDesk.Subscription.Seeders;
 using BillingDesk.Common.Factories;
 using BillingDesk.Common.OpenAPITransformers;
+using BillingDesk.Payment.Types.Configs;
+using BillingDesk.Subscription.Seeders;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
@@ -10,6 +11,7 @@ using BillingDesk.Subscription.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
+using OneKhusa.SDK.Extensions;
 using OpenApi.NodaTime.Extensions;
 using Scalar.AspNetCore;
 using JsonOptions = Microsoft.AspNetCore.Http.Json.JsonOptions;
@@ -18,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var primaryConnectionString = configuration.GetConnectionString("Primary")!;
+var oneKhusaConfig = configuration.GetSection(OneKhusaConfig.SectionName)
+								  .Get<OneKhusaConfig>()!;
 
 // Static configurations
 MapsterConfig.ApplyMapsterConfig();
@@ -82,6 +86,15 @@ builder.Services.AddOpenApi("v1",
 builder.Services.AddDbContext<BillingDeskDbContext>(options =>
 {
 	options.UseConfiguredDbContext(primaryConnectionString);
+});
+
+builder.Services.AddOneKhusaClient(options =>
+{
+	options.IsSandbox = oneKhusaConfig.IsSandbox;
+	options.ApiKey = oneKhusaConfig.ApiKey;
+	options.ApiSecret = oneKhusaConfig.ApiSecret;
+	options.OrganisationId = oneKhusaConfig.OrganisationId;
+	options.MerchantAccountNumber = oneKhusaConfig.MerchantAccountNumber;
 });
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
