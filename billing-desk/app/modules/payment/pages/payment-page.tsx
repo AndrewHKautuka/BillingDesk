@@ -7,6 +7,7 @@ import { CheckoutPaymentCard } from "~/payment/components/checkout-payment-card"
 import { CheckoutPaymentCardSkeleton } from "~/payment/components/checkout-payment-card-skeleton"
 import { DueTodaySubscriptionsList } from "~/payment/components/due-today-subscriptions-list"
 import { DueTodaySubscriptionsListSkeleton } from "~/payment/components/due-today-subscriptions-list-skeleton"
+import { DueTodaySubscriptionsListError } from "~/payment/components/errors/due-today-subscriptions-list-error"
 import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
 import type { RequestForPayement } from "~/payment/types/checkout-models"
 import { mapRequestForPayementResponseToRequestForPayement } from "~/payment/utils/mappers"
@@ -23,12 +24,14 @@ export function PaymentPage() {
     data: renewals,
     isLoading: isLoadingRenewals,
     isError: isRenewalsError,
+    error: renewalsError,
+    refetch: refetchRenewals,
   } = useUpcomingRenewals(DUE_TODAY_LOOKAHEAD)
 
   const subscriptionsDueToday =
     renewals?.map((renewal) => renewal.subscription) ?? []
 
-  // Derive total from today's subscriptions (monthly cost in base currency)
+  // Derive total from today's subscriptions
   const totalAmount = calculateMonthlyCost(subscriptionsDueToday)
 
   const [paymentRequest, setPaymentRequest] =
@@ -60,13 +63,11 @@ export function PaymentPage() {
     })
   }
 
-  const isLoading = isLoadingRenewals
-
   return (
     <div className="flex flex-col gap-6">
       <h1>Payment</h1>
 
-      {isLoading ? (
+      {isLoadingRenewals ? (
         <CheckoutPaymentCardSkeleton />
       ) : (
         <CheckoutPaymentCard
@@ -79,8 +80,14 @@ export function PaymentPage() {
         />
       )}
 
-      {isLoading ? (
+      {isLoadingRenewals ? (
         <DueTodaySubscriptionsListSkeleton />
+      ) : isRenewalsError ? (
+        <DueTodaySubscriptionsListError
+          error={renewalsError!}
+          refetchRenewals={refetchRenewals}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
       ) : (
         <DueTodaySubscriptionsList subscriptions={subscriptionsDueToday} />
       )}
