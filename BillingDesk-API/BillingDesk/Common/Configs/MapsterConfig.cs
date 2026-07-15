@@ -1,9 +1,13 @@
+using BillingDesk.Checkout.Types.Response;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using NodaTime;
+using OneKhusa.SDK.Models.Shared;
+using OneKhusa.SDK.Models.Transactions.Collections;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Common.Configs;
@@ -60,6 +64,17 @@ public static class MapsterConfig
 				 src => src.Subscription)
 			.Map(dest => dest.NextBillingDate,
 				 src => src.NextBillingDate);
+		TypeAdapterConfig<(List<SubscriptionModel> Subscriptions,
+				decimal TransactionAmount,
+				RequestToPayResponse RequestToPayResponse),
+				ProcessSubscriptionsResponse>
+			.NewConfig()
+			.Map(dest => dest,
+				 src => src.RequestToPayResponse)
+			.Map(dest => dest.Subscriptions,
+				 src => src.Subscriptions)
+			.Map(dest => dest.TransactionAmount,
+				 src => src.TransactionAmount);
 
 		// Others to Responses
 		TypeAdapterConfig<LocalDate, BillingDateResponse>
@@ -70,6 +85,15 @@ public static class MapsterConfig
 			.NewConfig()
 			.Map(dest => dest.Total,
 				 src => src);
+		TypeAdapterConfig<ApiErrorResponse, ProblemDetails>
+			.NewConfig()
+			.AfterMapping((src, dest) =>
+			{
+				if (src.Errors is { Length: > 0 })
+				{
+					dest.Extensions["errors"] = src.Errors;
+				}
+			});
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}

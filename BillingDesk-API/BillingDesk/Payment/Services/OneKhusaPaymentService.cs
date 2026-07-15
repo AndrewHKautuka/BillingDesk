@@ -1,0 +1,77 @@
+using BillingDesk.Payment.Logging;
+using BillingDesk.Payment.Types.Configs;
+using BillingDesk.Payment.Types.Results;
+using OneKhusa.SDK;
+using OneKhusa.SDK.Models.Configurations;
+using OneKhusa.SDK.Models.FakeData.Collections;
+using OneKhusa.SDK.Models.Transactions.Collections;
+
+namespace BillingDesk.Payment.Services;
+
+public sealed class OneKhusaPaymentService(
+	IOneKhusaClient oneKhusaClient,
+	OneKhusaOptions oneKhusaOptions,
+	OneKhusaMerchantEmail oneKhusaMerchantEmail,
+	ILogger<OneKhusaPaymentService> logger) : IPaymentService
+{
+	public async Task<RequestPaymentResult> RequestPaymentAsync(
+		string referenceNumber,
+		decimal transactionAmount,
+		string transactionDescription)
+	{
+		OneKhusaPaymentServiceLog.RequestingPayment(logger, referenceNumber, transactionAmount);
+
+		var response = await oneKhusaClient
+							 .Transactions
+							 .Collections
+							 .CreateRequestToPayAsync(
+								 new RequestToPayRequest
+								 {
+									 MerchantAccountNumber = oneKhusaOptions.MerchantAccountNumber,
+									 ReferenceNumber = referenceNumber,
+									 TransactionAmount = transactionAmount,
+									 TransactionDescription = transactionDescription,
+									 CapturedBy = oneKhusaMerchantEmail.Email
+								 });
+
+		if (response.IsSuccess)
+		{
+			OneKhusaPaymentServiceLog.PaymentRequestSucceeded(logger, referenceNumber);
+			return new RequestPaymentResult.Success(response.Data!);
+		}
+
+		OneKhusaPaymentServiceLog.PaymentRequestFailed(logger, referenceNumber);
+		return new RequestPaymentResult.Failed(response.Error!);
+	}
+
+	public async Task<SimulateAcceptRequestToPayResult> SimulateAcceptRequestToPayAsync(
+		string timedAccountNumber,
+		decimal transactionAmount,
+		int connectorId)
+	{
+		OneKhusaPaymentServiceLog.SimulatingAcceptRequestToPay(logger, timedAccountNumber, transactionAmount);
+
+		var response = await oneKhusaClient
+							 .FakeData
+							 .Collections
+							 .MockAcceptRequestToPayAsync(
+								 new MockAcceptRequestToPayRequest
+								 {
+									 MerchantAccountNumber = oneKhusaOptions.MerchantAccountNumber,
+									 ConnectorId = connectorId,
+									 TransactionAmount = transactionAmount,
+									 CurrencyCode = "MWK",
+									 TimedAccountNumber = timedAccountNumber,
+									 CapturedBy = oneKhusaMerchantEmail.Email
+								 });
+
+		if (response.IsSuccess)
+		{
+			OneKhusaPaymentServiceLog.SimulateAcceptRequestToPaySucceeded(logger, timedAccountNumber);
+			return new SimulateAcceptRequestToPayResult.Success();
+		}
+
+		OneKhusaPaymentServiceLog.SimulateAcceptRequestToPayFailed(logger, timedAccountNumber);
+		return new SimulateAcceptRequestToPayResult.Failed(response.Error!);
+	}
+}
