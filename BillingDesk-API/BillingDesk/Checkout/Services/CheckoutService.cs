@@ -1,6 +1,6 @@
 using System.Globalization;
 using BillingDesk.Checkout.Logging;
-using BillingDesk.Checkout.Results;
+using BillingDesk.Checkout.Types.Results;
 using BillingDesk.Payment.Services;
 using BillingDesk.Payment.Types.Results;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;

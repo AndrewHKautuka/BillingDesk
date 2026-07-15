@@ -1,7 +1,7 @@
 using OneKhusa.SDK.Models.Shared;
 using OneKhusa.SDK.Models.Transactions.Collections;
 
-namespace BillingDesk.Checkout.Results;
+namespace BillingDesk.Checkout.Types.Results;
 
 public abstract record RequestPaymentForSubscriptionsResult
 {
