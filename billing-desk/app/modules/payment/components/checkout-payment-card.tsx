@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 import { differenceInSeconds, isPast } from "date-fns"
 import { ClockIcon, CreditCardIcon, Loader2Icon } from "lucide-react"
-import type { RequestForPayement } from "~/payment/types/checkout-models"
+import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
 import { formatCountdown } from "~/shared/utils/time-formatters"
 
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,7 @@ import {
 import { cn } from "@/lib/utils"
 
 interface CheckoutPaymentCardProps {
-  paymentRequest: RequestForPayement | null
+  paymentRequest: ProcessSubscriptions | null
   transactionAmount: string
   isPending: boolean
   isError: boolean

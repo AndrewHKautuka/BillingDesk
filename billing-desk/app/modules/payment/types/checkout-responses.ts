@@ -1,9 +1,11 @@
+import type { SubscriptionResponse } from "~/subscription/types/subscription-responses"
+
 /**
  * Response type for POST /api/checkout/process-due-today
  */
-export interface RequestForPayementResponse {
-  merchantAccountNumber: number
+export interface ProcessSubscriptionsResponse {
+  subscriptions: SubscriptionResponse[]
+  transactionAmount: number
   timedAccountNumber: string
   expiryDate: string
-  expiryInMinutes: number
 }

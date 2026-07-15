@@ -1,7 +1,7 @@
 import type { UseMutationResult } from "@tanstack/react-query"
 import { useMutation } from "@tanstack/react-query"
 import { processDueToday } from "~/payment/actions/checkout-actions"
-import type { RequestForPayementResponse } from "~/payment/types/checkout-responses"
+import type { ProcessSubscriptionsResponse } from "~/payment/types/checkout-responses"
 import type { ApiError } from "~/shared/types/api-error-types"
 
 /**
@@ -12,11 +12,11 @@ import type { ApiError } from "~/shared/types/api-error-types"
  *   mutate()
  */
 export function useProcessDueToday(): UseMutationResult<
-  RequestForPayementResponse,
+  ProcessSubscriptionsResponse,
   ApiError,
   void
 > {
-  return useMutation<RequestForPayementResponse, ApiError, void>({
+  return useMutation<ProcessSubscriptionsResponse, ApiError, void>({
     mutationFn: () => processDueToday(),
   })
 }

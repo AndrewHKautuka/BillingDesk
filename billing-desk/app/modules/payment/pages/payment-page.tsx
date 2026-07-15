@@ -10,8 +10,8 @@ import { DueTodaySubscriptionsListSkeleton } from "~/payment/components/due-toda
 import { CheckoutPaymentCardError } from "~/payment/components/errors/checkout-payment-card-error"
 import { DueTodaySubscriptionsListError } from "~/payment/components/errors/due-today-subscriptions-list-error"
 import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
-import type { RequestForPayement } from "~/payment/types/checkout-models"
-import { mapRequestForPayementResponseToRequestForPayement } from "~/payment/utils/mappers"
+import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
+import { mapProcessSubscriptionsResponseToProcessSubscriptions } from "~/payment/utils/mappers"
 import { getApiErrorMessage } from "~/shared/utils/problem-details-utils"
 import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
 import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
@@ -36,7 +36,7 @@ export function PaymentPage() {
   const totalAmount = calculateMonthlyCost(subscriptionsDueToday)
 
   const [paymentRequest, setPaymentRequest] =
-    useState<RequestForPayement | null>(null)
+    useState<ProcessSubscriptions | null>(null)
 
   const {
     mutate: requestPayment,
@@ -50,7 +50,7 @@ export function PaymentPage() {
     requestPayment(undefined, {
       onSuccess: (response) => {
         const mapped =
-          mapRequestForPayementResponseToRequestForPayement(response)
+          mapProcessSubscriptionsResponseToProcessSubscriptions(response)
         setPaymentRequest(mapped)
         toast.success(
           "Payment session created. Send payment before it expires."
