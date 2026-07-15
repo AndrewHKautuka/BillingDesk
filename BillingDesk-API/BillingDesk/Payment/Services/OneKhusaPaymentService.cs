@@ -3,6 +3,7 @@ using BillingDesk.Payment.Types.Configs;
 using BillingDesk.Payment.Types.Results;
 using OneKhusa.SDK;
 using OneKhusa.SDK.Models.Configurations;
+using OneKhusa.SDK.Models.FakeData.Collections;
 using OneKhusa.SDK.Models.Transactions.Collections;
 
 namespace BillingDesk.Payment.Services;
@@ -41,5 +42,32 @@ public sealed class OneKhusaPaymentService(
 
 		OneKhusaPaymentServiceLog.PaymentRequestFailed(logger, referenceNumber);
 		return new RequestPaymentResult.Failed(response.Error!);
+	}
+
+	public async Task<SimulateAcceptRequestToPayResult> SimulateAcceptRequestToPayAsync(
+		string timedAccountNumber,
+		decimal transactionAmount,
+		int connectorId)
+	{
+		var response = await oneKhusaClient
+							 .FakeData
+							 .Collections
+							 .MockAcceptRequestToPayAsync(
+								 new MockAcceptRequestToPayRequest
+								 {
+									 MerchantAccountNumber = oneKhusaOptions.MerchantAccountNumber,
+									 ConnectorId = connectorId,
+									 TransactionAmount = transactionAmount,
+									 CurrencyCode = "MWK",
+									 TimedAccountNumber = timedAccountNumber,
+									 CapturedBy = oneKhusaMerchantEmail.Email
+								 });
+
+		if (response.IsSuccess)
+		{
+			return new SimulateAcceptRequestToPayResult.Success();
+		}
+
+		return new SimulateAcceptRequestToPayResult.Failed(response.Error!);
 	}
 }

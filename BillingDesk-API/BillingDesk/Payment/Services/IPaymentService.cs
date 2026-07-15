@@ -8,4 +8,9 @@ public interface IPaymentService
 		string referenceNumber,
 		decimal transactionAmount,
 		string transactionDescription);
+
+	Task<SimulateAcceptRequestToPayResult> SimulateAcceptRequestToPayAsync(
+		string timedAccountNumber,
+		decimal transactionAmount,
+		int connectorId);
 }
