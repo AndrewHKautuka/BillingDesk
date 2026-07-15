@@ -1,0 +1,16 @@
+using OneKhusa.SDK.Models.Shared;
+using OneKhusa.SDK.Models.Transactions.Collections;
+
+namespace BillingDesk.Checkout.Results;
+
+public abstract record RequestPaymentForSubscriptionsResult
+{
+	public sealed record Success(RequestToPayResponse RequestToPayResponse)
+		: RequestPaymentForSubscriptionsResult;
+
+	public sealed record PaymentRequestFailed(ApiErrorResponse ApiErrorResponse)
+		: RequestPaymentForSubscriptionsResult;
+
+	public sealed record UnknownFailure
+		: RequestPaymentForSubscriptionsResult;
+}

@@ -1,3 +1,4 @@
+using BillingDesk.Checkout.Services;
 using BillingDesk.Common;
 using BillingDesk.Common.Configs;
 using BillingDesk.Common.Factories;
@@ -38,6 +39,7 @@ builder.Services.AddSingleton(new OneKhusaMerchantEmail(oneKhusaConfig.MerchantE
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
 builder.Services.AddScoped<IPaymentService, OneKhusaPaymentService>();
+builder.Services.AddScoped<ICheckoutService, CheckoutService>();
 
 // Seeders
 builder.Services.AddScoped<SubscriptionSeeder>();
