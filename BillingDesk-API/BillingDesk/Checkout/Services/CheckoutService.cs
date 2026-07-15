@@ -38,7 +38,8 @@ public sealed class CheckoutService(
 		{
 			case RequestPaymentResult.Success r:
 				CheckoutServiceLog.PaymentRequestSucceeded(logger, referenceNumber);
-				return new RequestPaymentForSubscriptionsResult.Success(r.RequestToPayResponse);
+				return new RequestPaymentForSubscriptionsResult.Success(r.RequestToPayResponse,
+																		totalCost);
 
 			case RequestPaymentResult.Failed r:
 				CheckoutServiceLog.PaymentRequestFailed(logger, referenceNumber);

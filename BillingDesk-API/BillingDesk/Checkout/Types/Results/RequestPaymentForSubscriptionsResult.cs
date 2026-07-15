@@ -5,7 +5,9 @@ namespace BillingDesk.Checkout.Types.Results;
 
 public abstract record RequestPaymentForSubscriptionsResult
 {
-	public sealed record Success(RequestToPayResponse RequestToPayResponse)
+	public sealed record Success(
+		RequestToPayResponse RequestToPayResponse,
+		decimal TransactionAmount)
 		: RequestPaymentForSubscriptionsResult;
 
 	public sealed record PaymentRequestFailed(ApiErrorResponse ApiErrorResponse)
