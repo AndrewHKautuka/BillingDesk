@@ -23,6 +23,7 @@ interface CheckoutPaymentCardProps {
   isPending: boolean
   isError: boolean
   onPay: () => void
+  buttonClassName?: string
 }
 
 export function CheckoutPaymentCard({
@@ -31,6 +32,7 @@ export function CheckoutPaymentCard({
   isPending,
   isError,
   onPay,
+  buttonClassName,
 }: CheckoutPaymentCardProps) {
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null)
 
@@ -128,7 +130,11 @@ export function CheckoutPaymentCard({
           </div>
         </div>
 
-        <Button className="w-fit rounded-md" onClick={onPay} disabled={!canPay}>
+        <Button
+          className={cn("w-fit", buttonClassName)}
+          onClick={onPay}
+          disabled={!canPay}
+        >
           {isPending && <Loader2Icon className="animate-spin" />}
           {isPending
             ? "Requesting…"

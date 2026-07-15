@@ -11,6 +11,7 @@ import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
 import type { RequestForPayement } from "~/payment/types/checkout-models"
 import { mapRequestForPayementResponseToRequestForPayement } from "~/payment/utils/mappers"
 import { getApiErrorMessage } from "~/shared/utils/problem-details-utils"
+import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
 import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
 import { calculateMonthlyCost } from "~/subscription/utils/subscription-utils"
 
@@ -74,6 +75,7 @@ export function PaymentPage() {
           isPending={isPending}
           isError={isError || isRenewalsError}
           onPay={handlePay}
+          buttonClassName={BUTTON_CLASS_NAME}
         />
       )}
 
