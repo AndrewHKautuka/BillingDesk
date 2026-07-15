@@ -17,13 +17,16 @@ public sealed class CheckoutService(
 		var totalCost = subscriptions
 			.Sum(s => rateProvider.GetRateToMwk(s.Currency) * s.Cost);
 
-		var result = await paymentService
-						 .RequestPaymentAsync("RN" + Guid.NewGuid()
-														 .ToString("N")
-														 .ToUpper(CultureInfo.InvariantCulture)
-														 [..8],
-											  totalCost,
-											  $"Transaction for {subscriptions.Count} subscriptions.");
+		var referenceNumber = "RN" + Guid.NewGuid()
+										 .ToString("N")
+										 .ToUpper(CultureInfo.InvariantCulture)
+										 [..8];
+
+		var transactionDescription = $"Transaction for {subscriptions.Count} subscriptions.";
+
+		var result = await paymentService.RequestPaymentAsync(referenceNumber,
+															  totalCost,
+															  transactionDescription);
 
 		return result switch
 		{
