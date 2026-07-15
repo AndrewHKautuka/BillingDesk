@@ -4,7 +4,9 @@ using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using NodaTime;
+using OneKhusa.SDK.Models.Shared;
 using OneKhusa.SDK.Models.Transactions.Collections;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
@@ -83,6 +85,16 @@ public static class MapsterConfig
 			.NewConfig()
 			.Map(dest => dest.Total,
 				 src => src);
+		TypeAdapterConfig<ApiErrorResponse, ProblemDetails>
+			.NewConfig()
+			.Map(
+				dest => dest.Extensions,
+				src => new Dictionary<string, object?>
+					   {
+						   { "errors", src.Errors }
+					   },
+				src => src.Errors != null && src.Errors.Length > 0 // Only executes if true
+			);
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}
