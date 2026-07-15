@@ -1,4 +1,5 @@
 using System.Globalization;
+using BillingDesk.Checkout.Logging;
 using BillingDesk.Checkout.Results;
 using BillingDesk.Payment.Services;
 using BillingDesk.Payment.Types.Results;
@@ -8,14 +9,19 @@ namespace BillingDesk.Checkout.Services;
 
 public sealed class CheckoutService(
 	IPaymentService paymentService,
-	IFxRateProvider rateProvider) : ICheckoutService
+	IFxRateProvider rateProvider,
+	ILogger<CheckoutService> logger) : ICheckoutService
 {
 	public async Task<RequestPaymentForSubscriptionsResult> RequestPaymentForSubscriptionsAsync(
 		IList<SubscriptionModel> subscriptions,
 		CancellationToken ct = default)
 	{
+		CheckoutServiceLog.CalculatingTotalCost(logger, subscriptions.Count);
+
 		var totalCost = subscriptions
 			.Sum(s => rateProvider.GetRateToMwk(s.Currency) * s.Cost);
+
+		CheckoutServiceLog.TotalCostCalculated(logger, totalCost, subscriptions.Count);
 
 		var referenceNumber = "RN" + Guid.NewGuid()
 										 .ToString("N")
@@ -28,14 +34,19 @@ public sealed class CheckoutService(
 															  totalCost,
 															  transactionDescription);
 
-		return result switch
+		switch (result)
 		{
-			RequestPaymentResult.Success r =>
-				new RequestPaymentForSubscriptionsResult.Success(r.RequestToPayResponse),
-			RequestPaymentResult.Failed r =>
-				new RequestPaymentForSubscriptionsResult.PaymentRequestFailed(r.ApiErrorResponse),
-			_ =>
-				new RequestPaymentForSubscriptionsResult.UnknownFailure()
-		};
+			case RequestPaymentResult.Success r:
+				CheckoutServiceLog.PaymentRequestSucceeded(logger, referenceNumber);
+				return new RequestPaymentForSubscriptionsResult.Success(r.RequestToPayResponse);
+
+			case RequestPaymentResult.Failed r:
+				CheckoutServiceLog.PaymentRequestFailed(logger, referenceNumber);
+				return new RequestPaymentForSubscriptionsResult.PaymentRequestFailed(r.ApiErrorResponse);
+
+			default:
+				CheckoutServiceLog.UnknownFailure(logger, referenceNumber);
+				return new RequestPaymentForSubscriptionsResult.UnknownFailure();
+		}
 	}
 }

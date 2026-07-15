@@ -1,3 +1,4 @@
+using BillingDesk.Payment.Logging;
 using BillingDesk.Payment.Types.Configs;
 using BillingDesk.Payment.Types.Results;
 using OneKhusa.SDK;
@@ -9,13 +10,16 @@ namespace BillingDesk.Payment.Services;
 public sealed class OneKhusaPaymentService(
 	IOneKhusaClient oneKhusaClient,
 	OneKhusaOptions oneKhusaOptions,
-	OneKhusaMerchantEmail oneKhusaMerchantEmail) : IPaymentService
+	OneKhusaMerchantEmail oneKhusaMerchantEmail,
+	ILogger<OneKhusaPaymentService> logger) : IPaymentService
 {
 	public async Task<RequestPaymentResult> RequestPaymentAsync(
 		string referenceNumber,
 		decimal transactionAmount,
 		string transactionDescription)
 	{
+		OneKhusaPaymentServiceLog.RequestingPayment(logger, referenceNumber, transactionAmount);
+
 		var response = await oneKhusaClient
 							 .Transactions
 							 .Collections
@@ -31,9 +35,11 @@ public sealed class OneKhusaPaymentService(
 
 		if (response.IsSuccess)
 		{
+			OneKhusaPaymentServiceLog.PaymentRequestSucceeded(logger, referenceNumber);
 			return new RequestPaymentResult.Success(response.Data!);
 		}
 
+		OneKhusaPaymentServiceLog.PaymentRequestFailed(logger, referenceNumber);
 		return new RequestPaymentResult.Failed(response.Error!);
 	}
 }
