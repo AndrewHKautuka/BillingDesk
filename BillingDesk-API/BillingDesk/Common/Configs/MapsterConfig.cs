@@ -87,14 +87,13 @@ public static class MapsterConfig
 				 src => src);
 		TypeAdapterConfig<ApiErrorResponse, ProblemDetails>
 			.NewConfig()
-			.Map(
-				dest => dest.Extensions,
-				src => new Dictionary<string, object?>
-					   {
-						   { "errors", src.Errors }
-					   },
-				src => src.Errors != null && src.Errors.Length > 0 // Only executes if true
-			);
+			.AfterMapping((src, dest) =>
+			{
+				if (src.Errors is { Length: > 0 })
+				{
+					dest.Extensions["errors"] = src.Errors;
+				}
+			});
 
 		TypeAdapterConfig.GlobalSettings.Compile();
 	}
