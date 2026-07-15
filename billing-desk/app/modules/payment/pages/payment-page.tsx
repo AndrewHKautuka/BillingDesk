@@ -51,6 +51,7 @@ export function PaymentPage() {
   const {
     mutate: simulatePayment,
     isPending: isSimulating,
+    isSuccess: isSimulationSuccess,
     reset: resetSimulation,
   } = useSimulateAcceptRequestToPay()
 
@@ -109,6 +110,7 @@ export function PaymentPage() {
           paymentRequest={paymentRequest}
           isPending={isRequestingPayment}
           isError={isPaymentError}
+          isSuccess={isSimulationSuccess}
           onPay={handlePay}
           buttonClassName={BUTTON_CLASS_NAME}
         />

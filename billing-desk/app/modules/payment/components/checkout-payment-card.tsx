@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 
 import { differenceInSeconds, isPast } from "date-fns"
-import { ClockIcon, CreditCardIcon, Loader2Icon } from "lucide-react"
+import { CheckIcon, ClockIcon, CreditCardIcon, Loader2Icon } from "lucide-react"
 import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
 import { formatCurrency } from "~/shared/utils/format-utils"
 import { formatCountdown } from "~/shared/utils/time-formatters"
@@ -22,6 +22,7 @@ interface CheckoutPaymentCardProps {
   paymentRequest: ProcessSubscriptions | null
   isPending: boolean
   isError: boolean
+  isSuccess?: boolean
   onPay: () => void
   buttonClassName?: string
 }
@@ -30,14 +31,16 @@ export function CheckoutPaymentCard({
   paymentRequest,
   isPending,
   isError,
+  isSuccess = false,
   onPay,
   buttonClassName,
 }: CheckoutPaymentCardProps) {
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null)
 
-  // Keep the countdown ticking every second while a payment request is active.
+  // Keep the countdown ticking every second while a payment request is active,
+  // but stop immediately once the simulation succeeds.
   useEffect(() => {
-    if (!paymentRequest) {
+    if (!paymentRequest || isSuccess) {
       return
     }
 
@@ -49,7 +52,7 @@ export function CheckoutPaymentCard({
     update()
     const id = setInterval(update, 1_000)
     return () => clearInterval(id)
-  }, [paymentRequest])
+  }, [paymentRequest, isSuccess])
 
   // Reset countdown when the payment request is cleared
   const seconds = paymentRequest !== null ? secondsRemaining : null
@@ -59,7 +62,10 @@ export function CheckoutPaymentCard({
     (seconds === 0 || isPast(paymentRequest.expiryDate))
 
   // The button is enabled when: no active request, request expired, or last attempt failed.
-  const canPay = !isPending && (paymentRequest === null || isExpired || isError)
+  const canPay =
+    !isPending &&
+    !isSuccess &&
+    (paymentRequest === null || isExpired || isError)
 
   const transactionAmount = paymentRequest?.transactionAmount
   const [amountSymbol, amountValue] = transactionAmount
@@ -126,14 +132,25 @@ export function CheckoutPaymentCard({
               <div
                 className={cn(
                   "flex items-center gap-1.5",
-                  isExpired && "text-destructive",
-                  seconds < 60 && "flex items-center gap-1.5 text-orange-500"
+                  isSuccess && "text-green-600 dark:text-green-500",
+                  !isSuccess && isExpired && "text-destructive",
+                  !isSuccess &&
+                    seconds < 60 &&
+                    "flex items-center gap-1.5 text-orange-500"
                 )}
               >
-                <ClockIcon className="size-4 shrink-0" />
+                {isSuccess ? (
+                  <CheckIcon className="size-4 shrink-0" />
+                ) : (
+                  <ClockIcon className="size-4 shrink-0" />
+                )}
 
                 <span className="font-mono text-xl font-semibold">
-                  {isExpired ? "Expired" : formatCountdown(seconds)}
+                  {isSuccess
+                    ? "Resolved"
+                    : isExpired
+                      ? "Expired"
+                      : formatCountdown(seconds)}
                 </span>
               </div>
             ) : (
@@ -150,11 +167,14 @@ export function CheckoutPaymentCard({
           disabled={!canPay}
         >
           {isPending && <Loader2Icon className="animate-spin" />}
+          {isSuccess && !isPending && <CheckIcon className="size-4" />}
           {isPending
             ? "Requesting…"
-            : paymentRequest && !isExpired && !isError
-              ? "Payment Requested"
-              : "Request Payment"}
+            : isSuccess
+              ? "Payment Done"
+              : paymentRequest && !isExpired && !isError
+                ? "Payment Requested"
+                : "Request Payment"}
         </Button>
       </CardContent>
     </Card>
