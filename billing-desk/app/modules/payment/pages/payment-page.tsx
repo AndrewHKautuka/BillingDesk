@@ -7,6 +7,7 @@ import { CheckoutPaymentCard } from "~/payment/components/checkout-payment-card"
 import { CheckoutPaymentCardSkeleton } from "~/payment/components/checkout-payment-card-skeleton"
 import { DueTodaySubscriptionsList } from "~/payment/components/due-today-subscriptions-list"
 import { DueTodaySubscriptionsListSkeleton } from "~/payment/components/due-today-subscriptions-list-skeleton"
+import { CheckoutPaymentCardError } from "~/payment/components/errors/checkout-payment-card-error"
 import { DueTodaySubscriptionsListError } from "~/payment/components/errors/due-today-subscriptions-list-error"
 import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
 import type { RequestForPayement } from "~/payment/types/checkout-models"
@@ -40,7 +41,7 @@ export function PaymentPage() {
   const {
     mutate: requestPayment,
     isPending,
-    isError,
+    isError: isPaymentError,
     reset,
   } = useProcessDueToday()
 
@@ -69,12 +70,14 @@ export function PaymentPage() {
 
       {isLoadingRenewals ? (
         <CheckoutPaymentCardSkeleton />
+      ) : isRenewalsError ? (
+        <CheckoutPaymentCardError error={renewalsError!} />
       ) : (
         <CheckoutPaymentCard
           paymentRequest={paymentRequest}
           transactionAmount={totalAmount}
           isPending={isPending}
-          isError={isError || isRenewalsError}
+          isError={isPaymentError}
           onPay={handlePay}
           buttonClassName={BUTTON_CLASS_NAME}
         />
