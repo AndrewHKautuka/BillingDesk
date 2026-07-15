@@ -1,14 +1,15 @@
 using BillingDesk.Checkout.Logging;
 using BillingDesk.Checkout.Services;
+using BillingDesk.Checkout.Types.Response;
 using BillingDesk.Checkout.Types.Results;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Results;
 using BillingDesk.Subscription.Utils;
+using Mapster;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
-using OneKhusa.SDK.Models.Transactions.Collections;
 
 namespace BillingDesk.Checkout.Controllers;
 
@@ -24,7 +25,7 @@ public sealed class CheckoutController(
 {
 	[HttpPost("process-due-today")]
 	public async Task<Results<
-			Ok<RequestToPayResponse>,
+			Ok<ProcessSubscriptionsResponse>,
 			NoContent,
 			ProblemHttpResult,
 			InternalServerError>>
@@ -72,7 +73,8 @@ public sealed class CheckoutController(
 		return checkoutResult switch
 		{
 			RequestPaymentForSubscriptionsResult.Success r =>
-				TypedResults.Ok(r.RequestToPayResponse),
+				TypedResults.Ok((subscriptionsDueToday, r.TransactionAmount, r.RequestToPayResponse)
+								.Adapt<ProcessSubscriptionsResponse>()),
 			_ =>
 				TypedResults.InternalServerError()
 		};
