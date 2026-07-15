@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { FlaskConicalIcon, Loader2Icon } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
+import { useSimulatePaymentStore } from "~/payment/hooks/use-simulate-payment-store"
 import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
 import {
   type SimulatePaymentFormData,
@@ -54,10 +55,15 @@ export function SimulatePaymentCard({
 }: SimulatePaymentCardProps) {
   const connectors = env.CONNECTORS
 
+  const { connectorId: storedConnectorId, setConnectorId } =
+    useSimulatePaymentStore()
+
   const { control, handleSubmit } = useForm<SimulatePaymentFormData>({
     resolver: zodResolver(simulatePaymentSchema),
     defaultValues: {
-      connectorId: connectors.length === 1 ? connectors[0].id : undefined,
+      connectorId:
+        storedConnectorId ??
+        (connectors.length === 1 ? connectors[0].id : undefined),
     },
   })
 
@@ -104,7 +110,10 @@ export function SimulatePaymentCard({
                   <Select
                     name={field.name}
                     value={field.value}
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value)
+                      setConnectorId(value ?? undefined)
+                    }}
                     disabled={field.disabled}
                   >
                     <SelectTrigger
