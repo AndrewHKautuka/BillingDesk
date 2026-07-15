@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { differenceInSeconds, isPast } from "date-fns"
 import { ClockIcon, CreditCardIcon, Loader2Icon } from "lucide-react"
 import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
+import { formatCurrency } from "~/shared/utils/format-utils"
 import { formatCountdown } from "~/shared/utils/time-formatters"
 
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,6 @@ import { cn } from "@/lib/utils"
 
 interface CheckoutPaymentCardProps {
   paymentRequest: ProcessSubscriptions | null
-  transactionAmount: string
   isPending: boolean
   isError: boolean
   onPay: () => void
@@ -28,7 +28,6 @@ interface CheckoutPaymentCardProps {
 
 export function CheckoutPaymentCard({
   paymentRequest,
-  transactionAmount,
   isPending,
   isError,
   onPay,
@@ -62,6 +61,14 @@ export function CheckoutPaymentCard({
   // The button is enabled when: no active request, request expired, or last attempt failed.
   const canPay = !isPending && (paymentRequest === null || isExpired || isError)
 
+  const transactionAmount = paymentRequest?.transactionAmount
+  const [amountSymbol, amountValue] = transactionAmount
+    ? (formatCurrency(transactionAmount, "MWK") ?? [
+        "MWK",
+        transactionAmount.toFixed(2),
+      ])
+    : ["MWK", "-"]
+
   return (
     <Card>
       <CardHeader>
@@ -94,12 +101,19 @@ export function CheckoutPaymentCard({
               Total to Transact
             </span>
 
-            <div className="flex items-baseline gap-0.5">
-              {/* <span className="text-sm font-light text-muted-foreground">
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-sm font-light text-muted-foreground">
                 {amountSymbol}
-              </span> */}
+              </span>
 
-              <span className="text-xl font-semibold">{transactionAmount}</span>
+              <span
+                className={cn(
+                  "text-xl font-semibold",
+                  !transactionAmount && "text-muted-foreground"
+                )}
+              >
+                {amountValue}
+              </span>
             </div>
           </div>
 

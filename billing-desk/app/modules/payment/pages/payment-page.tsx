@@ -15,7 +15,6 @@ import { mapProcessSubscriptionsResponseToProcessSubscriptions } from "~/payment
 import { getApiErrorMessage } from "~/shared/utils/problem-details-utils"
 import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
 import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
-import { calculateMonthlyCost } from "~/subscription/utils/subscription-utils"
 
 // lookahead of 0 days returns only subscriptions due today
 const DUE_TODAY_LOOKAHEAD = 0
@@ -31,9 +30,6 @@ export function PaymentPage() {
 
   const subscriptionsDueToday =
     renewals?.map((renewal) => renewal.subscription) ?? []
-
-  // Derive total from today's subscriptions
-  const totalAmount = calculateMonthlyCost(subscriptionsDueToday)
 
   const [paymentRequest, setPaymentRequest] =
     useState<ProcessSubscriptions | null>(null)
@@ -75,7 +71,6 @@ export function PaymentPage() {
       ) : (
         <CheckoutPaymentCard
           paymentRequest={paymentRequest}
-          transactionAmount={totalAmount}
           isPending={isPending}
           isError={isPaymentError}
           onPay={handlePay}
