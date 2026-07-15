@@ -9,11 +9,18 @@ import { DueTodaySubscriptionsList } from "~/payment/components/due-today-subscr
 import { DueTodaySubscriptionsListSkeleton } from "~/payment/components/due-today-subscriptions-list-skeleton"
 import { CheckoutPaymentCardError } from "~/payment/components/errors/checkout-payment-card-error"
 import { DueTodaySubscriptionsListError } from "~/payment/components/errors/due-today-subscriptions-list-error"
+import { SimulatePaymentCard } from "~/payment/components/simulate-payment-card"
+import { SimulatePaymentCardPlaceholder } from "~/payment/components/simulate-payment-card-placeholder"
+import { SimulatePaymentCardSkeleton } from "~/payment/components/simulate-payment-card-skeleton"
 import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
+import { useSimulateAcceptRequestToPay } from "~/payment/hooks/use-payment-mutations"
 import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
 import { mapProcessSubscriptionsResponseToProcessSubscriptions } from "~/payment/utils/mappers"
 import { getApiErrorMessage } from "~/shared/utils/problem-details-utils"
-import { BUTTON_CLASS_NAME } from "~/subscription/constants/subscription-constants"
+import {
+  BUTTON_CLASS_NAME,
+  INPUT_CLASS_NAME,
+} from "~/subscription/constants/subscription-constants"
 import { useUpcomingRenewals } from "~/subscription/hooks/use-subscription-queries"
 
 // lookahead of 0 days returns only subscriptions due today
@@ -36,13 +43,20 @@ export function PaymentPage() {
 
   const {
     mutate: requestPayment,
-    isPending,
+    isPending: isRequestingPayment,
     isError: isPaymentError,
-    reset,
+    reset: resetPayment,
   } = useProcessDueToday()
 
+  const {
+    mutate: simulatePayment,
+    isPending: isSimulating,
+    reset: resetSimulation,
+  } = useSimulateAcceptRequestToPay()
+
   const handlePay = () => {
-    reset()
+    resetPayment()
+    resetSimulation()
     requestPayment(undefined, {
       onSuccess: (response) => {
         const mapped =
@@ -60,6 +74,28 @@ export function PaymentPage() {
     })
   }
 
+  const handleSimulate = (connectorId: number) => {
+    if (!paymentRequest) return
+    resetSimulation()
+    simulatePayment(
+      {
+        timedAccountNumber: paymentRequest.timedAccountNumber,
+        transactionAmount: paymentRequest.transactionAmount,
+        connectorId,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Payment simulation accepted successfully.")
+        },
+        onError: (error) => {
+          toast.error(getApiErrorMessage(error), {
+            description: "Failed to simulate the payment. Please try again.",
+          })
+        },
+      }
+    )
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <h1>Payment</h1>
@@ -71,9 +107,23 @@ export function PaymentPage() {
       ) : (
         <CheckoutPaymentCard
           paymentRequest={paymentRequest}
-          isPending={isPending}
+          isPending={isRequestingPayment}
           isError={isPaymentError}
           onPay={handlePay}
+          buttonClassName={BUTTON_CLASS_NAME}
+        />
+      )}
+
+      {isLoadingRenewals ? (
+        <SimulatePaymentCardSkeleton />
+      ) : isRenewalsError || isPaymentError ? null : paymentRequest === null ? (
+        <SimulatePaymentCardPlaceholder />
+      ) : (
+        <SimulatePaymentCard
+          paymentRequest={paymentRequest}
+          isPending={isSimulating}
+          onSimulate={handleSimulate}
+          inputClassName={INPUT_CLASS_NAME}
           buttonClassName={BUTTON_CLASS_NAME}
         />
       )}
