@@ -37,6 +37,9 @@ builder.Services.AddSingleton(new OneKhusaMerchantEmail(oneKhusaConfig.MerchantE
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<ISubscriptionCalculatorService, SubscriptionCalculatorService>();
+builder.Services.AddScoped<IPaymentService, OneKhusaPaymentService>();
+
+// Seeders
 builder.Services.AddScoped<SubscriptionSeeder>();
 
 // Validators
