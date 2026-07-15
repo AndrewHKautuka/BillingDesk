@@ -1,9 +1,11 @@
+using BillingDesk.Checkout.Types.Response;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using Mapster;
 using NodaTime;
+using OneKhusa.SDK.Models.Transactions.Collections;
 using SubscriptionModel = BillingDesk.Subscription.Types.Models.Subscription;
 
 namespace BillingDesk.Common.Configs;
@@ -60,6 +62,17 @@ public static class MapsterConfig
 				 src => src.Subscription)
 			.Map(dest => dest.NextBillingDate,
 				 src => src.NextBillingDate);
+		TypeAdapterConfig<(List<SubscriptionModel> Subscriptions,
+				decimal TransactionAmount,
+				RequestToPayResponse RequestToPayResponse),
+				ProcessSubscriptionsResponse>
+			.NewConfig()
+			.Map(dest => dest,
+				 src => src.RequestToPayResponse)
+			.Map(dest => dest.Subscriptions,
+				 src => src.Subscriptions)
+			.Map(dest => dest.TransactionAmount,
+				 src => src.TransactionAmount);
 
 		// Others to Responses
 		TypeAdapterConfig<LocalDate, BillingDateResponse>
