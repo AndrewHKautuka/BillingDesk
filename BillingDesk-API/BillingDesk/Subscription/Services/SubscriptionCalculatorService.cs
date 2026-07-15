@@ -76,7 +76,7 @@ public sealed class SubscriptionCalculatorService(
 
 		// Use yesterday as reference so that subscriptions due today are included
 		var referenceDate = today - Period.FromDays(1);
-		var windowEnd = today + Period.FromDays(daysAhead - 1);
+		var windowEnd = today + Period.FromDays(daysAhead);
 
 		var renewals = subscriptions
 					   .Where(e => e.Status == SubscriptionStatus.Active)

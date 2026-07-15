@@ -46,7 +46,7 @@ public sealed class CheckoutController(
 
 		var upcomingResult = subscriptionCalculatorService.GetUpcomingRenewals(
 			listSuccess.Subscriptions,
-			1,
+			0,
 			today);
 
 		if (upcomingResult is not GetUpcomingRenewalsResult.Success renewalsSuccess)
