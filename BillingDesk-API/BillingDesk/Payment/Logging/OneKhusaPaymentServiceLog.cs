@@ -20,4 +20,23 @@ public static partial class OneKhusaPaymentServiceLog
 	public static partial void PaymentRequestFailed(
 		ILogger logger,
 		string referenceNumber);
+
+	[LoggerMessage(Level = LogLevel.Debug,
+				   Message = "Simulating acceptance of request to pay for timed account {TimedAccountNumber} with amount {TransactionAmount}")]
+	public static partial void SimulatingAcceptRequestToPay(
+		ILogger logger,
+		string timedAccountNumber,
+		decimal transactionAmount);
+
+	[LoggerMessage(Level = LogLevel.Information,
+				   Message = "Simulate accept request to pay succeeded for timed account {TimedAccountNumber}")]
+	public static partial void SimulateAcceptRequestToPaySucceeded(
+		ILogger logger,
+		string timedAccountNumber);
+
+	[LoggerMessage(Level = LogLevel.Error,
+				   Message = "Simulate accept request to pay failed for timed account {TimedAccountNumber}")]
+	public static partial void SimulateAcceptRequestToPayFailed(
+		ILogger logger,
+		string timedAccountNumber);
 }

@@ -49,6 +49,8 @@ public sealed class OneKhusaPaymentService(
 		decimal transactionAmount,
 		int connectorId)
 	{
+		OneKhusaPaymentServiceLog.SimulatingAcceptRequestToPay(logger, timedAccountNumber, transactionAmount);
+
 		var response = await oneKhusaClient
 							 .FakeData
 							 .Collections
@@ -65,9 +67,11 @@ public sealed class OneKhusaPaymentService(
 
 		if (response.IsSuccess)
 		{
+			OneKhusaPaymentServiceLog.SimulateAcceptRequestToPaySucceeded(logger, timedAccountNumber);
 			return new SimulateAcceptRequestToPayResult.Success();
 		}
 
+		OneKhusaPaymentServiceLog.SimulateAcceptRequestToPayFailed(logger, timedAccountNumber);
 		return new SimulateAcceptRequestToPayResult.Failed(response.Error!);
 	}
 }
