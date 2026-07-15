@@ -32,6 +32,7 @@ ValidatorOptionsConfig.ApplyValidatorOptionsConfig();
 // Singletons
 builder.Services.AddSingleton<IClock>(SystemClock.Instance);
 builder.Services.AddSingleton<IFxRateProvider, ConfigurationFxRateProvider>();
+builder.Services.AddSingleton(new OneKhusaMerchantEmail(oneKhusaConfig.MerchantEmail));
 
 // Services
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();

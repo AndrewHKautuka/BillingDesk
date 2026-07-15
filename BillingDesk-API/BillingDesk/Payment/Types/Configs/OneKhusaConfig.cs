@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BillingDesk.Payment.Types.Configs;
 
 public sealed record OneKhusaConfig
@@ -8,4 +10,7 @@ public sealed record OneKhusaConfig
 	public required string ApiSecret { get; set; }
 	public required string OrganisationId { get; set; }
 	public required int MerchantAccountNumber { get; set; }
+
+	[EmailAddress]
+	public required string MerchantEmail { get; set; }
 }
