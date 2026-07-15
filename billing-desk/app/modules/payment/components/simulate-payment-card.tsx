@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { FlaskConicalIcon, Loader2Icon } from "lucide-react"
+import { FlaskConicalIcon, Loader2Icon, RotateCcwIcon } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 import { useConnectorPreferenceStore } from "~/payment/hooks/use-connector-preference-store"
 import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
@@ -41,7 +41,9 @@ const FORM_ID = "simulate-payment-form"
 interface SimulatePaymentCardProps {
   paymentRequest: ProcessSubscriptions
   isPending: boolean
+  isResolved: boolean
   onSimulate: (connectorId: number) => void
+  onReset: () => void
   inputClassName?: string
   buttonClassName?: string
 }
@@ -49,7 +51,9 @@ interface SimulatePaymentCardProps {
 export function SimulatePaymentCard({
   paymentRequest,
   isPending,
+  isResolved,
   onSimulate,
+  onReset,
   inputClassName,
   buttonClassName,
 }: SimulatePaymentCardProps) {
@@ -141,15 +145,26 @@ export function SimulatePaymentCard({
         </form>
       </CardContent>
 
-      <CardFooter>
+      <CardFooter className="flex gap-2">
         <Button
           type="submit"
           form={FORM_ID}
           className={cn("w-fit", buttonClassName)}
-          disabled={isPending}
+          disabled={isPending || isResolved}
         >
           {isPending && <Loader2Icon className="animate-spin" />}
           {isPending ? "Simulating…" : "Simulate Accept"}
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          className={cn("w-fit", buttonClassName)}
+          disabled={isPending}
+          onClick={onReset}
+        >
+          <RotateCcwIcon className="size-4" />
+          Reset Payment
         </Button>
       </CardFooter>
     </Card>

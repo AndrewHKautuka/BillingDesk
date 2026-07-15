@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-
 import { toast } from "sonner"
 import { CheckoutPaymentCard } from "~/payment/components/checkout-payment-card"
 import { CheckoutPaymentCardSkeleton } from "~/payment/components/checkout-payment-card-skeleton"
@@ -14,7 +12,7 @@ import { SimulatePaymentCardPlaceholder } from "~/payment/components/simulate-pa
 import { SimulatePaymentCardSkeleton } from "~/payment/components/simulate-payment-card-skeleton"
 import { useProcessDueToday } from "~/payment/hooks/use-checkout-mutations"
 import { useSimulateAcceptRequestToPay } from "~/payment/hooks/use-payment-mutations"
-import type { ProcessSubscriptions } from "~/payment/types/checkout-models"
+import { usePaymentRequestStore } from "~/payment/hooks/use-payment-request-store"
 import { mapProcessSubscriptionsResponseToProcessSubscriptions } from "~/payment/utils/mappers"
 import { getApiErrorMessage } from "~/shared/utils/problem-details-utils"
 import {
@@ -38,8 +36,13 @@ export function PaymentPage() {
   const subscriptionsDueToday =
     renewals?.map((renewal) => renewal.subscription) ?? []
 
-  const [paymentRequest, setPaymentRequest] =
-    useState<ProcessSubscriptions | null>(null)
+  const {
+    paymentRequest,
+    isResolved,
+    setPaymentRequest,
+    setResolved,
+    resetPaymentRequest,
+  } = usePaymentRequestStore()
 
   const {
     mutate: requestPayment,
@@ -51,7 +54,6 @@ export function PaymentPage() {
   const {
     mutate: simulatePayment,
     isPending: isSimulating,
-    isSuccess: isSimulationSuccess,
     reset: resetSimulation,
   } = useSimulateAcceptRequestToPay()
 
@@ -86,6 +88,7 @@ export function PaymentPage() {
       },
       {
         onSuccess: () => {
+          setResolved(true)
           toast.success("Payment simulation accepted successfully.")
         },
         onError: (error) => {
@@ -95,6 +98,11 @@ export function PaymentPage() {
         },
       }
     )
+  }
+
+  const handleReset = () => {
+    resetPaymentRequest()
+    resetSimulation()
   }
 
   return (
@@ -110,7 +118,7 @@ export function PaymentPage() {
           paymentRequest={paymentRequest}
           isPending={isRequestingPayment}
           isError={isPaymentError}
-          isSuccess={isSimulationSuccess}
+          isSuccess={isResolved}
           onPay={handlePay}
           buttonClassName={BUTTON_CLASS_NAME}
         />
@@ -124,7 +132,9 @@ export function PaymentPage() {
         <SimulatePaymentCard
           paymentRequest={paymentRequest}
           isPending={isSimulating}
+          isResolved={isResolved}
           onSimulate={handleSimulate}
+          onReset={handleReset}
           inputClassName={INPUT_CLASS_NAME}
           buttonClassName={BUTTON_CLASS_NAME}
         />
