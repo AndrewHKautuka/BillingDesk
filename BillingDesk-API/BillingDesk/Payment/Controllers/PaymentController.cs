@@ -30,14 +30,17 @@ public sealed class PaymentController(
 						 request.TransactionAmount,
 						 request.ConnectorId);
 
-		return result switch
+		switch (result)
 		{
-			SimulateAcceptRequestToPayResult.Success =>
-				TypedResults.NoContent(),
-			SimulateAcceptRequestToPayResult.Failed r =>
-				TypedResults.Problem(r.ApiErrorResponse.Adapt<ProblemDetails>()),
-			_ =>
-				TypedResults.InternalServerError()
-		};
+			case SimulateAcceptRequestToPayResult.Success:
+				return TypedResults.NoContent();
+
+			case SimulateAcceptRequestToPayResult.Failed r:
+				PaymentControllerLog.SimulateAcceptRequestToPayFailed(logger);
+				return TypedResults.Problem(r.ApiErrorResponse.Adapt<ProblemDetails>());
+
+			default:
+				return TypedResults.InternalServerError();
+		}
 	}
 }
