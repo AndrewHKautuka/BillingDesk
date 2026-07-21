@@ -2,6 +2,7 @@ import type { UseQueryResult } from "@tanstack/react-query"
 import { useQuery } from "@tanstack/react-query"
 import type { ApiError } from "~/shared/types/api-error-types"
 import {
+  monthlyCostQueryOptions,
   monthlyTotalQueryOptions,
   subscriptionQueryOptions,
   subscriptionsQueryOptions,
@@ -53,4 +54,15 @@ export function useMonthlyTotal(): UseQueryResult<
   ApiError
 > {
   return useQuery(monthlyTotalQueryOptions())
+}
+
+/**
+ * Query hook to calculate the monthly cost in MWK for a specific set of
+ * subscriptions identified by their IDs. The query is disabled when the list
+ * is empty.
+ */
+export function useMonthlyCost(
+  ids: string[]
+): UseQueryResult<MonthlyTotalResponse, ApiError> {
+  return useQuery(monthlyCostQueryOptions(ids))
 }
