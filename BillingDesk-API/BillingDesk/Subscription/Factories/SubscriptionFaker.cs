@@ -13,11 +13,9 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 	// fully deterministic and never depends on DateTime.Today.
 	public static readonly LocalDate Anchor = new(2022, 1, 1);
 
-	public SubscriptionFaker() : this(Seed) { }
-
-	public SubscriptionFaker(int seed)
+	public SubscriptionFaker(BillingCycle? billingCycle)
 	{
-		UseSeed(seed);
+		UseSeed(Seed);
 
 		RuleFor(s => s.Name,
 				f => f.Company.CompanyName());
@@ -26,7 +24,7 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 				f => f.PickRandom<Currency>());
 
 		RuleFor(s => s.BillingCycle,
-				f => f.PickRandom<BillingCycle>());
+				f => billingCycle ?? f.PickRandom<BillingCycle>());
 
 		RuleFor(s => s.Cost,
 				(f, s) => RealisticCost(f, s.Currency, s.BillingCycle));
@@ -55,7 +53,7 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 	public static SubscriptionModel WithFixedRenewalDate(
 		LocalDate renewalDate,
 		BillingCycle billingCycle,
-		Faker f)
+		Faker faker)
 	{
 		// Step back exactly one period from the target renewal date.
 		// This guarantees that advancing by one period from startDate lands on renewalDate,
@@ -65,15 +63,17 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 							? renewalDate.PlusMonths(-1)
 							: renewalDate.PlusYears(-1);
 
+		var currency = faker.PickRandom<Currency>();
+
 		return new SubscriptionModel
 			   {
-				   Name = f.Company.CompanyName(),
-				   Cost = RealisticCost(f, f.PickRandom<Currency>(), billingCycle),
-				   Currency = f.PickRandom<Currency>(),
+				   Name = faker.Company.CompanyName(),
+				   Cost = RealisticCost(faker, currency, billingCycle),
+				   Currency = currency,
 				   BillingCycle = billingCycle,
 				   StartDate = startDate,
 				   Status = SubscriptionStatus.Active,
-				   Category = f.Commerce.Categories(1)[0]
+				   Category = faker.Commerce.Categories(1)[0]
 			   };
 	}
 
@@ -81,7 +81,7 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 	///     Returns a cost that is plausible for the given currency and billing cycle.
 	/// </summary>
 	private static decimal RealisticCost(
-		Faker f,
+		Faker faker,
 		Currency currency,
 		BillingCycle cycle)
 	{
@@ -94,11 +94,12 @@ public sealed class SubscriptionFaker : Faker<SubscriptionModel>
 			_ => (2m, 50m)
 		};
 
-		var monthly = Math.Round(f.Random.Decimal(min, max), 2);
+		var monthly = Math.Round(faker.Random.Decimal(min, max), 2);
 
 		// Yearly plans typically offer ~15 % discount vs paying monthly × 12
-		return cycle == BillingCycle.Yearly
-				   ? Math.Round(monthly * 12m * 0.85m, 2)
-				   : monthly;
+		var cost = cycle == BillingCycle.Yearly
+					   ? Math.Round(monthly * 12m * 0.85m, 2)
+					   : monthly;
+		return cost;
 	}
 }

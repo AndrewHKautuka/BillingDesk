@@ -31,19 +31,18 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 	private static List<SubscriptionModel> BuildSubscriptions()
 	{
 		var anchor = SubscriptionFaker.Anchor; // Fixed
-		var faker = new SubscriptionFaker();
 
 		// Shared plain Faker for helpers that need random data outside of Faker<T>
-		var f = new Faker
-				{
-					Random = new Randomizer(SubscriptionFaker.Seed)
-				};
+		var faker = new Faker
+					{
+						Random = new Randomizer(SubscriptionFaker.Seed)
+					};
 
 		var all = new List<SubscriptionModel>();
 
 		// Base random batch
 
-		all.AddRange(faker.Generate(20));
+		all.AddRange(new SubscriptionFaker(null).Generate(5));
 
 		// Shared-renewal groups
 
@@ -53,7 +52,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(groupA,
 														   BillingCycle.Monthly,
-														   f));
+														   faker));
 		}
 
 		// Group B - 3 yearly subscriptions renewing on the same date
@@ -62,7 +61,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(groupB,
 														   BillingCycle.Yearly,
-														   f));
+														   faker));
 		}
 
 		// Group C - 3 monthly subscriptions renewing on the same date
@@ -71,7 +70,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(groupC,
 														   BillingCycle.Monthly,
-														   f));
+														   faker));
 		}
 
 		// Pair 1 - monthly
@@ -80,7 +79,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(pair1,
 														   BillingCycle.Monthly,
-														   f));
+														   faker));
 		}
 
 		// Pair 2 - yearly
@@ -89,7 +88,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(pair2,
 														   BillingCycle.Yearly,
-														   f));
+														   faker));
 		}
 
 		// Pair 3 - monthly
@@ -98,7 +97,7 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		{
 			all.Add(SubscriptionFaker.WithFixedRenewalDate(pair3,
 														   BillingCycle.Monthly,
-														   f));
+														   faker));
 		}
 
 		// Always-imminent subscriptions
@@ -107,26 +106,17 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 		// Because the billing calculator advances by calendar months, a monthly
 		// subscription started on day D of any month will always renew on day D
 		// every subsequent month - permanently.
-		//
-		// Strategy: seed 4 monthly subscriptions for each day-of-month 1-28
-		// (28 is the lowest common denominator across all months). On any given
-		// date, at least 3 of those day buckets fall within the 2-day window,
-		// so there are always >= 12 imminent renewals regardless of the query date.
-		//
-		// Start dates are placed 1-4 months before the first occurrence of each
-		// day-of-month on or after the anchor, so the fixed-anchor billing math
-		// is consistent and independent of DateTime.Today.
 
-		var imminentFaker = new SubscriptionFaker(SubscriptionFaker.Seed + 1);
+		var imminentFaker = new SubscriptionFaker(BillingCycle.Monthly);
 
-		for (var day = 1; day <= 28; day++)
+		for (var day = 1; day <= 28; day += 2)
 		{
 			// First occurrence of this day-of-month at or after the anchor
 			var firstRenewal = new LocalDate(anchor.Year, anchor.Month, day);
 			if (firstRenewal < anchor)
 				firstRenewal = firstRenewal.PlusMonths(1);
 
-			for (var copy = 0; copy < 4; copy++)
+			for (var copy = 0; copy < 2; copy++)
 			{
 				// Each copy starts one more month before firstRenewal so they all
 				// share the same renewal cadence but have distinct start dates
@@ -135,15 +125,8 @@ public sealed class SubscriptionSeeder(BillingDeskDbContext db)
 				var sub = imminentFaker.Generate();
 				sub.StartDate = startDate;
 				sub.BillingCycle = BillingCycle.Monthly;
-				sub.Status = SubscriptionStatus.Active;
 				all.Add(sub);
 			}
-		}
-
-		// Top-up to guarantee >= 100 total
-		if (all.Count < 100)
-		{
-			all.AddRange(faker.Generate(100 - all.Count));
 		}
 
 		return all;
