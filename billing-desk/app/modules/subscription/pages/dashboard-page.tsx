@@ -82,9 +82,9 @@ export function DashboardPage() {
     Subscription | undefined
   >(undefined)
 
-  const potentialSavingsStr = formatTotalMonthlySpending(
-    monthlyCostResponse?.total ?? 0
-  )
+  const potentialSavingsStr = monthlyCostResponse
+    ? formatTotalMonthlySpending(monthlyCostResponse.total)
+    : "-----"
   const totalMonthlyDisplay = formatTotalMonthlySpending(total)
 
   const handleDisplayStyleChange = (newValue: string[]) => {
