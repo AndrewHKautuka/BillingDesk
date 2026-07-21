@@ -61,10 +61,13 @@ public sealed class SubscriptionCalculatorController(
 
 		return result switch
 		{
-			GetUpcomingRenewalsResult.Success r => TypedResults.Ok(r.Renewals
-																	.Adapt<IReadOnlyList<RenewalResponse>>()),
-			GetUpcomingRenewalsResult.NegativeDaysAhead => TypedResults.BadRequest(),
-			_ => TypedResults.InternalServerError()
+			GetUpcomingRenewalsResult.Success r =>
+				TypedResults.Ok(r.Renewals
+								 .Adapt<IReadOnlyList<RenewalResponse>>()),
+			GetUpcomingRenewalsResult.NegativeDaysAhead =>
+				TypedResults.BadRequest(),
+			_ =>
+				TypedResults.InternalServerError()
 		};
 	}
 
@@ -90,9 +93,11 @@ public sealed class SubscriptionCalculatorController(
 
 		return result switch
 		{
-			GetMonthlySpendingResult.Success r => TypedResults.Ok(r.Total
-																   .Adapt<MonthlyTotalResponse>()),
-			_ => TypedResults.InternalServerError()
+			GetMonthlySpendingResult.Success r =>
+				TypedResults.Ok(r.Total
+								 .Adapt<MonthlyTotalResponse>()),
+			_ =>
+				TypedResults.InternalServerError()
 		};
 	}
 }
