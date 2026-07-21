@@ -4,6 +4,7 @@ using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
 using BillingDesk.Subscription.Types.Enums;
 using BillingDesk.Subscription.Types.Queries;
+using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
 using BillingDesk.Subscription.Types.Results;
 using BillingDesk.Subscription.Utils;
@@ -90,6 +91,43 @@ public sealed class SubscriptionCalculatorController(
 		}
 
 		var result = subscriptionCalculatorService.GetMonthlySpending(success.Subscriptions);
+
+		return result switch
+		{
+			GetMonthlySpendingResult.Success r =>
+				TypedResults.Ok(r.Total
+								 .Adapt<MonthlyTotalResponse>()),
+			_ =>
+				TypedResults.InternalServerError()
+		};
+	}
+
+	[HttpPost("calculate-monthly-cost")]
+	public async Task<Results<
+			Ok<MonthlyTotalResponse>,
+			InternalServerError>>
+		CalculateMonthlyCost(
+			[FromBody] CalculateMonthlyCostRequest request,
+			CancellationToken ct = default)
+	{
+		SubscriptionCalculatorControllerLog.CalculatingMonthlyCost(logger,
+																   request.SubscriptionIds.Count);
+
+		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
+									  new ListSubscriptionsCommand(null),
+									  ct);
+
+		if (subscriptionsResult is not ListSubscriptionsResult.Success success)
+		{
+			return TypedResults.InternalServerError();
+		}
+
+		var filtered = success.Subscriptions
+							  .Where(s => request.SubscriptionIds
+												 .Contains(s.Id))
+							  .ToList();
+
+		var result = subscriptionCalculatorService.GetMonthlySpending(filtered);
 
 		return result switch
 		{
