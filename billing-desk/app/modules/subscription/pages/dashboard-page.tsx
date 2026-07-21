@@ -26,10 +26,10 @@ import {
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
-import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import {
   useCreateSubscription,
   useDeleteSubscription,
+  useToggleSubscriptionStatus,
   useUpdateSubscription,
 } from "~/subscription/hooks/use-subscription-mutations"
 import {
@@ -62,8 +62,8 @@ export function DashboardPage() {
   const { mutateAsync: addSubscription } = useCreateSubscription()
   const { mutateAsync: updateSubscription } = useUpdateSubscription()
   const { mutateAsync: deleteSubscription } = useDeleteSubscription()
-
-  const { toggleSubscriptionStatus } = useMockSubscriptions()
+  const { mutateAsync: toggleSubscriptionStatus } =
+    useToggleSubscriptionStatus()
 
   const {
     data: totalResponse,
