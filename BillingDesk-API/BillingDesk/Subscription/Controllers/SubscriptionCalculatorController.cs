@@ -2,7 +2,6 @@ using BillingDesk.Common.Factories;
 using BillingDesk.Subscription.Logging;
 using BillingDesk.Subscription.Services;
 using BillingDesk.Subscription.Types.Commands;
-using BillingDesk.Subscription.Types.Enums;
 using BillingDesk.Subscription.Types.Queries;
 using BillingDesk.Subscription.Types.Requests;
 using BillingDesk.Subscription.Types.Responses;
@@ -48,7 +47,7 @@ public sealed class SubscriptionCalculatorController(
 		}
 
 		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
-									  new ListSubscriptionsCommand(SubscriptionStatus.Active),
+									  new ListSubscriptionsCommand(null),
 									  ct);
 
 		if (subscriptionsResult is not ListSubscriptionsResult.Success success)
