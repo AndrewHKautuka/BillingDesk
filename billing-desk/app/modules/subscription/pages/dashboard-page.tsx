@@ -33,15 +33,13 @@ import {
   useUpdateSubscription,
 } from "~/subscription/hooks/use-subscription-mutations"
 import {
+  useMonthlyCost,
   useMonthlyTotal,
   useSubscriptions,
 } from "~/subscription/hooks/use-subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
-import {
-  calculateMonthlyCost,
-  formatTotalMonthlySpending,
-} from "~/subscription/utils/subscription-utils"
+import { formatTotalMonthlySpending } from "~/subscription/utils/subscription-utils"
 import type {
   CreateSubscriptionFormData,
   SubscriptionFormData,
@@ -59,6 +57,7 @@ export function DashboardPage() {
   const inactiveSubscriptions = subscriptions.filter(
     (sub) => sub.status === "inactive"
   )
+  const inactiveIds = inactiveSubscriptions.map((sub) => sub.id)
 
   const { mutateAsync: addSubscription } = useCreateSubscription()
   const { mutateAsync: updateSubscription } = useUpdateSubscription()
@@ -73,6 +72,8 @@ export function DashboardPage() {
     error: totalError,
   } = useMonthlyTotal()
 
+  const { data: monthlyCostResponse } = useMonthlyCost(inactiveIds)
+
   const total = totalResponse?.total ?? 0
 
   const [formOpen, setFormOpen] = useState(false)
@@ -81,7 +82,9 @@ export function DashboardPage() {
     Subscription | undefined
   >(undefined)
 
-  const potentialSavingsStr = calculateMonthlyCost(inactiveSubscriptions)
+  const potentialSavingsStr = formatTotalMonthlySpending(
+    monthlyCostResponse?.total ?? 0
+  )
   const totalMonthlyDisplay = formatTotalMonthlySpending(total)
 
   const handleDisplayStyleChange = (newValue: string[]) => {
