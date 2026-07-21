@@ -51,11 +51,10 @@ public sealed class SubscriptionCalculatorService(
 		SubscriptionCalculatorServiceLog.ComputingMonthlySpending(logger);
 
 		var total = subscriptions
-					.Where(s => s.Status == SubscriptionStatus.Active)
-					.Sum(s => FxRateUtils.ConvertCostToMonthlyKwacha(fxRateProvider,
-																	 s.BillingCycle,
-																	 s.Currency,
-																	 s.Cost));
+			.Sum(s => FxRateUtils.ConvertCostToMonthlyKwacha(fxRateProvider,
+															 s.BillingCycle,
+															 s.Currency,
+															 s.Cost));
 
 		return new GetMonthlySpendingResult.Success(total);
 	}

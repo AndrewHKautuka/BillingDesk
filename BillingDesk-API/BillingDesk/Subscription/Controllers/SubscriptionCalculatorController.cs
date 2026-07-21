@@ -81,7 +81,7 @@ public sealed class SubscriptionCalculatorController(
 		SubscriptionCalculatorControllerLog.GettingMonthlyTotal(logger);
 
 		var subscriptionsResult = await subscriptionService.ListSubscriptionsAsync(
-									  new ListSubscriptionsCommand(SubscriptionStatus.Active),
+									  new ListSubscriptionsCommand(null),
 									  ct);
 
 		if (subscriptionsResult is not ListSubscriptionsResult.Success success)
