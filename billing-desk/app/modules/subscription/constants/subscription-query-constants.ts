@@ -21,7 +21,8 @@ export const RENEWAL_KEYS = {
 }
 
 export const MONTHLY_TOTAL_KEYS = {
-  monthlyTotal: () => ["monthly-total"] as const,
+  monthlyTotal: (subscriptionsUpdatedAt?: number) =>
+    ["monthly-total", subscriptionsUpdatedAt] as const,
 }
 
 export const MONTHLY_COST_KEYS = {

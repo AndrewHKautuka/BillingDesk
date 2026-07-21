@@ -65,10 +65,14 @@ export const upcomingRenewalsQueryOptions = (days: number) =>
 
 /**
  * Query options factory for fetching the monthly total cost.
+ * Accepts an optional `subscriptionsUpdatedAt` timestamp so the cache entry
+ * is keyed to the last time subscriptions data was fetched. When
+ * subscriptions are re-fetched (e.g. after an error) the timestamp changes,
+ * making this query stale and triggering a refetch automatically.
  */
-export const monthlyTotalQueryOptions = () =>
+export const monthlyTotalQueryOptions = (subscriptionsUpdatedAt?: number) =>
   queryOptions<MonthlyTotalResponse, ApiError>({
-    queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(),
+    queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(subscriptionsUpdatedAt),
     queryFn: () => fetchMonthlyTotal(),
   })
 

@@ -48,12 +48,17 @@ export function useUpcomingRenewals(
 /**
  * Query hook to fetch the monthly total cost.
  * Returns the MonthlyTotalResponse directly (no mapping needed).
+ *
+ * The query is tied to the subscriptions data update timestamp so it is
+ * automatically invalidated (goes stale) whenever subscriptions are
+ * refetched, including after recovering from an error.
  */
 export function useMonthlyTotal(): UseQueryResult<
   MonthlyTotalResponse,
   ApiError
 > {
-  return useQuery(monthlyTotalQueryOptions())
+  const { dataUpdatedAt } = useSubscriptions()
+  return useQuery(monthlyTotalQueryOptions(dataUpdatedAt))
 }
 
 /**
