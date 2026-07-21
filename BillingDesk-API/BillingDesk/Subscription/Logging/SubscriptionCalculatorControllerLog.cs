@@ -12,6 +12,12 @@ public static partial class SubscriptionCalculatorControllerLog
 	public static partial void GettingMonthlyTotal(
 		ILogger logger);
 
+	[LoggerMessage(Level = LogLevel.Debug,
+				   Message = "Calculating monthly cost for {Count} subscription(s)")]
+	public static partial void CalculatingMonthlyCost(
+		ILogger logger,
+		int count);
+
 	[LoggerMessage(Level = LogLevel.Warning,
 				   Message = "Validation failed in SubscriptionCalculatorController")]
 	public static partial void ValidationFailed(

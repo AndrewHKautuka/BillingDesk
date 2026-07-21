@@ -1,11 +1,13 @@
 import { queryOptions } from "@tanstack/react-query"
 import type { ApiError } from "~/shared/types/api-error-types"
 import {
+  MONTHLY_COST_KEYS,
   MONTHLY_TOTAL_KEYS,
   RENEWAL_KEYS,
   SUBSCRIPTION_KEYS,
 } from "~/subscription/constants/subscription-query-constants"
 import {
+  fetchMonthlyCost,
   fetchMonthlyTotal,
   fetchSubscription,
   fetchSubscriptions,
@@ -63,9 +65,25 @@ export const upcomingRenewalsQueryOptions = (days: number) =>
 
 /**
  * Query options factory for fetching the monthly total cost.
+ * Accepts an optional `subscriptionsUpdatedAt` timestamp so the cache entry
+ * is keyed to the last time subscriptions data was fetched. When
+ * subscriptions are re-fetched (e.g. after an error) the timestamp changes,
+ * making this query stale and triggering a refetch automatically.
  */
-export const monthlyTotalQueryOptions = () =>
+export const monthlyTotalQueryOptions = (subscriptionsUpdatedAt?: number) =>
   queryOptions<MonthlyTotalResponse, ApiError>({
-    queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(),
+    queryKey: MONTHLY_TOTAL_KEYS.monthlyTotal(subscriptionsUpdatedAt),
     queryFn: () => fetchMonthlyTotal(),
+  })
+
+/**
+ * Query options factory for calculating the monthly cost in MWK for a specific
+ * set of subscriptions identified by their IDs. Skips the query when the list
+ * is empty.
+ */
+export const monthlyCostQueryOptions = (ids: string[]) =>
+  queryOptions<MonthlyTotalResponse, ApiError>({
+    queryKey: MONTHLY_COST_KEYS.monthlyCost(ids),
+    queryFn: () => fetchMonthlyCost(ids),
+    enabled: ids.length > 0,
   })

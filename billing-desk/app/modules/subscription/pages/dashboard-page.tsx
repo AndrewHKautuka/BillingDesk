@@ -26,22 +26,20 @@ import {
   UNUSED_WARNING_THRESHOLD,
 } from "~/subscription/constants/subscription-constants"
 import { useDisplayPreferences } from "~/subscription/hooks/use-display-preferences"
-import { useMockSubscriptions } from "~/subscription/hooks/use-mock-subscriptions"
 import {
   useCreateSubscription,
   useDeleteSubscription,
+  useToggleSubscriptionStatus,
   useUpdateSubscription,
 } from "~/subscription/hooks/use-subscription-mutations"
 import {
+  useMonthlyCost,
   useMonthlyTotal,
   useSubscriptions,
 } from "~/subscription/hooks/use-subscription-queries"
 import type { Subscription } from "~/subscription/types/subscription-model"
 import type { DisplayStyle } from "~/subscription/types/subscription-types"
-import {
-  calculateMonthlyCost,
-  formatTotalMonthlySpending,
-} from "~/subscription/utils/subscription-utils"
+import { formatTotalMonthlySpending } from "~/subscription/utils/subscription-utils"
 import type {
   CreateSubscriptionFormData,
   SubscriptionFormData,
@@ -55,16 +53,19 @@ export function DashboardPage() {
 
   const { data, isLoading, isError, error, refetch } = useSubscriptions()
 
-  const subscriptions = data ?? []
+  // Sort subscriptions with by their UUID v7 ids, with newer ones first
+  const subscriptions =
+    data?.sort((a, b) => (a.id < b.id ? 1 : a.id > b.id ? -1 : 0)) ?? []
   const inactiveSubscriptions = subscriptions.filter(
     (sub) => sub.status === "inactive"
   )
+  const inactiveIds = inactiveSubscriptions.map((sub) => sub.id)
 
   const { mutateAsync: addSubscription } = useCreateSubscription()
   const { mutateAsync: updateSubscription } = useUpdateSubscription()
   const { mutateAsync: deleteSubscription } = useDeleteSubscription()
-
-  const { toggleSubscriptionStatus } = useMockSubscriptions()
+  const { mutateAsync: toggleSubscriptionStatus } =
+    useToggleSubscriptionStatus()
 
   const {
     data: totalResponse,
@@ -72,6 +73,8 @@ export function DashboardPage() {
     isError: isTotalError,
     error: totalError,
   } = useMonthlyTotal()
+
+  const { data: monthlyCostResponse } = useMonthlyCost(inactiveIds)
 
   const total = totalResponse?.total ?? 0
 
@@ -81,7 +84,9 @@ export function DashboardPage() {
     Subscription | undefined
   >(undefined)
 
-  const potentialSavingsStr = calculateMonthlyCost(inactiveSubscriptions)
+  const potentialSavingsStr = monthlyCostResponse
+    ? formatTotalMonthlySpending(monthlyCostResponse.total)
+    : "-----"
   const totalMonthlyDisplay = formatTotalMonthlySpending(total)
 
   const handleDisplayStyleChange = (newValue: string[]) => {

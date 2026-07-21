@@ -54,3 +54,16 @@ export async function fetchMonthlyTotal(): Promise<MonthlyTotalResponse> {
 
   return response.data
 }
+
+export async function fetchMonthlyCost(
+  ids: string[]
+): Promise<MonthlyTotalResponse> {
+  const response = await apiClient.post<MonthlyTotalResponse>(
+    "/subscriptions/calculate-monthly-cost",
+    {
+      subscriptionIds: ids,
+    }
+  )
+
+  return response.data
+}
