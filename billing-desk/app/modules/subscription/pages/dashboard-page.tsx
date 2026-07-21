@@ -53,7 +53,9 @@ export function DashboardPage() {
 
   const { data, isLoading, isError, error, refetch } = useSubscriptions()
 
-  const subscriptions = data ?? []
+  // Sort subscriptions with by their UUID v7 ids, with newer ones first
+  const subscriptions =
+    data?.sort((a, b) => (a.id < b.id ? 1 : a.id > b.id ? -1 : 0)) ?? []
   const inactiveSubscriptions = subscriptions.filter(
     (sub) => sub.status === "inactive"
   )
