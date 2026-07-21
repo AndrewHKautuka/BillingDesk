@@ -1,19 +1,5 @@
 import { formatCurrency } from "~/shared/utils/format-utils"
-import type {
-  Renewal,
-  Subscription,
-} from "~/subscription/types/subscription-model"
-
-export function calculateMonthlyCost(subscriptions: Subscription[]): string {
-  // TODO: move calculation to API to resolve multiple currencies into MWK
-  // Calculate potential savings: monthly cost of all given subscriptions
-  const potentialSavingsAmount = subscriptions.reduce((sum, sub) => {
-    const monthlyCost = sub.billingCycle === "yearly" ? sub.cost / 12 : sub.cost
-    return sum + monthlyCost
-  }, 0)
-
-  return formatTotalMonthlySpending(potentialSavingsAmount)
-}
+import type { Renewal } from "~/subscription/types/subscription-model"
 
 export function formatTotalMonthlySpending(total: number) {
   const formattedTotal = formatCurrency(total, "MWK")
