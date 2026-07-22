@@ -5,7 +5,7 @@ A subscription billing management app for tracking plans, calculating renewal da
 ## Tech Stack
 
 **Backend**
-- .NET 10, ASP.NET Core (Minimal APIs)
+- .NET 10, ASP.NET Core (Controller-based)
 - PostgreSQL with Entity Framework Core (Npgsql + NodaTime)
 - FluentValidation, Mapster, Bogus
 - OneKhusa SDK (payment processing)
@@ -15,7 +15,7 @@ A subscription billing management app for tracking plans, calculating renewal da
 - React 19 + React Router 7 (SPA - SSR disabled)
 - TypeScript 6, Vite 8
 - Tailwind CSS 4, shadcn/ui components
-- TanStack Query, React Hook Form + Zod, Zustand, Recharts, Axios
+- TanStack Query, React Hook Form + Zod, Zustand, Axios
 
 **Tooling**
 - pnpm (frontend package manager)
